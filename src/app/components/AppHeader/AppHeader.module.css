@@ -1,6 +1,4 @@
 .root {
-  display: flex;
-  align-items: center;
   height: 100%;
   padding-inline: var(--mantine-spacing-md);
   border-bottom: 1px solid var(--mantine-color-default-border);

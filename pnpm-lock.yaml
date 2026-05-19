@@ -20,6 +20,9 @@ importers:
       '@mantine/notifications':
         specifier: ^9.2.1
         version: 9.2.1(@mantine/core@9.2.1(@mantine/hooks@9.2.1(react@19.2.6))(@types/react@19.2.14)(react-dom@19.2.6(react@19.2.6))(react@19.2.6))(@mantine/hooks@9.2.1(react@19.2.6))(react-dom@19.2.6(react@19.2.6))(react@19.2.6)
+      '@tabler/icons-react':
+        specifier: ^3.44.0
+        version: 3.44.0(react@19.2.6)
       '@tauri-apps/api':
         specifier: ^2
         version: 2.11.0
@@ -602,6 +605,14 @@ packages:
 
   '@standard-schema/spec@1.1.0':
     resolution: {integrity: sha512-l2aFy5jALhniG5HgqrD6jXLi/rUWrKvqN/qJx6yoJsgKhblVd+iqqU4RCXavm/jPityDo5TCvKMnpjKnOriy0w==}
+
+  '@tabler/icons-react@3.44.0':
+    resolution: {integrity: sha512-8+rvzBbVm/1Z3sG3x7GUNAaxIKxwgz8xaMhRs23nrCnMTKRFAhEC+82zAIFeAA0seXdrAGX5HFCkaLpGK2rVHg==}
+    peerDependencies:
+      react: '>= 16'
+
+  '@tabler/icons@3.44.0':
+    resolution: {integrity: sha512-Wn0AOZG9sg0L+bjfMqq4eNhC6pQjIrk94LvvWYNYkY8KH8wC3YILRzQlrnVJc4FUeMxH/AK97QsYCX35H3LndA==}
 
   '@tauri-apps/api@2.11.0':
     resolution: {integrity: sha512-7CinYODhky9lmO23xHnUFv0Xt43fbtWMyxZcLcRBlFkcgXKuEirBvHpmtJ89YMhyeGcq20Wuc47Fa4XjyniywA==}
@@ -1815,6 +1826,13 @@ snapshots:
     optional: true
 
   '@standard-schema/spec@1.1.0': {}
+
+  '@tabler/icons-react@3.44.0(react@19.2.6)':
+    dependencies:
+      '@tabler/icons': 3.44.0
+      react: 19.2.6
+
+  '@tabler/icons@3.44.0': {}
 
   '@tauri-apps/api@2.11.0': {}
 
