@@ -1,0 +1,58 @@
+.titlebar {
+  height: 100%;
+  background-color: var(--mantine-color-body);
+  border-bottom: 1px solid var(--mantine-color-default-border);
+  user-select: none;
+}
+
+.brand {
+  min-width: 0;
+}
+
+.logo {
+  flex-shrink: 0;
+}
+
+.dragRegion {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+  padding-inline: var(--mantine-spacing-xs);
+  cursor: default;
+}
+
+.dragRegion:focus-visible {
+  outline: 2px solid var(--mantine-color-blue-filled);
+  outline-offset: -2px;
+}
+
+.controls {
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 100%;
+  color: var(--mantine-color-text);
+  cursor: default;
+}
+
+.control:hover {
+  background-color: var(--mantine-color-default-hover);
+}
+
+.controlClose:hover {
+  background-color: #c42b1c;
+  color: #fff;
+}
+
+.control svg {
+  width: 16px;
+  height: 16px;
+}
