@@ -1,0 +1,21 @@
+.root {
+  display: grid;
+  height: 100%;
+  min-height: 0;
+  grid-template-rows: var(--main-layout-header-height) 1fr;
+  grid-template-columns: 1fr;
+  grid-template-areas:
+    "north"
+    "center";
+}
+
+.north {
+  grid-area: north;
+  min-height: 0;
+}
+
+.center {
+  grid-area: center;
+  min-height: 0;
+  overflow: auto;
+}

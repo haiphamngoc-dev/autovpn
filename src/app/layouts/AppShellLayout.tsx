@@ -20,7 +20,7 @@ export function AppShellLayout() {
           <WindowResizeHandles />
         </>
       ) : undefined}
-      <AppShell.Main>
+      <AppShell.Main h="100%" style={{ minHeight: 0 }}>
         <Outlet />
       </AppShell.Main>
     </AppShell>
