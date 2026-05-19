@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { HomePage } from "@/features/home/pages/HomePage";
+import { SettingsPage } from "@/features/settings/pages/SettingsPage";
 import { paths } from "@app/routers/paths";
 import { AppShellLayout, MainLayout } from "@app/layouts";
 
@@ -9,6 +10,7 @@ export function AppRoutes() {
       <Route element={<AppShellLayout />}>
         <Route element={<MainLayout />}>
           <Route path={paths.home} element={<HomePage />} />
+          <Route path={paths.settings} element={<SettingsPage />} />
           <Route path="*" element={<Navigate to={paths.home} replace />} />
         </Route>
       </Route>
