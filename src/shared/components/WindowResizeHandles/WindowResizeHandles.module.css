@@ -8,6 +8,11 @@
 .edge {
   position: absolute;
   pointer-events: auto;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  appearance: none;
 }
 
 .north {
