@@ -1,0 +1,13 @@
+{
+  "app": {
+    "windows": [
+      {
+        "title": "autovpn",
+        "width": 800,
+        "height": 600,
+        "decorations": false,
+        "devtools": true
+      }
+    ]
+  }
+}
