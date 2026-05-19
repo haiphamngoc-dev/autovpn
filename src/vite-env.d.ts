@@ -4,9 +4,12 @@ interface ImportMetaEnv {
   readonly TAURI_ENV_PLATFORM?:
     | "linux"
     | "windows"
-    | "macos"
+    | "darwin"
     | "android"
     | "ios";
+  readonly TAURI_ENV_DEBUG?: string;
+  readonly TAURI_ENV_ARCH?: string;
+  readonly TAURI_ENV_FAMILY?: "unix" | "windows";
 }
 
 interface ImportMeta {
