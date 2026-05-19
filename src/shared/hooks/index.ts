@@ -1,0 +1,1 @@
+export { useWindowControls } from "./useWindowControls";

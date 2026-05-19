@@ -1,0 +1,75 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+
+.edge {
+  position: absolute;
+  pointer-events: auto;
+}
+
+.north {
+  top: 0;
+  left: 8px;
+  right: 8px;
+  height: 5px;
+  cursor: n-resize;
+}
+
+.south {
+  bottom: 0;
+  left: 8px;
+  right: 8px;
+  height: 5px;
+  cursor: s-resize;
+}
+
+.east {
+  top: 8px;
+  right: 0;
+  bottom: 8px;
+  width: 5px;
+  cursor: e-resize;
+}
+
+.west {
+  top: 8px;
+  left: 0;
+  bottom: 8px;
+  width: 5px;
+  cursor: w-resize;
+}
+
+.northeast {
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 8px;
+  cursor: ne-resize;
+}
+
+.northwest {
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  cursor: nw-resize;
+}
+
+.southeast {
+  right: 0;
+  bottom: 0;
+  width: 8px;
+  height: 8px;
+  cursor: se-resize;
+}
+
+.southwest {
+  left: 0;
+  bottom: 0;
+  width: 8px;
+  height: 8px;
+  cursor: sw-resize;
+}

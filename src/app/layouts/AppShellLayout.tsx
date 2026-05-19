@@ -1,3 +1,4 @@
+import { WindowResizeHandles } from "@shared/components/WindowResizeHandles";
 import { WindowTitleBar } from "@shared/components/WindowTitleBar";
 import { isLinux } from "@shared/lib/platform";
 import { AppShell } from "@mantine/core";
@@ -12,9 +13,12 @@ export function AppShellLayout() {
       padding={0}
     >
       {isLinux ? (
-        <AppShell.Header>
-          <WindowTitleBar />
-        </AppShell.Header>
+        <>
+          <AppShell.Header>
+            <WindowTitleBar />
+          </AppShell.Header>
+          <WindowResizeHandles />
+        </>
       ) : undefined}
       <AppShell.Main>
         <Outlet />
