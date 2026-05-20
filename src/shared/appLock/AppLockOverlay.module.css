@@ -1,0 +1,43 @@
+.overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--mantine-spacing-md);
+  background-color: color-mix(
+    in srgb,
+    var(--mantine-color-body) 88%,
+    transparent
+  );
+  backdrop-filter: blur(10px);
+}
+
+.card {
+  width: min(100%, 22rem);
+  border: 1px solid var(--mantine-color-default-border);
+  border-radius: var(--mantine-radius-md);
+  padding: var(--mantine-spacing-lg);
+  background-color: var(--mantine-color-body);
+  box-shadow: var(--mantine-shadow-md);
+}
+
+.title {
+  margin: 0 0 var(--mantine-spacing-xs);
+  font-size: var(--mantine-font-size-lg);
+  font-weight: 600;
+}
+
+.description {
+  margin: 0 0 var(--mantine-spacing-md);
+  color: var(--mantine-color-dimmed);
+  font-size: var(--mantine-font-size-sm);
+  line-height: 1.45;
+}
+
+.error {
+  margin: 0 0 var(--mantine-spacing-sm);
+  color: var(--mantine-color-red-6);
+  font-size: var(--mantine-font-size-sm);
+}

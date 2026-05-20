@@ -1,8 +1,10 @@
 import { createTheme, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { AppRoutes } from "@/app/routers/routes";
+import { AppLockProvider } from "@shared/appLock";
 import { I18nLanguageSync } from "@shared/i18n/I18nLanguageSync";
 import type { AppearanceSettings } from "@shared/settings/appearance";
+import type { AppLockSettings } from "@shared/settings/appLock";
 import { createAppearanceColorSchemeManager } from "@shared/settings/colorSchemeManager";
 import { MemoryRouter } from "react-router-dom";
 
@@ -12,9 +14,10 @@ const theme = createTheme({
 
 type AppProps = {
   appearance: AppearanceSettings;
+  appLock: AppLockSettings;
 };
 
-export default function App({ appearance }: Readonly<AppProps>) {
+export default function App({ appearance, appLock }: Readonly<AppProps>) {
   const colorSchemeManager = createAppearanceColorSchemeManager(
     appearance.colorScheme
   );
@@ -26,10 +29,12 @@ export default function App({ appearance }: Readonly<AppProps>) {
       defaultColorScheme={appearance.colorScheme}
     >
       <Notifications />
-      <MemoryRouter>
-        <I18nLanguageSync />
-        <AppRoutes />
-      </MemoryRouter>
+      <AppLockProvider initialSettings={appLock}>
+        <MemoryRouter>
+          <I18nLanguageSync />
+          <AppRoutes />
+        </MemoryRouter>
+      </AppLockProvider>
     </MantineProvider>
   );
 }

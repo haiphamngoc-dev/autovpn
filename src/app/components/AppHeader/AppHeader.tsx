@@ -38,13 +38,13 @@ export function AppHeader() {
                 stroke={ICON_STROKE}
               />
             </ActionIcon>
-            <Text component="h1" size="sm" fw={600} m={0}>
+            <Text component="h1" size="md" fw={600} m={0}>
               {t("common.settings")}
             </Text>
           </Group>
         ) : (
           <>
-            <Text component="h1" size="sm" fw={600} m={0}>
+            <Text component="h1" size="md" fw={600} m={0}>
               {t("app.name")}
             </Text>
             <ActionIcon

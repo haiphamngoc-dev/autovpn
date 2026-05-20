@@ -1,3 +1,4 @@
+import { AppLockOverlay } from "@shared/appLock";
 import { WindowResizeHandles } from "@shared/components/WindowResizeHandles";
 import { WindowTitleBar } from "@shared/components/WindowTitleBar";
 import { isLinux } from "@shared/lib/platform";
@@ -18,6 +19,7 @@ export function AppLayout() {
       ) : undefined}
       <Box className={styles.main}>
         <Outlet />
+        <AppLockOverlay />
       </Box>
     </Box>
   );

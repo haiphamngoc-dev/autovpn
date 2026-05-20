@@ -77,16 +77,56 @@
       "confirmPin": "Xác nhận lại",
       "pinPlaceholder": "Nhập PIN mới",
       "confirmPinPlaceholder": "Xác nhận PIN mới",
+      "savePin": "Lưu PIN",
+      "errors": {
+        "invalidLength": "PIN phải có từ {{min}} đến {{max}} chữ số.",
+        "notDigitsOnly": "PIN chỉ được chứa chữ số."
+      },
       "notifications": {
         "locked": {
           "title": "Đã khóa ứng dụng",
-          "message": "Màn hình khóa sẽ có trong bản cập nhật sau."
+          "messageWithPin": "Nhập PIN trên màn hình khóa để tiếp tục.",
+          "messageWithoutPin": "Nhấn Mở khóa trên màn hình khóa để tiếp tục."
         },
         "pinRemoved": {
           "title": "Đã xóa PIN",
-          "message": "Tích hợp keyring sẽ có trong bản cập nhật sau."
+          "message": "PIN đã được xóa khỏi keyring hệ thống."
+        },
+        "pinRemoveFailed": {
+          "title": "Không thể xóa PIN",
+          "message": "Không thể xóa PIN khỏi keyring hệ thống."
+        },
+        "pinSaved": {
+          "title": "Đã lưu PIN",
+          "message": "PIN đã được lưu vào keyring hệ thống."
+        },
+        "pinSaveFailed": {
+          "title": "Không thể lưu PIN",
+          "message": "Không thể lưu PIN vào keyring hệ thống."
+        },
+        "pinMismatch": {
+          "title": "PIN không khớp",
+          "message": "Hãy nhập cùng một PIN ở cả hai ô."
+        },
+        "settingsSaved": {
+          "title": "Đã lưu cài đặt khóa ứng dụng",
+          "message": "Tùy chọn khóa ứng dụng đã được lưu."
+        },
+        "settingsSaveFailed": {
+          "title": "Không thể lưu cài đặt khóa ứng dụng",
+          "message": "Cài đặt đã đổi trong app nhưng chưa ghi vào file cấu hình."
         }
       }
+    }
+  },
+  "appLock": {
+    "overlay": {
+      "title": "Ứng dụng đã khóa",
+      "descriptionWithPin": "Nhập PIN để mở khóa autovpn.",
+      "descriptionWithoutPin": "Nhấn Mở khóa để tiếp tục dùng autovpn.",
+      "pinPlaceholder": "Nhập PIN",
+      "unlock": "Mở khóa",
+      "invalidPin": "PIN không đúng. Hãy thử lại."
     }
   },
   "window": {

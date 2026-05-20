@@ -77,16 +77,56 @@
       "confirmPin": "Confirm again",
       "pinPlaceholder": "Enter new PIN",
       "confirmPinPlaceholder": "Confirm new PIN",
+      "savePin": "Save PIN",
+      "errors": {
+        "invalidLength": "PIN must be between {{min}} and {{max}} digits.",
+        "notDigitsOnly": "PIN must contain digits only."
+      },
       "notifications": {
         "locked": {
           "title": "App locked",
-          "message": "Lock screen will be available in a future update."
+          "messageWithPin": "Enter your PIN on the lock screen to continue.",
+          "messageWithoutPin": "Tap Unlock on the lock screen to continue."
         },
         "pinRemoved": {
           "title": "PIN removed",
-          "message": "Keyring integration will be available in a future update."
+          "message": "The PIN has been removed from the system keyring."
+        },
+        "pinRemoveFailed": {
+          "title": "Could not remove PIN",
+          "message": "The PIN could not be removed from the system keyring."
+        },
+        "pinSaved": {
+          "title": "PIN saved",
+          "message": "Your PIN has been stored in the system keyring."
+        },
+        "pinSaveFailed": {
+          "title": "Could not save PIN",
+          "message": "The PIN could not be stored in the system keyring."
+        },
+        "pinMismatch": {
+          "title": "PINs do not match",
+          "message": "Enter the same PIN in both fields."
+        },
+        "settingsSaved": {
+          "title": "App lock settings saved",
+          "message": "Your app lock preferences have been saved."
+        },
+        "settingsSaveFailed": {
+          "title": "Could not save app lock settings",
+          "message": "Settings were updated in the app but not written to the settings file."
         }
       }
+    }
+  },
+  "appLock": {
+    "overlay": {
+      "title": "App locked",
+      "descriptionWithPin": "Enter your PIN to unlock autovpn.",
+      "descriptionWithoutPin": "Tap Unlock to continue using autovpn.",
+      "pinPlaceholder": "Enter PIN",
+      "unlock": "Unlock",
+      "invalidPin": "Incorrect PIN. Try again."
     }
   },
   "window": {

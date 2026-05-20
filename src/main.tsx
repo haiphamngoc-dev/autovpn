@@ -4,11 +4,15 @@ import "./global.css";
 import App from "@app/App";
 import { initI18n } from "@shared/i18n";
 import { loadAppearanceSettings } from "@shared/settings/appearance";
+import { loadAppLockSettings } from "@shared/settings/appLock";
 import { StrictMode, createElement } from "react";
 import ReactDOM from "react-dom/client";
 
 async function bootstrap() {
-  const appearance = await loadAppearanceSettings();
+  const [appearance, appLock] = await Promise.all([
+    loadAppearanceSettings(),
+    loadAppLockSettings(),
+  ]);
   await initI18n(appearance.language);
 
   const root = document.getElementById("root");
@@ -18,7 +22,7 @@ async function bootstrap() {
   }
 
   ReactDOM.createRoot(root).render(
-    createElement(StrictMode, null, createElement(App, { appearance }))
+    createElement(StrictMode, null, createElement(App, { appearance, appLock }))
   );
 }
 

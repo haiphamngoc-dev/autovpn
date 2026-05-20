@@ -29,6 +29,34 @@ impl Default for AppearanceSettings {
 pub struct AppSettings {
     #[serde(default)]
     pub appearance: AppearanceSettings,
+    #[serde(default)]
+    pub app_lock: AppLockSettings,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AppLockSettings {
+    #[serde(default = "default_lock_when_idle")]
+    pub lock_when_idle: bool,
+    #[serde(default = "default_idle_timeout")]
+    pub idle_timeout: String,
+}
+
+impl Default for AppLockSettings {
+    fn default() -> Self {
+        Self {
+            lock_when_idle: default_lock_when_idle(),
+            idle_timeout: default_idle_timeout(),
+        }
+    }
+}
+
+fn default_lock_when_idle() -> bool {
+    true
+}
+
+fn default_idle_timeout() -> String {
+    "5".to_string()
 }
 
 fn default_color_scheme() -> String {
@@ -49,6 +77,18 @@ fn ensure_config_dir(path: &PathBuf) -> Result<(), String> {
         fs::create_dir_all(parent).map_err(|e| e.to_string())?;
     }
     Ok(())
+}
+
+fn sanitize_app_lock(app_lock: AppLockSettings) -> AppLockSettings {
+    let idle_timeout = match app_lock.idle_timeout.as_str() {
+        "1" | "5" | "15" | "30" | "60" => app_lock.idle_timeout,
+        _ => default_idle_timeout(),
+    };
+
+    AppLockSettings {
+        lock_when_idle: app_lock.lock_when_idle,
+        idle_timeout,
+    }
 }
 
 fn sanitize_appearance(appearance: AppearanceSettings) -> AppearanceSettings {
@@ -80,7 +120,7 @@ pub fn load_settings() -> Result<AppSettings, String> {
 
     Ok(AppSettings {
         appearance: sanitize_appearance(settings.appearance),
-        ..settings
+        app_lock: sanitize_app_lock(settings.app_lock),
     })
 }
 
@@ -101,6 +141,18 @@ pub fn get_appearance_settings() -> Result<AppearanceSettings, String> {
 pub fn save_appearance_settings(appearance: AppearanceSettings) -> Result<(), String> {
     let mut settings = load_settings().unwrap_or_default();
     settings.appearance = sanitize_appearance(appearance);
+    save_settings(&settings)
+}
+
+#[tauri::command]
+pub fn get_app_lock_settings() -> Result<AppLockSettings, String> {
+    Ok(load_settings()?.app_lock)
+}
+
+#[tauri::command]
+pub fn save_app_lock_settings(app_lock: AppLockSettings) -> Result<(), String> {
+    let mut settings = load_settings().unwrap_or_default();
+    settings.app_lock = sanitize_app_lock(app_lock);
     save_settings(&settings)
 }
 
@@ -137,6 +189,7 @@ mod tests {
                 color_scheme: "light".to_string(),
                 language: "en".to_string(),
             },
+            app_lock: AppLockSettings::default(),
         };
 
         let json = serde_json::to_string_pretty(&settings).unwrap();
@@ -155,5 +208,26 @@ mod tests {
         let sanitized = sanitize_appearance(appearance);
 
         assert_eq!(sanitized.color_scheme, "dark");
+    }
+
+    #[test]
+    fn deserializes_frontend_app_lock_payload() {
+        let json = r#"{"lockWhenIdle":false,"idleTimeout":"15"}"#;
+        let app_lock: AppLockSettings = serde_json::from_str(json).unwrap();
+
+        assert!(!app_lock.lock_when_idle);
+        assert_eq!(app_lock.idle_timeout, "15");
+    }
+
+    #[test]
+    fn sanitize_rejects_invalid_idle_timeout() {
+        let app_lock = AppLockSettings {
+            lock_when_idle: true,
+            idle_timeout: "99".to_string(),
+        };
+
+        let sanitized = sanitize_app_lock(app_lock);
+
+        assert_eq!(sanitized.idle_timeout, "5");
     }
 }
