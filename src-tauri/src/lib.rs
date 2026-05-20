@@ -1,17 +1,39 @@
 mod keyring_store;
 mod settings;
+mod tray;
+mod window_behavior;
 
 use keyring_store::{
     has_app_lock_pin, remove_app_lock_pin, set_app_lock_pin, verify_app_lock_pin,
 };
 use settings::{
-    get_app_lock_settings, get_appearance_settings, save_app_lock_settings,
-    save_appearance_settings,
+    get_app_lock_settings, get_appearance_settings, get_window_behavior_settings,
+    load_settings, save_app_lock_settings, save_appearance_settings,
+    save_window_behavior_settings,
 };
+use tauri::WindowEvent;
+use tray::TrayLabels;
 
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
+}
+
+#[tauri::command]
+fn sync_tray_icon(
+    app: tauri::AppHandle,
+    close_to_tray: bool,
+    show_label: String,
+    quit_label: String,
+) -> Result<(), String> {
+    tray::sync_tray(
+        &app,
+        close_to_tray,
+        &TrayLabels {
+            show: show_label,
+            quit: quit_label,
+        },
+    )
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -22,12 +44,32 @@ pub fn run() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .setup(|app| {
+            let settings = load_settings().unwrap_or_default();
+            window_behavior::apply(app.handle(), &settings.window_behavior)?;
+            Ok(())
+        })
+        .on_window_event(|window, event| {
+            if let WindowEvent::CloseRequested { api, .. } = event {
+                let close_to_tray = load_settings()
+                    .map(|settings| settings.window_behavior.close_to_tray)
+                    .unwrap_or(false);
+
+                if close_to_tray {
+                    let _ = window.hide();
+                    api.prevent_close();
+                }
+            }
+        })
         .invoke_handler(tauri::generate_handler![
             greet,
             get_appearance_settings,
             save_appearance_settings,
             get_app_lock_settings,
             save_app_lock_settings,
+            get_window_behavior_settings,
+            save_window_behavior_settings,
+            sync_tray_icon,
             has_app_lock_pin,
             set_app_lock_pin,
             verify_app_lock_pin,

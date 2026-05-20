@@ -66,6 +66,28 @@
       "30min": "30 min",
       "1hour": "1 hour"
     },
+    "windowBehavior": {
+      "title": "Window",
+      "description": "Control how the app window behaves on your desktop.",
+      "useSystemWindowFrame": "Use system window frame",
+      "useSystemWindowFrameDescription": "Use the native title bar and window borders instead of the custom Linux title bar.",
+      "closeToTray": "Close to tray icon",
+      "closeToTrayDescription": "Hide the window to the system tray when closing instead of quitting the app.",
+      "tray": {
+        "show": "Show autovpn",
+        "quit": "Quit"
+      },
+      "notifications": {
+        "saved": {
+          "title": "Window settings saved",
+          "message": "Your window preferences have been saved."
+        },
+        "saveFailed": {
+          "title": "Could not save window settings",
+          "message": "Settings were updated in the app but not written to the settings file."
+        }
+      }
+    },
     "appLock": {
       "title": "App lock",
       "description": "Like 1Password: locks after inactivity. PIN is stored securely in the system keyring.",

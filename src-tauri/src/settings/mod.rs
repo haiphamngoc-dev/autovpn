@@ -3,6 +3,8 @@ use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 
+pub use crate::window_behavior::WindowBehaviorSettings;
+
 const APP_CONFIG_DIR: &str = "autovpn";
 const SETTINGS_FILE: &str = "settings.json";
 
@@ -31,6 +33,8 @@ pub struct AppSettings {
     pub appearance: AppearanceSettings,
     #[serde(default)]
     pub app_lock: AppLockSettings,
+    #[serde(default)]
+    pub window_behavior: WindowBehaviorSettings,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -121,6 +125,7 @@ pub fn load_settings() -> Result<AppSettings, String> {
     Ok(AppSettings {
         appearance: sanitize_appearance(settings.appearance),
         app_lock: sanitize_app_lock(settings.app_lock),
+        window_behavior: settings.window_behavior,
     })
 }
 
@@ -154,6 +159,22 @@ pub fn save_app_lock_settings(app_lock: AppLockSettings) -> Result<(), String> {
     let mut settings = load_settings().unwrap_or_default();
     settings.app_lock = sanitize_app_lock(app_lock);
     save_settings(&settings)
+}
+
+#[tauri::command]
+pub fn get_window_behavior_settings() -> Result<WindowBehaviorSettings, String> {
+    Ok(load_settings()?.window_behavior)
+}
+
+#[tauri::command]
+pub fn save_window_behavior_settings(
+    app: tauri::AppHandle,
+    window_behavior: WindowBehaviorSettings,
+) -> Result<(), String> {
+    let mut settings = load_settings().unwrap_or_default();
+    settings.window_behavior = window_behavior.clone();
+    save_settings(&settings)?;
+    crate::window_behavior::apply(&app, &window_behavior)
 }
 
 #[cfg(test)]
@@ -190,6 +211,7 @@ mod tests {
                 language: "en".to_string(),
             },
             app_lock: AppLockSettings::default(),
+            window_behavior: WindowBehaviorSettings::default(),
         };
 
         let json = serde_json::to_string_pretty(&settings).unwrap();

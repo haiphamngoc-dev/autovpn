@@ -1,9 +1,11 @@
+import { useWindowBehavior } from "@shared/windowBehavior";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useCallback, useEffect, useState, type MouseEvent } from "react";
 
 const appWindow = getCurrentWindow();
 
 export function useWindowControls() {
+  const { settings } = useWindowBehavior();
   const [maximized, setMaximized] = useState(false);
 
   const syncMaximized = useCallback(() => {
@@ -34,8 +36,12 @@ export function useWindowControls() {
   }, [syncMaximized]);
 
   const close = useCallback(() => {
-    void appWindow.close();
-  }, []);
+    if (settings.closeToTray) {
+      void appWindow.hide();
+    } else {
+      void appWindow.close();
+    }
+  }, [settings.closeToTray]);
 
   const startDrag = useCallback((event: MouseEvent) => {
     if (event.button !== 0) return;

@@ -5,13 +5,15 @@ import App from "@app/App";
 import { initI18n } from "@shared/i18n";
 import { loadAppearanceSettings } from "@shared/settings/appearance";
 import { loadAppLockSettings } from "@shared/settings/appLock";
+import { loadWindowBehaviorSettings } from "@shared/settings/windowBehavior";
 import { StrictMode, createElement } from "react";
 import ReactDOM from "react-dom/client";
 
 async function bootstrap() {
-  const [appearance, appLock] = await Promise.all([
+  const [appearance, appLock, windowBehavior] = await Promise.all([
     loadAppearanceSettings(),
     loadAppLockSettings(),
+    loadWindowBehaviorSettings(),
   ]);
   await initI18n(appearance.language);
 
@@ -22,7 +24,11 @@ async function bootstrap() {
   }
 
   ReactDOM.createRoot(root).render(
-    createElement(StrictMode, null, createElement(App, { appearance, appLock }))
+    createElement(
+      StrictMode,
+      null,
+      createElement(App, { appearance, appLock, windowBehavior })
+    )
   );
 }
 

@@ -66,6 +66,28 @@
       "30min": "30 phút",
       "1hour": "1 giờ"
     },
+    "windowBehavior": {
+      "title": "Cửa sổ",
+      "description": "Điều khiển cách cửa sổ ứng dụng hoạt động trên máy tính.",
+      "useSystemWindowFrame": "Dùng khung cửa sổ hệ thống",
+      "useSystemWindowFrameDescription": "Dùng thanh tiêu đề và viền cửa sổ gốc thay cho thanh tiêu đề Linux tùy chỉnh.",
+      "closeToTray": "Đóng xuống khay hệ thống",
+      "closeToTrayDescription": "Ẩn cửa sổ xuống khay hệ thống khi đóng thay vì thoát ứng dụng.",
+      "tray": {
+        "show": "Hiện autovpn",
+        "quit": "Thoát"
+      },
+      "notifications": {
+        "saved": {
+          "title": "Đã lưu cài đặt cửa sổ",
+          "message": "Tùy chọn cửa sổ đã được lưu."
+        },
+        "saveFailed": {
+          "title": "Không thể lưu cài đặt cửa sổ",
+          "message": "Cài đặt đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        }
+      }
+    },
     "appLock": {
       "title": "Khóa ứng dụng",
       "description": "Giống 1Password: khóa sau khi không hoạt động. Mã PIN được lưu an toàn trong keyring hệ thống.",
