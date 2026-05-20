@@ -31,6 +31,24 @@
       "language": {
         "label": "Language",
         "description": "Interface language (saved for this device)."
+      },
+      "notifications": {
+        "themeSaved": {
+          "title": "Theme saved",
+          "message": "{{theme}} theme has been saved."
+        },
+        "themeSaveFailed": {
+          "title": "Could not save theme",
+          "message": "Theme was updated in the app but not written to settings file."
+        },
+        "languageSaved": {
+          "title": "Language saved",
+          "message": "{{language}} has been saved."
+        },
+        "languageSaveFailed": {
+          "title": "Could not save language",
+          "message": "Language was updated in the app but not written to settings file."
+        }
       }
     },
     "theme": {

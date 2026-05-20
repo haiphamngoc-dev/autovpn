@@ -31,6 +31,24 @@
       "language": {
         "label": "Ngôn ngữ",
         "description": "Ngôn ngữ giao diện (lưu trên thiết bị này)."
+      },
+      "notifications": {
+        "themeSaved": {
+          "title": "Đã lưu chủ đề",
+          "message": "Chủ đề {{theme}} đã được lưu."
+        },
+        "themeSaveFailed": {
+          "title": "Không thể lưu chủ đề",
+          "message": "Chủ đề đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        },
+        "languageSaved": {
+          "title": "Đã lưu ngôn ngữ",
+          "message": "{{language}} đã được lưu."
+        },
+        "languageSaveFailed": {
+          "title": "Không thể lưu ngôn ngữ",
+          "message": "Ngôn ngữ đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        }
       }
     },
     "theme": {

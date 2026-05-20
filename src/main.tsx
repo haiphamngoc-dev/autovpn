@@ -1,34 +1,25 @@
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "./global.css";
-import "@shared/i18n";
-import {
-  createTheme,
-  localStorageColorSchemeManager,
-  MantineProvider,
-} from "@mantine/core";
-import { Notifications } from "@mantine/notifications";
-import React from "react";
+import App from "@app/App";
+import { initI18n } from "@shared/i18n";
+import { loadAppearanceSettings } from "@shared/settings/appearance";
+import { StrictMode, createElement } from "react";
 import ReactDOM from "react-dom/client";
-import App from "./app/App";
 
-const colorSchemeManager = localStorageColorSchemeManager({
-  key: "autovpn-color-scheme",
-});
+async function bootstrap() {
+  const appearance = await loadAppearanceSettings();
+  await initI18n(appearance.language);
 
-const theme = createTheme({
-  primaryColor: "green",
-});
+  const root = document.getElementById("root");
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <MantineProvider
-      theme={theme}
-      colorSchemeManager={colorSchemeManager}
-      defaultColorScheme="dark"
-    >
-      <Notifications />
-      <App />
-    </MantineProvider>
-  </React.StrictMode>
-);
+  if (!root) {
+    throw new Error("Root element #root not found");
+  }
+
+  ReactDOM.createRoot(root).render(
+    createElement(StrictMode, null, createElement(App, { appearance }))
+  );
+}
+
+void bootstrap();

@@ -1,7 +1,4 @@
-import { LANGUAGE_STORAGE_KEY } from "@shared/i18n/config";
-
 export const STORAGE_KEYS = {
-  language: LANGUAGE_STORAGE_KEY,
   appLockEnabled: "autovpn-app-lock-enabled",
   appLockIdleTimeout: "autovpn-app-lock-idle-timeout",
 } as const;

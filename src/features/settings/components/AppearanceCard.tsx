@@ -1,4 +1,3 @@
-import { STORAGE_KEYS } from "@features/settings/constants";
 import {
   Box,
   SegmentedControl,
@@ -6,23 +5,20 @@ import {
   Text,
   useMantineColorScheme,
 } from "@mantine/core";
-import { useLocalStorage } from "@mantine/hooks";
-import { changeAppLanguage } from "@shared/i18n";
+import { notifications } from "@mantine/notifications";
 import { useLanguageOptions, useThemeOptions } from "@shared/i18n/options";
+import { changeAppLanguage } from "@shared/i18n";
+import { saveAppearanceSettings } from "@shared/settings/appearance";
 import { IconLanguage } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import styles from "./AppearanceCard.module.css";
 import { SettingField } from "./SettingField";
 
 export function AppearanceCard() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { colorScheme, setColorScheme } = useMantineColorScheme();
   const themeOptions = useThemeOptions();
   const languageOptions = useLanguageOptions();
-  const [language, setLanguage] = useLocalStorage({
-    key: STORAGE_KEYS.language,
-    defaultValue: "en",
-  });
 
   return (
     <Box className={styles.card}>
@@ -36,8 +32,44 @@ export function AppearanceCard() {
       >
         <SegmentedControl
           fullWidth
-          value={colorScheme}
-          onChange={(value) => setColorScheme(value as "light" | "dark")}
+          value={
+            colorScheme === "light" || colorScheme === "dark"
+              ? colorScheme
+              : "dark"
+          }
+          onChange={(value) => {
+            void (async () => {
+              const nextScheme = value as "light" | "dark";
+              setColorScheme(nextScheme);
+
+              const { persisted } = await saveAppearanceSettings({
+                colorScheme: nextScheme,
+              });
+
+              notifications.show(
+                persisted
+                  ? {
+                      title: t(
+                        "settings.appearance.notifications.themeSaved.title"
+                      ),
+                      message: t(
+                        "settings.appearance.notifications.themeSaved.message",
+                        { theme: t(`settings.theme.${nextScheme}`) }
+                      ),
+                      color: "green",
+                    }
+                  : {
+                      title: t(
+                        "settings.appearance.notifications.themeSaveFailed.title"
+                      ),
+                      message: t(
+                        "settings.appearance.notifications.themeSaveFailed.message"
+                      ),
+                      color: "red",
+                    }
+              );
+            })();
+          }}
           data={themeOptions}
         />
       </SettingField>
@@ -47,10 +79,39 @@ export function AppearanceCard() {
         description={t("settings.appearance.language.description")}
       >
         <Select
-          value={language}
+          value={i18n.language}
           onChange={(value) => {
-            const nextLanguage = changeAppLanguage(value ?? "en");
-            setLanguage(nextLanguage);
+            void (async () => {
+              const nextLanguage = await changeAppLanguage(value ?? "en");
+              const { persisted } = await saveAppearanceSettings({
+                language: nextLanguage,
+              });
+
+              notifications.show(
+                persisted
+                  ? {
+                      title: t(
+                        "settings.appearance.notifications.languageSaved.title"
+                      ),
+                      message: t(
+                        "settings.appearance.notifications.languageSaved.message",
+                        {
+                          language: t(`settings.languages.${nextLanguage}`),
+                        }
+                      ),
+                      color: "green",
+                    }
+                  : {
+                      title: t(
+                        "settings.appearance.notifications.languageSaveFailed.title"
+                      ),
+                      message: t(
+                        "settings.appearance.notifications.languageSaveFailed.message"
+                      ),
+                      color: "red",
+                    }
+              );
+            })();
           }}
           data={languageOptions}
           leftSection={<IconLanguage size={16} stroke={1.5} />}
