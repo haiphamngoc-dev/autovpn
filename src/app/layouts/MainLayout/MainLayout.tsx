@@ -1,22 +1,27 @@
+import { AppFooter } from "@app/components/AppFooter";
 import { AppHeader } from "@app/components/AppHeader";
-import { Box } from "@mantine/core";
+import { AppShell } from "@mantine/core";
 import { Outlet } from "react-router-dom";
 import styles from "./MainLayout.module.css";
 
-const HEADER_HEIGHT = "3rem";
-
 export function MainLayout() {
   return (
-    <Box
-      className={styles.root}
-      style={{ "--main-layout-header-height": HEADER_HEIGHT }}
+    <AppShell
+      className={styles.shell}
+      mode="static"
+      header={{ height: 48 }}
+      footer={{ height: 32 }}
+      padding={0}
     >
-      <Box className={styles.north}>
+      <AppShell.Header p={0}>
         <AppHeader />
-      </Box>
-      <Box component="main" className={styles.center}>
+      </AppShell.Header>
+      <AppShell.Main className={styles.main}>
         <Outlet />
-      </Box>
-    </Box>
+      </AppShell.Main>
+      <AppShell.Footer p={0}>
+        <AppFooter />
+      </AppShell.Footer>
+    </AppShell>
   );
 }

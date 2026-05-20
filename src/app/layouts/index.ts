@@ -1,2 +1,2 @@
-export { AppShellLayout } from "./AppShellLayout";
+export { AppLayout } from "./AppLayout";
 export { MainLayout } from "./MainLayout";

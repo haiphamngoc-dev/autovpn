@@ -1,0 +1,11 @@
+.page {
+  padding: var(--mantine-spacing-md);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-md);
+  max-width: 40rem;
+  margin: 0 auto;
+}

@@ -12,7 +12,7 @@ export function HomePage() {
   }
 
   return (
-    <main className={styles.container}>
+    <div className={styles.container}>
       <h1>Welcome to Tauri + React</h1>
 
       <div className={styles.row}>
@@ -55,6 +55,6 @@ export function HomePage() {
         <button type="submit">Greet</button>
       </form>
       <p>{greetMsg}</p>
-    </main>
+    </div>
   );
 }

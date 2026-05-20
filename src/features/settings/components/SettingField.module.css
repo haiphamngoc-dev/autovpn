@@ -1,0 +1,16 @@
+.field + .field {
+  margin-top: var(--mantine-spacing-lg);
+}
+
+.fieldLabel {
+  margin: 0 0 var(--mantine-spacing-xs);
+  font-size: var(--mantine-font-size-sm);
+  font-weight: 600;
+}
+
+.fieldDescription {
+  margin: 0 0 var(--mantine-spacing-sm);
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+  line-height: 1.45;
+}

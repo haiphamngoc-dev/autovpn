@@ -1,9 +1,14 @@
-import { Box, Text } from "@mantine/core";
+import { AppearanceCard, AppLockCard } from "@features/settings/components";
+import { Box } from "@mantine/core";
+import styles from "./SettingsPage.module.css";
 
 export function SettingsPage() {
   return (
-    <Box p="md">
-      <Text c="dimmed">Settings content goes here.</Text>
+    <Box className={styles.page}>
+      <Box className={styles.stack}>
+        <AppearanceCard />
+        <AppLockCard />
+      </Box>
     </Box>
   );
 }

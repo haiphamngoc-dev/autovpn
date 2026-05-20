@@ -1,0 +1,24 @@
+.root {
+  --layout-titlebar-height: 32px;
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.titlebar {
+  position: relative;
+  z-index: 201;
+  flex-shrink: 0;
+  height: var(--layout-titlebar-height);
+}
+
+.main {
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}

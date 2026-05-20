@@ -1,21 +1,15 @@
-.root {
-  display: grid;
+.shell {
+  display: flex;
+  flex: 1 1 0%;
+  flex-direction: column;
   height: 100%;
   min-height: 0;
-  grid-template-rows: var(--main-layout-header-height) 1fr;
-  grid-template-columns: 1fr;
-  grid-template-areas:
-    "north"
-    "center";
+  overflow: hidden;
 }
 
-.north {
-  grid-area: north;
+.main {
+  flex: 1 1 0%;
   min-height: 0;
-}
-
-.center {
-  grid-area: center;
-  min-height: 0;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
 }

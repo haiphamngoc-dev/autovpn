@@ -4,13 +4,15 @@
   box-sizing: border-box;
 }
 
-html {
+html,
+body,
+#root {
   height: 100%;
+  overflow: hidden;
 }
 
 body {
   margin: 0;
-  min-height: 100%;
   font-family: var(--mantine-font-family);
   background-color: var(--mantine-color-body);
   color: var(--mantine-color-text);
@@ -18,10 +20,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-user-select: none;
   user-select: none;
-}
-
-#root {
-  min-height: 100%;
 }
 
 input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not(
