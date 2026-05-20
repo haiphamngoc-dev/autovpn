@@ -1,7 +1,4 @@
-import {
-  IDLE_TIMEOUT_OPTIONS,
-  STORAGE_KEYS,
-} from "@features/settings/constants";
+import { STORAGE_KEYS } from "@features/settings/constants";
 import {
   Box,
   Button,
@@ -13,20 +10,16 @@ import {
 } from "@mantine/core";
 import { useLocalStorage } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
+import { useIdleTimeoutOptions } from "@shared/i18n/options";
 import { IconLock } from "@tabler/icons-react";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import styles from "./AppLockCard.module.css";
 import { SettingField } from "./SettingField";
 
-function handleLockNow() {
-  notifications.show({
-    title: "App locked",
-    message: "Lock screen will be available in a future update.",
-    color: "green",
-  });
-}
-
 export function AppLockCard() {
+  const { t } = useTranslation();
+  const idleTimeoutOptions = useIdleTimeoutOptions();
   const [lockWhenIdle, setLockWhenIdle] = useLocalStorage({
     key: STORAGE_KEYS.appLockEnabled,
     defaultValue: true,
@@ -38,12 +31,20 @@ export function AppLockCard() {
   const [pin, setPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
 
+  function handleLockNow() {
+    notifications.show({
+      title: t("settings.appLock.notifications.locked.title"),
+      message: t("settings.appLock.notifications.locked.message"),
+      color: "green",
+    });
+  }
+
   function handleRemovePin() {
     setPin("");
     setConfirmPin("");
     notifications.show({
-      title: "PIN removed",
-      message: "Keyring integration will be available in a future update.",
+      title: t("settings.appLock.notifications.pinRemoved.title"),
+      message: t("settings.appLock.notifications.pinRemoved.message"),
       color: "green",
     });
   }
@@ -53,28 +54,27 @@ export function AppLockCard() {
       <Group gap={6} mb="xs" wrap="nowrap">
         <IconLock size={16} stroke={1.5} color="var(--mantine-color-dimmed)" />
         <Text className={styles.sectionTitle} mb={0}>
-          App lock
+          {t("settings.appLock.title")}
         </Text>
       </Group>
 
       <Text className={styles.cardDescription}>
-        Like 1Password: locks after inactivity. PIN is stored securely in the
-        system keyring.
+        {t("settings.appLock.description")}
       </Text>
 
       <Switch
-        label="Lock when idle"
+        label={t("settings.appLock.lockWhenIdle")}
         checked={lockWhenIdle}
         onChange={(event) => setLockWhenIdle(event.currentTarget.checked)}
         color="green"
         mb="md"
       />
 
-      <SettingField label="Idle timeout">
+      <SettingField label={t("settings.appLock.idleTimeout")}>
         <Select
           value={idleTimeout}
           onChange={(value) => setIdleTimeout(value ?? "5")}
-          data={[...IDLE_TIMEOUT_OPTIONS]}
+          data={idleTimeoutOptions}
           disabled={!lockWhenIdle}
           allowDeselect={false}
         />
@@ -86,26 +86,26 @@ export function AppLockCard() {
           color="green"
           onClick={handleLockNow}
         >
-          Lock now
+          {t("settings.appLock.lockNow")}
         </Button>
         <Button variant="subtle" color="gray" onClick={handleRemovePin}>
-          Remove PIN
+          {t("settings.appLock.removePin")}
         </Button>
       </Group>
 
-      <SettingField label="Change PIN (optional)">
+      <SettingField label={t("settings.appLock.changePin")}>
         <PasswordInput
           value={pin}
           onChange={(event) => setPin(event.currentTarget.value)}
-          placeholder="Enter new PIN"
+          placeholder={t("settings.appLock.pinPlaceholder")}
         />
       </SettingField>
 
-      <SettingField label="Confirm again">
+      <SettingField label={t("settings.appLock.confirmPin")}>
         <PasswordInput
           value={confirmPin}
           onChange={(event) => setConfirmPin(event.currentTarget.value)}
-          placeholder="Confirm new PIN"
+          placeholder={t("settings.appLock.confirmPinPlaceholder")}
         />
       </SettingField>
     </Box>

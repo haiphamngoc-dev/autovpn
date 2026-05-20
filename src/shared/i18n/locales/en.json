@@ -1,0 +1,90 @@
+{
+  "app": {
+    "name": "autovpn"
+  },
+  "common": {
+    "back": "Back",
+    "settings": "Settings"
+  },
+  "footer": {
+    "disconnected": "Disconnected",
+    "version": "v{{version}}"
+  },
+  "home": {
+    "title": "Welcome to Tauri + React",
+    "logosHint": "Click on the Tauri, Vite, and React logos to learn more.",
+    "namePlaceholder": "Enter a name...",
+    "greet": "Greet",
+    "logos": {
+      "vite": "Vite logo",
+      "tauri": "Tauri logo",
+      "react": "React logo"
+    }
+  },
+  "settings": {
+    "appearance": {
+      "title": "Appearance",
+      "theme": {
+        "label": "Theme",
+        "description": "Light or dark interface (saved for this device)."
+      },
+      "language": {
+        "label": "Language",
+        "description": "Interface language (saved for this device)."
+      }
+    },
+    "theme": {
+      "light": "Light",
+      "dark": "Dark"
+    },
+    "languages": {
+      "en": "English",
+      "vi": "Tiếng Việt"
+    },
+    "idleTimeout": {
+      "1min": "1 min",
+      "5min": "5 min",
+      "15min": "15 min",
+      "30min": "30 min",
+      "1hour": "1 hour"
+    },
+    "appLock": {
+      "title": "App lock",
+      "description": "Like 1Password: locks after inactivity. PIN is stored securely in the system keyring.",
+      "lockWhenIdle": "Lock when idle",
+      "idleTimeout": "Idle timeout",
+      "lockNow": "Lock now",
+      "removePin": "Remove PIN",
+      "changePin": "Change PIN (optional)",
+      "confirmPin": "Confirm again",
+      "pinPlaceholder": "Enter new PIN",
+      "confirmPinPlaceholder": "Confirm new PIN",
+      "notifications": {
+        "locked": {
+          "title": "App locked",
+          "message": "Lock screen will be available in a future update."
+        },
+        "pinRemoved": {
+          "title": "PIN removed",
+          "message": "Keyring integration will be available in a future update."
+        }
+      }
+    }
+  },
+  "window": {
+    "minimize": "Minimize",
+    "maximize": "Maximize",
+    "restore": "Restore",
+    "close": "Close",
+    "resize": {
+      "north": "Resize window from top edge",
+      "south": "Resize window from bottom edge",
+      "east": "Resize window from right edge",
+      "west": "Resize window from left edge",
+      "northEast": "Resize window from top-right corner",
+      "northWest": "Resize window from top-left corner",
+      "southEast": "Resize window from bottom-right corner",
+      "southWest": "Resize window from bottom-left corner"
+    }
+  }
+}

@@ -1,11 +1,11 @@
 import { Box, Flex, Group, Image, Text, UnstyledButton } from "@mantine/core";
 import { useWindowControls } from "@shared/hooks";
+import { useTranslation } from "react-i18next";
 import { CloseIcon, MaximizeIcon, MinimizeIcon, RestoreIcon } from "./icons";
 import styles from "./WindowsTitleBar.module.css";
 
-const APP_TITLE = "autovpn";
-
 export function WindowTitleBar() {
+  const { t } = useTranslation();
   const { maximized, minimize, toggleMaximize, close, startDrag } =
     useWindowControls();
 
@@ -28,31 +28,31 @@ export function WindowTitleBar() {
               fit="contain"
             />
             <Text size="sm" fw={500} truncate>
-              {APP_TITLE}
+              {t("app.name")}
             </Text>
           </Group>
         </Box>
         <Group gap={0} wrap="nowrap" className={styles.controls}>
           <UnstyledButton
             className={styles.control}
-            aria-label="Minimize"
-            title="Minimize"
+            aria-label={t("window.minimize")}
+            title={t("window.minimize")}
             onClick={minimize}
           >
             <MinimizeIcon size={24} />
           </UnstyledButton>
           <UnstyledButton
             className={styles.control}
-            aria-label={maximized ? "Restore" : "Maximize"}
-            title={maximized ? "Restore" : "Maximize"}
+            aria-label={maximized ? t("window.restore") : t("window.maximize")}
+            title={maximized ? t("window.restore") : t("window.maximize")}
             onClick={toggleMaximize}
           >
             {maximized ? <RestoreIcon size={24} /> : <MaximizeIcon size={24} />}
           </UnstyledButton>
           <UnstyledButton
             className={`${styles.control} ${styles.controlClose}`}
-            aria-label="Close"
-            title="Close"
+            aria-label={t("window.close")}
+            title={t("window.close")}
             onClick={close}
           >
             <CloseIcon size={24} />

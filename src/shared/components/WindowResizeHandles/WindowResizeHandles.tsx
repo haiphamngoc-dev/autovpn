@@ -1,5 +1,7 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { Box } from "@mantine/core";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import styles from "./WindowResizeHandles.module.css";
 
 const appWindow = getCurrentWindow();
@@ -28,18 +30,27 @@ const edgeClass: Record<ResizeEdge, string> = {
   SouthWest: styles.southwest,
 };
 
-const edgeLabel: Record<ResizeEdge, string> = {
-  North: "Resize window from top edge",
-  South: "Resize window from bottom edge",
-  East: "Resize window from right edge",
-  West: "Resize window from left edge",
-  NorthEast: "Resize window from top-right corner",
-  NorthWest: "Resize window from top-left corner",
-  SouthEast: "Resize window from bottom-right corner",
-  SouthWest: "Resize window from bottom-left corner",
+const edgeLabelKey: Record<ResizeEdge, string> = {
+  North: "window.resize.north",
+  South: "window.resize.south",
+  East: "window.resize.east",
+  West: "window.resize.west",
+  NorthEast: "window.resize.northEast",
+  NorthWest: "window.resize.northWest",
+  SouthEast: "window.resize.southEast",
+  SouthWest: "window.resize.southWest",
 };
 
 export function WindowResizeHandles() {
+  const { t } = useTranslation();
+  const edgeLabels = useMemo(
+    () =>
+      Object.fromEntries(
+        RESIZE_EDGES.map((edge) => [edge, t(edgeLabelKey[edge])])
+      ) as Record<ResizeEdge, string>,
+    [t]
+  );
+
   return (
     <Box className={styles.root}>
       {RESIZE_EDGES.map((edge) => (
@@ -47,7 +58,7 @@ export function WindowResizeHandles() {
           key={edge}
           type="button"
           className={`${styles.edge} ${edgeClass[edge]}`}
-          aria-label={edgeLabel[edge]}
+          aria-label={edgeLabels[edge]}
           onMouseDown={(event) => {
             event.preventDefault();
             void appWindow.startResizeDragging(edge);

@@ -1,10 +1,11 @@
 import { Box, Group, Text } from "@mantine/core";
+import { useTranslation } from "react-i18next";
 import packageJson from "../../../../package.json";
 import styles from "./AppFooter.module.css";
 
-const CONNECTION_STATUS = "Disconnected";
-
 export function AppFooter() {
+  const { t } = useTranslation();
+
   return (
     <Box component="footer" className={styles.root}>
       <Group
@@ -17,11 +18,11 @@ export function AppFooter() {
         <Group gap="xs" wrap="nowrap" align="center">
           <Box className={styles.statusDot} aria-hidden />
           <Text size="xs" c="dimmed">
-            {CONNECTION_STATUS}
+            {t("footer.disconnected")}
           </Text>
         </Group>
         <Text size="xs" c="dimmed">
-          v{packageJson.version}
+          {t("footer.version", { version: packageJson.version })}
         </Text>
       </Group>
     </Box>

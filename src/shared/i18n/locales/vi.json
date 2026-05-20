@@ -1,0 +1,90 @@
+{
+  "app": {
+    "name": "autovpn"
+  },
+  "common": {
+    "back": "Quay lại",
+    "settings": "Cài đặt"
+  },
+  "footer": {
+    "disconnected": "Chưa kết nối",
+    "version": "v{{version}}"
+  },
+  "home": {
+    "title": "Chào mừng đến với Tauri + React",
+    "logosHint": "Nhấp vào logo Tauri, Vite và React để tìm hiểu thêm.",
+    "namePlaceholder": "Nhập tên...",
+    "greet": "Chào",
+    "logos": {
+      "vite": "Logo Vite",
+      "tauri": "Logo Tauri",
+      "react": "Logo React"
+    }
+  },
+  "settings": {
+    "appearance": {
+      "title": "Giao diện",
+      "theme": {
+        "label": "Chủ đề",
+        "description": "Giao diện sáng hoặc tối (lưu trên thiết bị này)."
+      },
+      "language": {
+        "label": "Ngôn ngữ",
+        "description": "Ngôn ngữ giao diện (lưu trên thiết bị này)."
+      }
+    },
+    "theme": {
+      "light": "Sáng",
+      "dark": "Tối"
+    },
+    "languages": {
+      "en": "English",
+      "vi": "Tiếng Việt"
+    },
+    "idleTimeout": {
+      "1min": "1 phút",
+      "5min": "5 phút",
+      "15min": "15 phút",
+      "30min": "30 phút",
+      "1hour": "1 giờ"
+    },
+    "appLock": {
+      "title": "Khóa ứng dụng",
+      "description": "Giống 1Password: khóa sau khi không hoạt động. Mã PIN được lưu an toàn trong keyring hệ thống.",
+      "lockWhenIdle": "Khóa khi không hoạt động",
+      "idleTimeout": "Thời gian chờ",
+      "lockNow": "Khóa ngay",
+      "removePin": "Xóa PIN",
+      "changePin": "Đổi PIN (tùy chọn)",
+      "confirmPin": "Xác nhận lại",
+      "pinPlaceholder": "Nhập PIN mới",
+      "confirmPinPlaceholder": "Xác nhận PIN mới",
+      "notifications": {
+        "locked": {
+          "title": "Đã khóa ứng dụng",
+          "message": "Màn hình khóa sẽ có trong bản cập nhật sau."
+        },
+        "pinRemoved": {
+          "title": "Đã xóa PIN",
+          "message": "Tích hợp keyring sẽ có trong bản cập nhật sau."
+        }
+      }
+    }
+  },
+  "window": {
+    "minimize": "Thu nhỏ",
+    "maximize": "Phóng to",
+    "restore": "Khôi phục",
+    "close": "Đóng",
+    "resize": {
+      "north": "Thay đổi kích thước cửa sổ từ cạnh trên",
+      "south": "Thay đổi kích thước cửa sổ từ cạnh dưới",
+      "east": "Thay đổi kích thước cửa sổ từ cạnh phải",
+      "west": "Thay đổi kích thước cửa sổ từ cạnh trái",
+      "northEast": "Thay đổi kích thước cửa sổ từ góc trên bên phải",
+      "northWest": "Thay đổi kích thước cửa sổ từ góc trên bên trái",
+      "southEast": "Thay đổi kích thước cửa sổ từ góc dưới bên phải",
+      "southWest": "Thay đổi kích thước cửa sổ từ góc dưới bên trái"
+    }
+  }
+}

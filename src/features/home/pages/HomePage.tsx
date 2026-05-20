@@ -1,9 +1,11 @@
 import { useState } from "react";
 import reactLogo from "@assets/react.svg";
 import { invoke } from "@tauri-apps/api/core";
+import { useTranslation } from "react-i18next";
 import styles from "./HomePage.module.css";
 
 export function HomePage() {
+  const { t } = useTranslation();
   const [greetMsg, setGreetMsg] = useState("");
   const [name, setName] = useState("");
 
@@ -13,32 +15,32 @@ export function HomePage() {
 
   return (
     <div className={styles.container}>
-      <h1>Welcome to Tauri + React</h1>
+      <h1>{t("home.title")}</h1>
 
       <div className={styles.row}>
         <a href="https://vite.dev" target="_blank">
           <img
             src="/vite.svg"
             className={`${styles.logo} ${styles.logoVite}`}
-            alt="Vite logo"
+            alt={t("home.logos.vite")}
           />
         </a>
         <a href="https://tauri.app" target="_blank">
           <img
             src="/tauri.svg"
             className={`${styles.logo} ${styles.logoTauri}`}
-            alt="Tauri logo"
+            alt={t("home.logos.tauri")}
           />
         </a>
         <a href="https://react.dev" target="_blank">
           <img
             src={reactLogo}
             className={`${styles.logo} ${styles.logoReact}`}
-            alt="React logo"
+            alt={t("home.logos.react")}
           />
         </a>
       </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+      <p>{t("home.logosHint")}</p>
 
       <form
         className={styles.row}
@@ -50,9 +52,9 @@ export function HomePage() {
         <input
           className={styles.greetInput}
           onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
+          placeholder={t("home.namePlaceholder")}
         />
-        <button type="submit">Greet</button>
+        <button type="submit">{t("home.greet")}</button>
       </form>
       <p>{greetMsg}</p>
     </div>

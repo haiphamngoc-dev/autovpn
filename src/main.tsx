@@ -1,6 +1,7 @@
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
 import "./global.css";
+import "@shared/i18n";
 import {
   createTheme,
   localStorageColorSchemeManager,
