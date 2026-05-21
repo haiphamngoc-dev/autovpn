@@ -1,6 +1,11 @@
 {
   "app": {
-    "name": "autovpn"
+    "name": "AutoVPN"
+  },
+  "header": {
+    "status": {
+      "disconnected": "Disconnected"
+    }
   },
   "common": {
     "back": "Back",

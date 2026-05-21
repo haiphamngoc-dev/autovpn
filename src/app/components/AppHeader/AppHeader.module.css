@@ -1,6 +1,109 @@
 .root {
+  --header-bg: light-dark(var(--mantine-color-gray-0), #212121);
+  --header-border: light-dark(
+    var(--mantine-color-gray-3),
+    rgba(255, 255, 255, 0.08)
+  );
+  --header-fg: light-dark(var(--mantine-color-dark-9), #ffffff);
+  --header-muted: light-dark(
+    var(--mantine-color-gray-6),
+    rgba(255, 255, 255, 0.72)
+  );
+  --status-badge-bg: light-dark(var(--mantine-color-dark-9), #000000);
+
   height: 100%;
   padding-inline: var(--mantine-spacing-md);
-  border-bottom: 1px solid var(--mantine-color-default-border);
-  background-color: var(--mantine-color-body);
+  border-top: 1px solid var(--header-border);
+  border-bottom: 1px solid var(--header-border);
+  background-color: var(--header-bg);
+  color: var(--header-fg);
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-md);
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+}
+
+.brand,
+.leading,
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+  min-width: 0;
+}
+
+.brandTitle {
+  margin: 0;
+  font-size: var(--mantine-font-size-md);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--header-fg);
+  white-space: nowrap;
+}
+
+.settingsTitle {
+  margin: 0;
+  font-size: var(--mantine-font-size-md);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--header-fg);
+  white-space: nowrap;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  background-color: var(--status-badge-bg);
+  color: #ffffff;
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--mantine-radius-sm);
+  background: transparent;
+  color: var(--header-fg);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color 120ms ease,
+    color 120ms ease;
+}
+
+.iconButton:hover {
+  background-color: light-dark(
+    var(--mantine-color-gray-2),
+    rgba(255, 255, 255, 0.08)
+  );
+}
+
+.iconButton:focus-visible {
+  outline: 2px solid var(--mantine-color-green-6);
+  outline-offset: 2px;
+}
+
+.iconButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }

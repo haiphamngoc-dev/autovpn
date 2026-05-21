@@ -1,14 +1,57 @@
-import { ActionIcon, Box, Group, Text } from "@mantine/core";
+import { Box, Text } from "@mantine/core";
+import type { ReactNode } from "react";
 import { notifications } from "@mantine/notifications";
 import { useAppLock } from "@shared/appLock";
-import { IconArrowLeft, IconLock, IconSettings } from "@tabler/icons-react";
+import {
+  IconArrowLeft,
+  IconLock,
+  IconSettings,
+  IconShield,
+} from "@tabler/icons-react";
 import { paths } from "@app/routers/paths";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./AppHeader.module.css";
 
-const ICON_SIZE = 24;
+const ICON_SIZE = 22;
 const ICON_STROKE = 1.5;
+
+type HeaderIconButtonProps = {
+  label: string;
+  onClick: () => void;
+  children: ReactNode;
+};
+
+function HeaderIconButton({
+  label,
+  onClick,
+  children,
+}: Readonly<HeaderIconButtonProps>) {
+  return (
+    <button
+      type="button"
+      className={styles.iconButton}
+      aria-label={label}
+      title={label}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
+
+function ConnectionStatusBadge() {
+  const { t } = useTranslation();
+
+  return (
+    <span
+      className={styles.statusBadge}
+      aria-label={t("header.status.disconnected")}
+    >
+      {t("header.status.disconnected")}
+    </span>
+  );
+}
 
 export function AppHeader() {
   const { t } = useTranslation();
@@ -28,76 +71,51 @@ export function AppHeader() {
   }
 
   const lockButton = hasPin ? (
-    <ActionIcon
-      variant="subtle"
-      size="md"
-      aria-label={t("common.lock")}
-      title={t("common.lock")}
-      onClick={handleLockNow}
-    >
-      <IconLock
-        size={ICON_SIZE}
-        color="var(--mantine-color-text)"
-        stroke={ICON_STROKE}
-      />
-    </ActionIcon>
+    <HeaderIconButton label={t("common.lock")} onClick={handleLockNow}>
+      <IconLock size={ICON_SIZE} stroke={ICON_STROKE} />
+    </HeaderIconButton>
   ) : null;
 
   return (
     <Box component="header" className={styles.root}>
-      <Group
-        justify="space-between"
-        align="center"
-        w="100%"
-        h="100%"
-        wrap="nowrap"
-      >
+      <div className={styles.inner}>
         {isSettings ? (
           <>
-            <Group gap="xs" wrap="nowrap" align="center">
-              <ActionIcon
-                variant="subtle"
-                size="md"
-                aria-label={t("common.back")}
-                title={t("common.back")}
+            <div className={styles.leading}>
+              <HeaderIconButton
+                label={t("common.back")}
                 onClick={() => navigate(paths.home)}
               >
-                <IconArrowLeft
-                  size={ICON_SIZE}
-                  color="var(--mantine-color-text)"
-                  stroke={ICON_STROKE}
-                />
-              </ActionIcon>
-              <Text component="h1" size="md" fw={600} m={0}>
+                <IconArrowLeft size={ICON_SIZE} stroke={ICON_STROKE} />
+              </HeaderIconButton>
+              <Text component="h1" className={styles.settingsTitle}>
                 {t("common.settings")}
               </Text>
-            </Group>
-            {lockButton}
+            </div>
+            <div className={styles.actions}>{lockButton}</div>
           </>
         ) : (
           <>
-            <Text component="h1" size="md" fw={600} m={0}>
-              {t("app.name")}
-            </Text>
-            <Group gap={4} wrap="nowrap">
+            <div className={styles.brand}>
+              <IconShield size={ICON_SIZE} stroke={ICON_STROKE} aria-hidden />
+              <Text component="h1" className={styles.brandTitle}>
+                {t("app.name")}
+              </Text>
+            </div>
+
+            <div className={styles.actions}>
+              <ConnectionStatusBadge />
               {lockButton}
-              <ActionIcon
-                variant="subtle"
-                size="md"
-                aria-label={t("common.settings")}
-                title={t("common.settings")}
+              <HeaderIconButton
+                label={t("common.settings")}
                 onClick={() => navigate(paths.settings)}
               >
-                <IconSettings
-                  size={ICON_SIZE}
-                  color="var(--mantine-color-text)"
-                  stroke={ICON_STROKE}
-                />
-              </ActionIcon>
-            </Group>
+                <IconSettings size={ICON_SIZE} stroke={ICON_STROKE} />
+              </HeaderIconButton>
+            </div>
           </>
         )}
-      </Group>
+      </div>
     </Box>
   );
 }
