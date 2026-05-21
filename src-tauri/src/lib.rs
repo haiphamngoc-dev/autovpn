@@ -2,6 +2,7 @@ mod keyring_store;
 mod settings;
 mod system_integration;
 mod tray;
+mod vpn;
 mod window_behavior;
 
 use keyring_store::{
@@ -15,6 +16,7 @@ use settings::{
 };
 use tauri::WindowEvent;
 use tray::TrayLabels;
+use vpn::{connect_vpn, disconnect_vpn, get_vpn_status};
 
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -86,6 +88,9 @@ pub fn run() {
             remove_app_lock_pin,
             init_app_lock_secrets,
             remove_app_lock_secrets_command,
+            get_vpn_status,
+            connect_vpn,
+            disconnect_vpn,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

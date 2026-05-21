@@ -6,6 +6,7 @@ export type VpnStatusContextValue = {
   connect: () => Promise<void>;
   disconnect: () => Promise<void>;
   isBusy: boolean;
+  refreshStatus: () => Promise<void>;
 };
 
 export const VpnStatusContext = createContext<VpnStatusContextValue | null>(

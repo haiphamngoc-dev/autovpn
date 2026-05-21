@@ -1,24 +1,46 @@
-import { useCallback, useMemo, useState, type ReactNode } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import { connectVpn, disconnectVpn, fetchVpnStatus } from "./api";
 import { VpnStatusContext } from "./VpnStatusContext";
 import type { VpnConnectionStatus } from "./types";
 
-const TRANSITION_DELAY_MS = 600;
+const STATUS_POLL_INTERVAL_MS = 2_000;
 
 type VpnStatusProviderProps = {
   children: ReactNode;
 };
-
-function delay(ms: number) {
-  return new Promise<void>((resolve) => {
-    globalThis.setTimeout(resolve, ms);
-  });
-}
 
 export function VpnStatusProvider({
   children,
 }: Readonly<VpnStatusProviderProps>) {
   const [status, setStatus] = useState<VpnConnectionStatus>("disconnected");
   const [isBusy, setIsBusy] = useState(false);
+
+  const refreshStatus = useCallback(async () => {
+    try {
+      const next = await fetchVpnStatus();
+      setStatus(next);
+    } catch {
+      setStatus("disconnected");
+    }
+  }, []);
+
+  useEffect(() => {
+    void refreshStatus();
+
+    const intervalId = globalThis.setInterval(() => {
+      void refreshStatus();
+    }, STATUS_POLL_INTERVAL_MS);
+
+    return () => {
+      globalThis.clearInterval(intervalId);
+    };
+  }, [refreshStatus]);
 
   const connect = useCallback(async () => {
     if (status === "connected" || isBusy) {
@@ -29,15 +51,14 @@ export function VpnStatusProvider({
     setStatus("connecting");
 
     try {
-      // TODO: invoke Tauri VPN connect command when backend is available.
-      await delay(TRANSITION_DELAY_MS);
-      setStatus("connected");
+      await connectVpn();
+      await refreshStatus();
     } catch {
-      setStatus("disconnected");
+      await refreshStatus();
     } finally {
       setIsBusy(false);
     }
-  }, [isBusy, status]);
+  }, [isBusy, refreshStatus, status]);
 
   const disconnect = useCallback(async () => {
     if (status === "disconnected" || isBusy) {
@@ -48,15 +69,14 @@ export function VpnStatusProvider({
     setStatus("connecting");
 
     try {
-      // TODO: invoke Tauri VPN disconnect command when backend is available.
-      await delay(TRANSITION_DELAY_MS);
-      setStatus("disconnected");
+      await disconnectVpn();
+      await refreshStatus();
     } catch {
-      setStatus("connected");
+      await refreshStatus();
     } finally {
       setIsBusy(false);
     }
-  }, [isBusy, status]);
+  }, [isBusy, refreshStatus, status]);
 
   const value = useMemo(
     () => ({
@@ -64,8 +84,9 @@ export function VpnStatusProvider({
       connect,
       disconnect,
       isBusy,
+      refreshStatus,
     }),
-    [connect, disconnect, isBusy, status]
+    [connect, disconnect, isBusy, refreshStatus, status]
   );
 
   return (
