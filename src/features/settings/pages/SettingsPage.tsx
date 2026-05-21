@@ -5,12 +5,12 @@ import {
   WindowBehaviorCard,
 } from "@features/settings/components";
 import { Box } from "@mantine/core";
-import styles from "./SettingsPage.module.css";
+import { pageContentStyles } from "@shared/layout";
 
 export function SettingsPage() {
   return (
-    <Box className={styles.page}>
-      <Box className={styles.stack}>
+    <Box className={pageContentStyles.page}>
+      <Box className={pageContentStyles.stack}>
         <AppearanceCard />
         <SystemIntegrationCard />
         <WindowBehaviorCard />

@@ -3,7 +3,7 @@ import { Box, Group, Loader, Switch, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconPlugConnected } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import styles from "./SystemIntegrationCard.module.css";
+import { settingCardStyles } from "@shared/layout";
 
 export function SystemIntegrationCard() {
   const { t } = useTranslation();
@@ -33,7 +33,7 @@ export function SystemIntegrationCard() {
 
   if (loading || !settings) {
     return (
-      <Box className={styles.card}>
+      <Box className={settingCardStyles.card}>
         <Group justify="center" py="md">
           <Loader size="sm" color="green" />
         </Group>
@@ -42,19 +42,19 @@ export function SystemIntegrationCard() {
   }
 
   return (
-    <Box className={styles.card}>
+    <Box className={settingCardStyles.card}>
       <Group gap={6} mb="xs" wrap="nowrap">
         <IconPlugConnected
           size={16}
           stroke={1.5}
           color="var(--mantine-color-dimmed)"
         />
-        <Text className={styles.sectionTitle} mb={0}>
+        <Text className={settingCardStyles.sectionTitle} mb={0}>
           {t("settings.systemIntegration.title")}
         </Text>
       </Group>
 
-      <Text className={styles.cardDescription}>
+      <Text className={settingCardStyles.cardDescription}>
         {t("settings.systemIntegration.description")}
       </Text>
 

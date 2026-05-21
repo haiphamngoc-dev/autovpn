@@ -1,4 +1,7 @@
 .card {
+  container-type: inline-size;
+  container-name: setting-card;
+  width: 100%;
   border: 1px solid var(--mantine-color-default-border);
   border-radius: var(--mantine-radius-md);
   padding: var(--mantine-spacing-md);

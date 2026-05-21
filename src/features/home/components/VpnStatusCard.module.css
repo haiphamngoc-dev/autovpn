@@ -1,0 +1,56 @@
+.layout {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--mantine-spacing-sm);
+}
+
+.body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.topRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-xs);
+}
+
+.titleGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+  min-width: 0;
+}
+
+.description {
+  margin: 0.25rem 0 0;
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+  line-height: 1.45;
+}
+
+.actionInline {
+  flex-shrink: 0;
+}
+
+.actionBottom {
+  display: none;
+  margin-top: var(--mantine-spacing-sm);
+}
+
+/* Mobile / narrow viewport: full-width action at card bottom */
+@media (max-width: 36em) {
+  .actionInline {
+    display: none;
+  }
+
+  .actionBottom {
+    display: block;
+  }
+
+  .actionBottom :global(.mantine-Button-root) {
+    width: 100%;
+  }
+}

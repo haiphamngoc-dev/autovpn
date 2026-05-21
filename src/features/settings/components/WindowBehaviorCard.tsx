@@ -3,7 +3,7 @@ import { notifications } from "@mantine/notifications";
 import { useWindowBehavior } from "@shared/windowBehavior";
 import { IconWindow } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import styles from "./WindowBehaviorCard.module.css";
+import { settingCardStyles } from "@shared/layout";
 
 export function WindowBehaviorCard() {
   const { t } = useTranslation();
@@ -28,19 +28,19 @@ export function WindowBehaviorCard() {
   }
 
   return (
-    <Box className={styles.card}>
+    <Box className={settingCardStyles.card}>
       <Group gap={6} mb="xs" wrap="nowrap">
         <IconWindow
           size={16}
           stroke={1.5}
           color="var(--mantine-color-dimmed)"
         />
-        <Text className={styles.sectionTitle} mb={0}>
+        <Text className={settingCardStyles.sectionTitle} mb={0}>
           {t("settings.windowBehavior.title")}
         </Text>
       </Group>
 
-      <Text className={styles.cardDescription}>
+      <Text className={settingCardStyles.cardDescription}>
         {t("settings.windowBehavior.description")}
       </Text>
 

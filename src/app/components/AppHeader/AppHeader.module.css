@@ -9,8 +9,6 @@
     var(--mantine-color-gray-6),
     rgba(255, 255, 255, 0.72)
   );
-  --status-badge-bg: light-dark(var(--mantine-color-dark-9), #000000);
-
   height: 100%;
   padding-inline: var(--mantine-spacing-md);
   border-top: 1px solid var(--header-border);
@@ -54,22 +52,6 @@
   font-weight: 600;
   line-height: 1;
   color: var(--header-fg);
-  white-space: nowrap;
-}
-
-.statusBadge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.25rem 0.625rem;
-  border-radius: 9999px;
-  background-color: var(--status-badge-bg);
-  color: #ffffff;
-  font-size: 0.625rem;
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
   white-space: nowrap;
 }
 

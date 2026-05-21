@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { AppRoutes } from "@/app/routers/routes";
 import { AppLockProvider } from "@shared/appLock";
+import { VpnStatusProvider } from "@shared/vpn";
 import { WindowBehaviorProvider } from "@shared/windowBehavior";
 import { I18nLanguageSync } from "@shared/i18n/I18nLanguageSync";
 import type { AppearanceSettings } from "@shared/settings/appearance";
@@ -63,11 +64,13 @@ export default function App({
       <Notifications />
       <WindowBehaviorProvider initialSettings={windowBehavior}>
         <AppLockProvider initialSettings={appLock} initialHasPin={hasPin}>
-          <SettingsTamperedNotice show={settingsTampered} />
-          <MemoryRouter>
-            <I18nLanguageSync />
-            <AppRoutes />
-          </MemoryRouter>
+          <VpnStatusProvider>
+            <SettingsTamperedNotice show={settingsTampered} />
+            <MemoryRouter>
+              <I18nLanguageSync />
+              <AppRoutes />
+            </MemoryRouter>
+          </VpnStatusProvider>
         </AppLockProvider>
       </WindowBehaviorProvider>
     </MantineProvider>

@@ -4,7 +4,9 @@
   },
   "header": {
     "status": {
-      "disconnected": "Chưa kết nối"
+      "disconnected": "Chưa kết nối",
+      "connecting": "Đang kết nối",
+      "connected": "Đã kết nối"
     }
   },
   "common": {
@@ -17,14 +19,13 @@
     "version": "v{{version}}"
   },
   "home": {
-    "title": "Chào mừng đến với Tauri + React",
-    "logosHint": "Nhấp vào logo Tauri, Vite và React để tìm hiểu thêm.",
-    "namePlaceholder": "Nhập tên...",
-    "greet": "Chào",
-    "logos": {
-      "vite": "Logo Vite",
-      "tauri": "Logo Tauri",
-      "react": "Logo React"
+    "vpnStatus": {
+      "title": "Trạng thái VPN",
+      "descriptionConnected": "Đường hầm VPN đang hoạt động.",
+      "descriptionDisconnected": "VPN chưa được kết nối.",
+      "descriptionConnecting": "Đang thiết lập đường hầm VPN…",
+      "connect": "Kết nối",
+      "disconnect": "Ngắt kết nối"
     }
   },
   "settings": {

@@ -4,7 +4,9 @@
   },
   "header": {
     "status": {
-      "disconnected": "Disconnected"
+      "disconnected": "Disconnected",
+      "connecting": "Connecting",
+      "connected": "Connected"
     }
   },
   "common": {
@@ -17,14 +19,13 @@
     "version": "v{{version}}"
   },
   "home": {
-    "title": "Welcome to Tauri + React",
-    "logosHint": "Click on the Tauri, Vite, and React logos to learn more.",
-    "namePlaceholder": "Enter a name...",
-    "greet": "Greet",
-    "logos": {
-      "vite": "Vite logo",
-      "tauri": "Tauri logo",
-      "react": "React logo"
+    "vpnStatus": {
+      "title": "VPN status",
+      "descriptionConnected": "VPN tunnel is active.",
+      "descriptionDisconnected": "VPN is not connected.",
+      "descriptionConnecting": "Establishing VPN tunnel…",
+      "connect": "Connect",
+      "disconnect": "Disconnect"
     }
   },
   "settings": {

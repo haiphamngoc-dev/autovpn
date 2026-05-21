@@ -1,0 +1,26 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.625rem;
+  border-radius: 9999px;
+  color: #ffffff;
+  font-size: 0.625rem;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.disconnected {
+  background-color: light-dark(var(--mantine-color-dark-9), #000000);
+}
+
+.connecting {
+  background-color: light-dark(var(--mantine-color-yellow-8), #854d0e);
+}
+
+.connected {
+  background-color: light-dark(var(--mantine-color-green-8), #064e3b);
+}

@@ -12,3 +12,19 @@
   background-color: var(--mantine-color-gray-5);
   flex-shrink: 0;
 }
+
+.statusDotConnected {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: var(--mantine-color-green-6);
+}
+
+.statusDotConnecting {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background-color: var(--mantine-color-yellow-6);
+}

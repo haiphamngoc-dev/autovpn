@@ -11,7 +11,7 @@ import { changeAppLanguage } from "@shared/i18n";
 import { saveAppearanceSettings } from "@shared/settings/appearance";
 import { IconLanguage } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
-import styles from "./AppearanceCard.module.css";
+import { settingCardStyles } from "@shared/layout";
 import { SettingField } from "./SettingField";
 
 export function AppearanceCard() {
@@ -21,8 +21,8 @@ export function AppearanceCard() {
   const languageOptions = useLanguageOptions();
 
   return (
-    <Box className={styles.card}>
-      <Text className={styles.sectionTitle}>
+    <Box className={settingCardStyles.card}>
+      <Text className={settingCardStyles.sectionTitle} mb="md">
         {t("settings.appearance.title")}
       </Text>
 

@@ -6,7 +6,7 @@ import { useIdleTimeoutOptions } from "@shared/i18n/options";
 import { IconLock } from "@tabler/icons-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import styles from "./AppLockCard.module.css";
+import { settingCardStyles } from "@shared/layout";
 import { ChangePinModal } from "./ChangePinModal";
 import { DisableAppLockModal } from "./DisableAppLockModal";
 import { EnableAppLockModal } from "./EnableAppLockModal";
@@ -174,15 +174,15 @@ export function AppLockCard() {
   }
 
   return (
-    <Box className={styles.card}>
+    <Box className={settingCardStyles.card}>
       <Group gap={6} mb="xs" wrap="nowrap">
         <IconLock size={16} stroke={1.5} color="var(--mantine-color-dimmed)" />
-        <Text className={styles.sectionTitle} mb={0}>
+        <Text className={settingCardStyles.sectionTitle} mb={0}>
           {t("settings.appLock.title")}
         </Text>
       </Group>
 
-      <Text className={styles.cardDescription}>
+      <Text className={settingCardStyles.cardDescription}>
         {t("settings.appLock.description")}
       </Text>
 

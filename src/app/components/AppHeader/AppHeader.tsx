@@ -2,6 +2,7 @@ import { Box, Text } from "@mantine/core";
 import type { ReactNode } from "react";
 import { notifications } from "@mantine/notifications";
 import { useAppLock } from "@shared/appLock";
+import { ConnectionStatusBadge, useVpnStatus } from "@shared/vpn";
 import {
   IconArrowLeft,
   IconLock,
@@ -40,24 +41,12 @@ function HeaderIconButton({
   );
 }
 
-function ConnectionStatusBadge() {
-  const { t } = useTranslation();
-
-  return (
-    <span
-      className={styles.statusBadge}
-      aria-label={t("header.status.disconnected")}
-    >
-      {t("header.status.disconnected")}
-    </span>
-  );
-}
-
 export function AppHeader() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { hasPin, lock } = useAppLock();
+  const { status } = useVpnStatus();
   const isSettings = location.pathname === paths.settings;
 
   function handleLockNow() {
@@ -104,7 +93,7 @@ export function AppHeader() {
             </div>
 
             <div className={styles.actions}>
-              <ConnectionStatusBadge />
+              <ConnectionStatusBadge status={status} />
               {lockButton}
               <HeaderIconButton
                 label={t("common.settings")}
