@@ -29,7 +29,10 @@ Get-VpnConnection | Select-Object -ExpandProperty ConnectionStatus
     Ok(VpnConnectionStatus::Disconnected)
 }
 
-pub fn connect_system_vpn(profile_name: &str) -> Result<(), String> {
+pub fn connect_system_vpn(
+    profile_name: &str,
+    _auth: Option<&super::credentials::VpnConnectAuth>,
+) -> Result<(), String> {
     let script = format!("rasdial '{profile_name}'");
 
     run_cmd(&script)

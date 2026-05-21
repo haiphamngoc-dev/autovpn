@@ -26,13 +26,19 @@
       "descriptionConnecting": "Đang thiết lập đường hầm VPN ({{profile}})…",
       "connect": "Kết nối",
       "disconnect": "Ngắt kết nối",
-      "noDefaultProfile": "Hãy chọn profile VPN mặc định bên dưới trước khi kết nối."
+      "noDefaultProfile": "Hãy chọn profile VPN mặc định bên dưới trước khi kết nối.",
+      "noCredentials": "Hãy cấu hình {{profile}} trong danh sách VPN trước khi kết nối.",
+      "usesTotp": "Mật khẩu OTP động sẽ được tạo khi kết nối."
     },
     "vpnProfiles": {
       "title": "Danh sách VPN",
       "description": "Chọn profile mặc định dùng cho thao tác kết nối/ngắt kết nối hệ thống.",
       "empty": "Không tìm thấy profile VPN nào trên hệ thống.",
       "refresh": "Làm mới",
+      "configure": "Cấu hình",
+      "statusNotConfigured": "Chưa cấu hình",
+      "statusSaved": "Đã cấu hình",
+      "statusTotp": "OTP động",
       "loadFailed": "Không thể tải danh sách VPN từ hệ thống.",
       "notifications": {
         "saved": {
@@ -42,6 +48,39 @@
         "saveFailed": {
           "title": "Không thể lưu profile mặc định",
           "message": "Đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        }
+      }
+    },
+    "vpnCredentials": {
+      "title": "Cấu hình: {{profile}}",
+      "titleFallback": "Cấu hình VPN",
+      "description": "Lưu trong keyring hệ thống. Dùng khi AutoVPN kết nối profile này.",
+      "username": "Username",
+      "usernameHelp": "Tên tài khoản VPN (bắt buộc).",
+      "basePassword": "Base password",
+      "basePasswordHelp": "Phần cố định sau mã OTP. Bấm biểu tượng mắt để hiện/ẩn. Để trống khi lưu nếu muốn giữ giá trị hiện tại.",
+      "basePasswordPlaceholder": "Nhập base password",
+      "basePasswordPlaceholderKeep": "Để trống để giữ mật khẩu đã lưu",
+      "useTotp": "Dùng OTP động (TOTP)",
+      "useTotpHelp": "Mật khẩu = {6 số OTP}{base password}",
+      "totpSecret": "TOTP secret key (Base32)",
+      "totpSecretHelp": "Base32 từ QR VPN (thường 16+ ký tự). Bấm biểu tượng mắt để hiện/ẩn.",
+      "totpSecretPlaceholder": "Nhập secret Base32",
+      "totpSecretPlaceholderKeep": "Để trống để giữ secret đã lưu",
+      "save": "Lưu",
+      "cancel": "Hủy",
+      "remove": "Xóa cấu hình",
+      "loadFailed": "Không thể tải cấu hình đã lưu.",
+      "saveFailed": "Không thể lưu cấu hình.",
+      "removeFailed": "Không thể xóa cấu hình.",
+      "notifications": {
+        "saved": {
+          "title": "Đã lưu cấu hình",
+          "message": "Cấu hình {{profile}} đã được lưu an toàn."
+        },
+        "removed": {
+          "title": "Đã xóa cấu hình",
+          "message": "Đã xóa cấu hình của {{profile}}."
         }
       }
     }

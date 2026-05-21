@@ -19,7 +19,8 @@ use settings::{
 use tauri::WindowEvent;
 use tray::TrayLabels;
 use vpn::{
-    connect_vpn, disconnect_vpn, get_vpn_profiles, get_vpn_status, start_vpn_status_monitor,
+    connect_vpn, disconnect_vpn, get_vpn_profile_credentials, get_vpn_profiles, get_vpn_status,
+    remove_vpn_profile_credentials, save_vpn_profile_credentials, start_vpn_status_monitor,
 };
 
 #[tauri::command]
@@ -108,6 +109,9 @@ pub fn run() {
             get_vpn_profiles,
             connect_vpn,
             disconnect_vpn,
+            get_vpn_profile_credentials,
+            save_vpn_profile_credentials,
+            remove_vpn_profile_credentials,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

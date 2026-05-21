@@ -4,7 +4,12 @@ import {
   useVpnStatus,
   type VpnConnectionStatus,
 } from "@shared/vpn";
-import { loadVpnSettings } from "@shared/settings/vpn";
+import {
+  getProfileConfig,
+  isProfileReadyForConnect,
+  loadVpnSettings,
+  type VpnSettings,
+} from "@shared/settings/vpn";
 import { settingCardStyles } from "@shared/layout";
 import {
   IconPlugConnected,
@@ -37,18 +42,25 @@ const HEADER_ICON = {
 export function VpnStatusCard() {
   const { t } = useTranslation();
   const { status, connect, disconnect, isBusy } = useVpnStatus();
-  const [defaultProfile, setDefaultProfile] = useState<string | null>(null);
+  const [vpnSettings, setVpnSettings] = useState<VpnSettings | null>(null);
 
   useEffect(() => {
-    void loadVpnSettings().then((settings) => {
-      setDefaultProfile(settings.defaultProfile);
-    });
+    void loadVpnSettings().then(setVpnSettings);
   }, [status]);
 
+  const defaultProfile = vpnSettings?.defaultProfile ?? null;
+  const profileConfig = vpnSettings
+    ? getProfileConfig(vpnSettings, defaultProfile ?? "")
+    : null;
   const isConnected = status === "connected";
   const isConnectPending = isBusy || status === "connecting";
   const isDisconnectPending = isBusy || status === "connecting";
-  const canConnect = Boolean(defaultProfile);
+  const hasDefaultProfile = Boolean(defaultProfile);
+  const hasCredentials = isProfileReadyForConnect(
+    vpnSettings ?? { defaultProfile: null, profileConfigs: {} },
+    defaultProfile
+  );
+  const canConnect = hasDefaultProfile && hasCredentials;
   const HeaderIcon = HEADER_ICON[status];
   const descriptionKey = DESCRIPTION_KEY[status];
 
@@ -58,6 +70,22 @@ export function VpnStatusCard() {
 
   function handleDisconnect() {
     disconnect().catch(() => undefined);
+  }
+
+  function renderDescription() {
+    if (!hasDefaultProfile) {
+      return t("home.vpnStatus.noDefaultProfile");
+    }
+
+    if (!hasCredentials) {
+      return t("home.vpnStatus.noCredentials", { profile: defaultProfile });
+    }
+
+    if (profileConfig?.useTotp && !isConnected) {
+      return t("home.vpnStatus.usesTotp");
+    }
+
+    return t(descriptionKey, { profile: defaultProfile });
   }
 
   function renderAction(placement: ActionPlacement) {
@@ -130,11 +158,7 @@ export function VpnStatusCard() {
             <div className={styles.actionInline}>{renderAction("inline")}</div>
           </div>
 
-          <Text className={styles.description}>
-            {canConnect
-              ? t(descriptionKey, { profile: defaultProfile })
-              : t("home.vpnStatus.noDefaultProfile")}
-          </Text>
+          <Text className={styles.description}>{renderDescription()}</Text>
         </div>
       </div>
 

@@ -277,6 +277,7 @@ dependencies = [
  "apple-native-keyring-store",
  "base64 0.22.1",
  "chrono",
+ "data-encoding",
  "dbus-secret-service-keyring-store",
  "dirs 6.0.0",
  "futures-util",
@@ -293,6 +294,7 @@ dependencies = [
  "tauri-plugin-single-instance",
  "thiserror 2.0.18",
  "tokio",
+ "totp-lite",
  "tracing",
  "tracing-subscriber",
  "windows-native-keyring-store",
@@ -781,6 +783,12 @@ dependencies = [
  "quote",
  "syn 2.0.117",
 ]
+
+[[package]]
+name = "data-encoding"
+version = "2.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a4ae5f15dda3c708c0ade84bfee31ccab44a3da4f88015ed22f63732abe300c8"
 
 [[package]]
 name = "dbus"
@@ -3443,6 +3451,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "sha1"
+version = "0.10.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e3bf829a2d51ab4a5ddf1352d8470c140cadc8301b2ae1789db023f01cedd6ba"
+dependencies = [
+ "cfg-if",
+ "cpufeatures",
+ "digest",
+]
+
+[[package]]
 name = "sha2"
 version = "0.10.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4281,6 +4300,18 @@ name = "toml_writer"
 version = "1.1.1+spec-1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "756daf9b1013ebe47a8776667b466417e2d4c5679d441c26230efd9ef78692db"
+
+[[package]]
+name = "totp-lite"
+version = "2.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f8e43134db17199f7f721803383ac5854edd0d3d523cc34dba321d6acfbe76c3"
+dependencies = [
+ "digest",
+ "hmac",
+ "sha1",
+ "sha2",
+]
 
 [[package]]
 name = "tower"

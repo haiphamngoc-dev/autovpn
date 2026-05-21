@@ -1,3 +1,4 @@
+export { SettingField } from "./SettingField";
 export { AppearanceCard } from "./AppearanceCard";
 export { AppLockCard } from "./AppLockCard";
 export { SystemIntegrationCard } from "./SystemIntegrationCard";

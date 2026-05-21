@@ -1,15 +1,19 @@
 import { fetchVpnProfiles, useVpnStatus, type VpnProfile } from "@shared/vpn";
 import {
+  getProfileConfig,
   invalidateVpnSettingsCache,
   loadVpnSettings,
   saveVpnSettings,
+  type VpnProfileConfig,
+  type VpnSettings,
 } from "@shared/settings/vpn";
 import { settingCardStyles } from "@shared/layout";
-import { Box, Button, Loader, Radio, Text } from "@mantine/core";
+import { Badge, Box, Button, Loader, Radio, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { IconList, IconRefresh } from "@tabler/icons-react";
+import { IconList, IconRefresh, IconSettings } from "@tabler/icons-react";
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { VpnProfileCredentialsModal } from "./VpnProfileCredentialsModal";
 import styles from "./VpnProfileListCard.module.css";
 
 const ICON_SIZE = 16;
@@ -33,11 +37,41 @@ function resolveSelectedProfile(
   return profiles[0]?.name ?? null;
 }
 
+function credentialsBadgeKey(config: VpnProfileConfig | null): string {
+  if (!config?.hasCredentials) {
+    return "home.vpnProfiles.statusNotConfigured";
+  }
+
+  if (config.useTotp) {
+    return "home.vpnProfiles.statusTotp";
+  }
+
+  return "home.vpnProfiles.statusSaved";
+}
+
+function credentialsBadgeColor(
+  config: VpnProfileConfig | null
+): "gray" | "green" | "teal" {
+  if (!config?.hasCredentials) {
+    return "gray";
+  }
+
+  if (config.useTotp) {
+    return "teal";
+  }
+
+  return "green";
+}
+
 export function VpnProfileListCard() {
   const { t } = useTranslation();
   const { status: vpnStatus } = useVpnStatus();
   const [profiles, setProfiles] = useState<VpnProfile[]>([]);
+  const [vpnSettings, setVpnSettings] = useState<VpnSettings | null>(null);
   const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
+  const [credentialsProfile, setCredentialsProfile] = useState<string | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -48,28 +82,33 @@ export function VpnProfileListCard() {
     invalidateVpnSettingsCache();
 
     try {
-      const [nextProfiles, vpnSettings] = await Promise.all([
+      const [nextProfiles, nextSettings] = await Promise.all([
         fetchVpnProfiles(),
         loadVpnSettings(),
       ]);
 
       setProfiles(nextProfiles);
+      setVpnSettings(nextSettings);
 
       const nextSelected = resolveSelectedProfile(
         nextProfiles,
-        vpnSettings.defaultProfile
+        nextSettings.defaultProfile
       );
       setSelectedProfile(nextSelected);
 
       if (
         nextSelected &&
-        nextSelected !== vpnSettings.defaultProfile &&
+        nextSelected !== nextSettings.defaultProfile &&
         nextProfiles.length > 0
       ) {
-        await saveVpnSettings({ defaultProfile: nextSelected });
+        const { settings: saved } = await saveVpnSettings({
+          defaultProfile: nextSelected,
+        });
+        setVpnSettings(saved);
       }
     } catch {
       setProfiles([]);
+      setVpnSettings(null);
       setSelectedProfile(null);
       setError(t("home.vpnProfiles.loadFailed"));
     } finally {
@@ -86,7 +125,7 @@ export function VpnProfileListCard() {
       invalidateVpnSettingsCache();
 
       try {
-        const [nextProfiles, vpnSettings] = await Promise.all([
+        const [nextProfiles, nextSettings] = await Promise.all([
           fetchVpnProfiles(),
           loadVpnSettings(),
         ]);
@@ -96,19 +135,23 @@ export function VpnProfileListCard() {
         }
 
         setProfiles(nextProfiles);
+        setVpnSettings(nextSettings);
 
         const nextSelected = resolveSelectedProfile(
           nextProfiles,
-          vpnSettings.defaultProfile
+          nextSettings.defaultProfile
         );
         setSelectedProfile(nextSelected);
 
         if (
           nextSelected &&
-          nextSelected !== vpnSettings.defaultProfile &&
+          nextSelected !== nextSettings.defaultProfile &&
           nextProfiles.length > 0
         ) {
-          await saveVpnSettings({ defaultProfile: nextSelected });
+          const { settings: saved } = await saveVpnSettings({
+            defaultProfile: nextSelected,
+          });
+          setVpnSettings(saved);
         }
       } catch {
         if (cancelled) {
@@ -116,6 +159,7 @@ export function VpnProfileListCard() {
         }
 
         setProfiles([]);
+        setVpnSettings(null);
         setSelectedProfile(null);
         setError(t("home.vpnProfiles.loadFailed"));
       } finally {
@@ -135,7 +179,10 @@ export function VpnProfileListCard() {
     setIsSaving(true);
 
     try {
-      const { persisted } = await saveVpnSettings({ defaultProfile: value });
+      const { settings: saved, persisted } = await saveVpnSettings({
+        defaultProfile: value,
+      });
+      setVpnSettings(saved);
 
       notifications.show(
         persisted
@@ -212,19 +259,63 @@ export function VpnProfileListCard() {
           name="default-vpn-profile"
         >
           <div className={styles.list}>
-            {profiles.map((profile) => (
-              <Radio
-                key={profile.name}
-                value={profile.name}
-                disabled={isSaving}
-                className={styles.radio}
-                classNames={{ label: styles.profileName }}
-                label={profile.name}
-              />
-            ))}
+            {profiles.map((profile) => {
+              const config = vpnSettings
+                ? getProfileConfig(vpnSettings, profile.name)
+                : null;
+
+              return (
+                <div key={profile.name} className={styles.row}>
+                  <Radio
+                    value={profile.name}
+                    disabled={isSaving}
+                    className={styles.radio}
+                    aria-label={profile.name}
+                  />
+                  <div className={styles.rowBody}>
+                    <Text className={styles.profileName}>{profile.name}</Text>
+                    <Badge
+                      size="sm"
+                      variant="light"
+                      color={credentialsBadgeColor(config)}
+                    >
+                      {t(credentialsBadgeKey(config))}
+                    </Badge>
+                  </div>
+                  <Button
+                    variant="subtle"
+                    color="gray"
+                    size="compact-sm"
+                    leftSection={
+                      <IconSettings
+                        size={ICON_SIZE}
+                        stroke={ICON_STROKE}
+                        aria-hidden
+                      />
+                    }
+                    onClick={() => {
+                      setCredentialsProfile(profile.name);
+                    }}
+                  >
+                    {t("home.vpnProfiles.configure")}
+                  </Button>
+                </div>
+              );
+            })}
           </div>
         </Radio.Group>
       ) : null}
+
+      <VpnProfileCredentialsModal
+        profileName={credentialsProfile}
+        opened={credentialsProfile !== null}
+        onClose={() => {
+          setCredentialsProfile(null);
+        }}
+        onSaved={() => {
+          void loadProfiles();
+        }}
+      />
     </Box>
   );
 }

@@ -1,4 +1,5 @@
 mod secrets;
+pub mod vpn_credentials;
 
 pub use secrets::{
     init_app_lock_secrets, load_app_lock_secrets, remove_app_lock_secrets_command, AppLockSecrets,
@@ -6,7 +7,7 @@ pub use secrets::{
 
 use keyring_core::Entry;
 
-const SERVICE: &str = "autovpn";
+pub(crate) const SERVICE: &str = "autovpn";
 const USER: &str = "app-lock-pin";
 const MIN_PIN_LENGTH: usize = 4;
 const MAX_PIN_LENGTH: usize = 128;

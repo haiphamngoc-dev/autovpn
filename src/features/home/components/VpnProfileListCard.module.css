@@ -19,14 +19,32 @@
   gap: var(--mantine-spacing-xs);
 }
 
-.radio {
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-sm);
   border: 1px solid var(--mantine-color-default-border);
   border-radius: var(--mantine-radius-sm);
   padding: var(--mantine-spacing-sm);
   background-color: var(--mantine-color-body);
 }
 
+.radio {
+  flex-shrink: 0;
+}
+
+.rowBody {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--mantine-spacing-sm);
+  min-width: 0;
+}
+
 .profileName {
+  flex: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

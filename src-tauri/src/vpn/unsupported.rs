@@ -4,7 +4,10 @@ pub fn get_system_vpn_status() -> Result<VpnConnectionStatus, String> {
     Err("vpn_unsupported_platform".to_string())
 }
 
-pub fn connect_system_vpn(_profile_name: &str) -> Result<(), String> {
+pub fn connect_system_vpn(
+    _profile_name: &str,
+    _auth: Option<&super::credentials::VpnConnectAuth>,
+) -> Result<(), String> {
     Err("vpn_unsupported_platform".to_string())
 }
 

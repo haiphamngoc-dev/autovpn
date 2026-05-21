@@ -26,13 +26,19 @@
       "descriptionConnecting": "Establishing VPN tunnel ({{profile}})…",
       "connect": "Connect",
       "disconnect": "Disconnect",
-      "noDefaultProfile": "Select a default VPN profile below before connecting."
+      "noDefaultProfile": "Select a default VPN profile below before connecting.",
+      "noCredentials": "Configure {{profile}} in the VPN list before connecting.",
+      "usesTotp": "Dynamic OTP password will be generated when connecting."
     },
     "vpnProfiles": {
       "title": "VPN profiles",
       "description": "Choose the default profile used for system connect and disconnect.",
       "empty": "No VPN profiles found on this system.",
       "refresh": "Refresh",
+      "configure": "Configure",
+      "statusNotConfigured": "Not configured",
+      "statusSaved": "Configured",
+      "statusTotp": "Dynamic OTP",
       "loadFailed": "Could not load VPN profiles from the system.",
       "notifications": {
         "saved": {
@@ -42,6 +48,39 @@
         "saveFailed": {
           "title": "Could not save default profile",
           "message": "The selection was updated in the app but not written to the settings file."
+        }
+      }
+    },
+    "vpnCredentials": {
+      "title": "Configure: {{profile}}",
+      "titleFallback": "VPN configuration",
+      "description": "Stored in the system keyring. Used when AutoVPN connects this profile.",
+      "username": "Username",
+      "usernameHelp": "VPN account name (required).",
+      "basePassword": "Base password",
+      "basePasswordHelp": "Appended after the OTP code. Use the eye icon to show or hide. Leave empty when saving to keep the current value.",
+      "basePasswordPlaceholder": "Enter base password",
+      "basePasswordPlaceholderKeep": "Leave empty to keep saved password",
+      "useTotp": "Use dynamic OTP (TOTP)",
+      "useTotpHelp": "Password = {6-digit OTP}{base password}",
+      "totpSecret": "TOTP secret key (Base32)",
+      "totpSecretHelp": "Base32 from the VPN QR code (usually 16+ characters). Use the eye icon to show or hide.",
+      "totpSecretPlaceholder": "Enter Base32 secret",
+      "totpSecretPlaceholderKeep": "Leave empty to keep saved secret",
+      "save": "Save",
+      "cancel": "Cancel",
+      "remove": "Remove configuration",
+      "loadFailed": "Could not load saved configuration.",
+      "saveFailed": "Could not save configuration.",
+      "removeFailed": "Could not remove configuration.",
+      "notifications": {
+        "saved": {
+          "title": "Configuration saved",
+          "message": "Configuration for {{profile}} is stored securely."
+        },
+        "removed": {
+          "title": "Configuration removed",
+          "message": "Configuration for {{profile}} was removed."
         }
       }
     }

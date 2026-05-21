@@ -35,7 +35,10 @@ pub fn get_system_vpn_status() -> Result<VpnConnectionStatus, String> {
     Ok(VpnConnectionStatus::Disconnected)
 }
 
-pub fn connect_system_vpn(profile_name: &str) -> Result<(), String> {
+pub fn connect_system_vpn(
+    profile_name: &str,
+    _auth: Option<&super::credentials::VpnConnectAuth>,
+) -> Result<(), String> {
     run_scutil(&["--nc", "start", profile_name])
 }
 

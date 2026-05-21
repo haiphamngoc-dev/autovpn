@@ -1,8 +1,15 @@
+use std::fs;
 use std::process::Command;
 
+#[cfg(unix)]
+use std::os::unix::fs::PermissionsExt;
+
+use super::credentials::VpnConnectAuth;
 use super::types::{VpnConnectionStatus, VpnProfile};
 
 const NMCLI: &str = "nmcli";
+/// nmcli -w 0 returns before NM reads passwd-file; keep the file until activation consumes secrets.
+const PASSWD_FILE_CONNECT_WAIT_SECS: u32 = 60;
 
 pub fn get_system_vpn_status() -> Result<VpnConnectionStatus, String> {
     let status = status_from_nmcli()?;
@@ -19,9 +26,71 @@ pub fn get_system_vpn_status() -> Result<VpnConnectionStatus, String> {
     Ok(status)
 }
 
-pub fn connect_system_vpn(profile_name: &str) -> Result<(), String> {
+pub fn connect_system_vpn(
+    profile_name: &str,
+    auth: Option<&VpnConnectAuth>,
+) -> Result<(), String> {
+    if let Some(auth) = auth {
+        return connect_with_passwd_file(profile_name, auth);
+    }
+
     // Do not block until activation finishes (default nmcli wait is 90s).
     run_nmcli_void_with_wait(&["connection", "up", "id", profile_name], 0)
+}
+
+fn connect_with_passwd_file(profile_name: &str, auth: &VpnConnectAuth) -> Result<(), String> {
+    let passwd_path = std::env::temp_dir().join(format!(
+        "autovpn-passwd-{}-{}",
+        std::process::id(),
+        sanitize_profile_file_key(profile_name)
+    ));
+
+    let passwd_content = format!("vpn.secrets.password:{}\n", auth.password);
+
+    fs::write(&passwd_path, passwd_content).map_err(|error| format!("passwd_file_write:{error}"))?;
+
+    #[cfg(unix)]
+    {
+        let mut permissions = fs::metadata(&passwd_path)
+            .map_err(|error| format!("passwd_file_chmod:{error}"))?
+            .permissions();
+        permissions.set_mode(0o600);
+        fs::set_permissions(&passwd_path, permissions)
+            .map_err(|error| format!("passwd_file_chmod:{error}"))?;
+    }
+
+    let passwd_arg = passwd_path
+        .to_str()
+        .ok_or("passwd_file_path_invalid".to_string())?;
+
+    let result = run_nmcli_void_with_wait(
+        &[
+            "connection",
+            "up",
+            "id",
+            profile_name,
+            "passwd-file",
+            passwd_arg,
+        ],
+        PASSWD_FILE_CONNECT_WAIT_SECS,
+    );
+
+    let _ = fs::remove_file(&passwd_path);
+
+    result
+}
+
+fn sanitize_profile_file_key(profile_name: &str) -> String {
+    profile_name
+        .chars()
+        .map(|ch| {
+            if ch.is_ascii_alphanumeric() {
+                ch
+            } else {
+                '_'
+            }
+        })
+        .collect()
 }
 
 pub fn list_system_vpn_profiles() -> Result<Vec<VpnProfile>, String> {

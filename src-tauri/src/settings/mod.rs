@@ -13,7 +13,7 @@ use secure::{open, seal, SecureEnvelope, SensitiveSettings};
 
 pub use crate::system_integration::SystemIntegrationSettings;
 pub use crate::window_behavior::WindowBehaviorSettings;
-pub use vpn::VpnSettings;
+pub use vpn::{VpnProfileConfig, VpnSettings};
 
 const APP_CONFIG_DIR: &str = "autovpn";
 const SETTINGS_FILE: &str = "settings.json";
