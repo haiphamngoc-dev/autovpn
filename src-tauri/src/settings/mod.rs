@@ -3,6 +3,7 @@ use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
 
+pub use crate::system_integration::SystemIntegrationSettings;
 pub use crate::window_behavior::WindowBehaviorSettings;
 
 const APP_CONFIG_DIR: &str = "autovpn";
@@ -35,6 +36,8 @@ pub struct AppSettings {
     pub app_lock: AppLockSettings,
     #[serde(default)]
     pub window_behavior: WindowBehaviorSettings,
+    #[serde(default)]
+    pub system_integration: SystemIntegrationSettings,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -126,6 +129,7 @@ pub fn load_settings() -> Result<AppSettings, String> {
         appearance: sanitize_appearance(settings.appearance),
         app_lock: sanitize_app_lock(settings.app_lock),
         window_behavior: settings.window_behavior,
+        system_integration: settings.system_integration,
     })
 }
 
@@ -177,6 +181,22 @@ pub fn save_window_behavior_settings(
     crate::window_behavior::apply(&app, &window_behavior)
 }
 
+#[tauri::command]
+pub fn get_system_integration_settings() -> Result<SystemIntegrationSettings, String> {
+    Ok(load_settings()?.system_integration)
+}
+
+#[tauri::command]
+pub fn save_system_integration_settings(
+    app: tauri::AppHandle,
+    system_integration: SystemIntegrationSettings,
+) -> Result<(), String> {
+    let mut settings = load_settings().unwrap_or_default();
+    settings.system_integration = system_integration.clone();
+    save_settings(&settings)?;
+    crate::system_integration::apply(&app, &system_integration)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -212,6 +232,7 @@ mod tests {
             },
             app_lock: AppLockSettings::default(),
             window_behavior: WindowBehaviorSettings::default(),
+            system_integration: SystemIntegrationSettings::default(),
         };
 
         let json = serde_json::to_string_pretty(&settings).unwrap();

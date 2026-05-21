@@ -1,6 +1,7 @@
 import {
   AppearanceCard,
   AppLockCard,
+  SystemIntegrationCard,
   WindowBehaviorCard,
 } from "@features/settings/components";
 import { Box } from "@mantine/core";
@@ -11,6 +12,7 @@ export function SettingsPage() {
     <Box className={styles.page}>
       <Box className={styles.stack}>
         <AppearanceCard />
+        <SystemIntegrationCard />
         <WindowBehaviorCard />
         <AppLockCard />
       </Box>

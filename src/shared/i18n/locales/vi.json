@@ -66,6 +66,24 @@
       "30min": "30 phút",
       "1hour": "1 giờ"
     },
+    "systemIntegration": {
+      "title": "Tích hợp hệ thống",
+      "description": "Điều khiển cách autovpn khởi động cùng hệ điều hành.",
+      "launchAtStartup": "Khởi chạy khi hệ thống bật",
+      "launchAtStartupDescription": "Tự động mở autovpn khi bạn đăng nhập máy tính.",
+      "launchMinimized": "Khởi chạy thu nhỏ",
+      "launchMinimizedDescription": "Mở ứng dụng với cửa sổ ẩn. Có hiệu lực từ lần khởi động tiếp theo.",
+      "notifications": {
+        "saved": {
+          "title": "Đã lưu cài đặt tích hợp hệ thống",
+          "message": "Tùy chọn khởi động đã được lưu."
+        },
+        "saveFailed": {
+          "title": "Không thể lưu cài đặt tích hợp hệ thống",
+          "message": "Cài đặt đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        }
+      }
+    },
     "windowBehavior": {
       "title": "Cửa sổ",
       "description": "Điều khiển cách cửa sổ ứng dụng hoạt động trên máy tính.",

@@ -17,6 +17,9 @@
     "core:window:allow-set-decorations",
     "core:tray:default",
     "core:window:allow-set-focus",
-    "core:window:allow-destroy"
+    "core:window:allow-destroy",
+    "autostart:allow-enable",
+    "autostart:allow-disable",
+    "autostart:allow-is-enabled"
   ]
 }

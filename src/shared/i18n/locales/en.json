@@ -66,6 +66,24 @@
       "30min": "30 min",
       "1hour": "1 hour"
     },
+    "systemIntegration": {
+      "title": "System integration",
+      "description": "Control how autovpn starts with your operating system.",
+      "launchAtStartup": "Launch when system starts",
+      "launchAtStartupDescription": "Start autovpn automatically when you log in to your computer.",
+      "launchMinimized": "Launch minimized",
+      "launchMinimizedDescription": "Start with the window hidden. Applies the next time the app launches.",
+      "notifications": {
+        "saved": {
+          "title": "System integration settings saved",
+          "message": "Your startup preferences have been saved."
+        },
+        "saveFailed": {
+          "title": "Could not save system integration settings",
+          "message": "Settings were updated in the app but not written to the settings file."
+        }
+      }
+    },
     "windowBehavior": {
       "title": "Window",
       "description": "Control how the app window behaves on your desktop.",

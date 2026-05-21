@@ -1,15 +1,14 @@
 mod keyring_store;
 mod settings;
+mod system_integration;
 mod tray;
 mod window_behavior;
 
-use keyring_store::{
-    has_app_lock_pin, remove_app_lock_pin, set_app_lock_pin, verify_app_lock_pin,
-};
+use keyring_store::{has_app_lock_pin, remove_app_lock_pin, set_app_lock_pin, verify_app_lock_pin};
 use settings::{
-    get_app_lock_settings, get_appearance_settings, get_window_behavior_settings,
-    load_settings, save_app_lock_settings, save_appearance_settings,
-    save_window_behavior_settings,
+    get_app_lock_settings, get_appearance_settings, get_system_integration_settings,
+    get_window_behavior_settings, load_settings, save_app_lock_settings, save_appearance_settings,
+    save_system_integration_settings, save_window_behavior_settings,
 };
 use tauri::WindowEvent;
 use tray::TrayLabels;
@@ -44,9 +43,15 @@ pub fn run() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
+        .plugin(tauri_plugin_autostart::init(
+            tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+            None,
+        ))
         .setup(|app| {
             let settings = load_settings().unwrap_or_default();
             window_behavior::apply(app.handle(), &settings.window_behavior)?;
+            system_integration::apply(app.handle(), &settings.system_integration)?;
+            system_integration::apply_launch_minimized(app.handle(), &settings.system_integration);
             Ok(())
         })
         .on_window_event(|window, event| {
@@ -69,6 +74,8 @@ pub fn run() {
             save_app_lock_settings,
             get_window_behavior_settings,
             save_window_behavior_settings,
+            get_system_integration_settings,
+            save_system_integration_settings,
             sync_tray_icon,
             has_app_lock_pin,
             set_app_lock_pin,
