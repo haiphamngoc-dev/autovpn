@@ -1,5 +1,6 @@
 mod keyring_store;
 mod settings;
+mod single_instance;
 mod system_integration;
 mod tray;
 mod vpn;
@@ -46,7 +47,16 @@ pub fn run() {
         eprintln!("Failed to initialize keyring store: {error}. App lock PIN will not persist.");
     }
 
-    tauri::Builder::default()
+    let mut builder = tauri::Builder::default();
+
+    #[cfg(any(target_os = "linux", target_os = "macos", target_os = "windows"))]
+    {
+        builder = builder.plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+            single_instance::focus_running_instance(app)
+        }));
+    }
+
+    builder
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_autostart::init(
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
