@@ -26,10 +26,7 @@ fn tray_icon<'a, R: Runtime>(app: &'a AppHandle<R>) -> Result<Image<'a>, String>
     Image::from_path(&icon_path).map_err(|error| error.to_string())
 }
 
-fn build_tray_menu<R: Runtime>(
-    app: &AppHandle<R>,
-    labels: &TrayLabels,
-) -> Result<Menu<R>, String> {
+fn build_tray_menu<R: Runtime>(app: &AppHandle<R>, labels: &TrayLabels) -> Result<Menu<R>, String> {
     let show_item = MenuItem::with_id(app, "tray_show", &labels.show, true, None::<&str>)
         .map_err(|error| error.to_string())?;
     let quit_item = MenuItem::with_id(app, "tray_quit", &labels.quit, true, None::<&str>)
@@ -53,7 +50,8 @@ pub fn sync_tray<R: Runtime>(
     let menu = build_tray_menu(app, labels)?;
 
     if let Some(tray) = app.tray_by_id(TRAY_ID) {
-        tray.set_menu(Some(menu)).map_err(|error| error.to_string())?;
+        tray.set_menu(Some(menu))
+            .map_err(|error| error.to_string())?;
         return Ok(());
     }
 
