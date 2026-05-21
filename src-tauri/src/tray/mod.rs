@@ -1,11 +1,30 @@
+use std::sync::Mutex;
+
 use tauri::{
     image::Image,
     menu::{Menu, MenuItem},
-    tray::{MouseButton, TrayIconBuilder, TrayIconEvent},
+    tray::{MouseButton, TrayIcon, TrayIconBuilder, TrayIconEvent},
     AppHandle, Manager, Runtime,
 };
 
+#[cfg(not(target_os = "linux"))]
+const TRAY_TOOLTIP: &str = "autovpn";
+
+/// On Linux (KDE/Ayatana), `title` is drawn next to the icon in the panel — keep it empty.
+/// Use `tooltip` on platforms where it is supported.
+fn clear_tray_title<R: Runtime>(tray: &TrayIcon<R>) -> Result<(), String> {
+    #[cfg(target_os = "linux")]
+    {
+        tray.set_title(Some(""))
+            .map_err(|error| error.to_string())?;
+    }
+
+    Ok(())
+}
+
 pub const TRAY_ID: &str = "autovpn-tray";
+
+static TRAY_SYNC: Mutex<()> = Mutex::new(());
 
 pub struct TrayLabels {
     pub show: String,
@@ -40,9 +59,15 @@ pub fn sync_tray<R: Runtime>(
     enabled: bool,
     labels: &TrayLabels,
 ) -> Result<(), String> {
+    let _guard = TRAY_SYNC
+        .lock()
+        .map_err(|error| format!("tray sync lock poisoned: {error}"))?;
+
     if !enabled {
-        if app.tray_by_id(TRAY_ID).is_some() {
-            app.remove_tray_by_id(TRAY_ID);
+        if let Some(tray) = app.tray_by_id(TRAY_ID) {
+            // Hide instead of remove: on Linux, remove_tray_by_id can leave a stale
+            // StatusNotifierItem on D-Bus, causing duplicate registration on re-enable.
+            tray.set_visible(false).map_err(|error| error.to_string())?;
         }
         return Ok(());
     }
@@ -52,16 +77,22 @@ pub fn sync_tray<R: Runtime>(
     if let Some(tray) = app.tray_by_id(TRAY_ID) {
         tray.set_menu(Some(menu))
             .map_err(|error| error.to_string())?;
+        clear_tray_title(&tray)?;
+        tray.set_visible(true).map_err(|error| error.to_string())?;
         return Ok(());
     }
 
     let icon = tray_icon(app)?;
 
-    TrayIconBuilder::with_id(TRAY_ID)
+    let builder = TrayIconBuilder::with_id(TRAY_ID)
         .icon(icon)
         .menu(&menu)
-        .title("autovpn")
-        .show_menu_on_left_click(false)
+        .show_menu_on_left_click(false);
+
+    #[cfg(not(target_os = "linux"))]
+    let builder = builder.tooltip(TRAY_TOOLTIP);
+
+    builder
         .on_menu_event(|app, event| match event.id.as_ref() {
             "tray_show" => {
                 if let Some(window) = app.get_webview_window("main") {

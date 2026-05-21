@@ -40,7 +40,7 @@ export function WindowBehaviorProvider({
     }).catch((error: unknown) => {
       console.error("Failed to sync tray icon:", error);
     });
-  }, [settings.closeToTray, i18n.language, t]);
+  }, [settings.closeToTray, i18n.language]);
 
   const updateSettings = useCallback(
     async (partial: Partial<WindowBehaviorSettings>) => {
