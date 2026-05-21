@@ -34,10 +34,10 @@ export function AutoReconnectCard() {
 
   const updateSettings = useCallback(
     async (partial: Partial<AutoReconnectSettings>) => {
-      const { settings: nextSettings, persisted } = await saveVpnSettings({
-        autoReconnect: partial,
+      const { settings: nextVpnSettings, persisted } = await saveVpnSettings({
+        autoReconnect: partial as AutoReconnectSettings,
       });
-      setSettings(nextSettings.autoReconnect);
+      setSettings(nextVpnSettings.autoReconnect);
       return { persisted };
     },
     []

@@ -57,7 +57,12 @@ export function VpnStatusCard() {
   const isDisconnectPending = isBusy || status === "connecting";
   const hasDefaultProfile = Boolean(defaultProfile);
   const hasCredentials = isProfileReadyForConnect(
-    vpnSettings ?? { defaultProfile: null, profileConfigs: {} },
+    vpnSettings ?? {
+      defaultProfile: null,
+      profileConfigs: {},
+      autoConnect: false,
+      autoReconnect: { enabled: false, maxAttempts: 3 },
+    },
     defaultProfile
   );
   const canConnect = hasDefaultProfile && hasCredentials;

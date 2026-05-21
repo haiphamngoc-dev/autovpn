@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a73e8"/>
+      <stop offset="100%" style="stop-color:#0d47a1"/>
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#4fc3f7"/>
+      <stop offset="50%" style="stop-color:#29b6f6"/>
+      <stop offset="100%" style="stop-color:#0288d1"/>
+    </linearGradient>
+    <linearGradient id="lockGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffffff"/>
+      <stop offset="100%" style="stop-color:#e0e0e0"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="4" stdDeviation="12" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background circle -->
+  <circle cx="512" cy="512" r="460" fill="url(#bgGrad)" filter="url(#shadow)"/>
+
+  <!-- Inner glow ring -->
+  <circle cx="512" cy="512" r="400" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.15"/>
+
+  <!-- Shield shape -->
+  <path d="M512 180
+           C512 180 320 240 280 260
+           C280 260 270 520 290 600
+           C310 680 400 780 512 840
+           C624 780 714 680 734 600
+           C754 520 744 260 744 260
+           C704 240 512 180 512 180Z"
+        fill="url(#shieldGrad)" opacity="0.9" filter="url(#shadow)"/>
+
+  <!-- Shield highlight -->
+  <path d="M512 210
+           C512 210 340 265 305 282
+           C305 282 296 510 314 582
+           C330 650 410 740 512 795
+           C512 795 512 210 512 210Z"
+        fill="#ffffff" opacity="0.12"/>
+
+  <!-- VPN tunnel / connection lines -->
+  <g stroke="#ffffff" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.9">
+    <!-- Globe/network circle -->
+    <circle cx="512" cy="470" r="100" stroke-width="5" opacity="0.7"/>
+    <ellipse cx="512" cy="470" rx="50" ry="100" stroke-width="4" opacity="0.5"/>
+    <line x1="412" y1="470" x2="612" y2="470" stroke-width="4" opacity="0.5"/>
+
+    <!-- Lock icon on shield -->
+    <rect x="480" y="540" width="64" height="50" rx="8" fill="#ffffff" stroke="none" opacity="0.95"/>
+    <path d="M492 540 L492 520 C492 500 532 500 532 520 L532 540"
+          stroke="#ffffff" stroke-width="7" fill="none" opacity="0.95"/>
+    <!-- Keyhole -->
+    <circle cx="512" cy="560" r="8" fill="#0288d1"/>
+    <rect x="509" y="560" width="6" height="14" rx="2" fill="#0288d1"/>
+  </g>
+
+  <!-- Connection dots -->
+  <circle cx="512" cy="370" r="8" fill="#ffffff" opacity="0.9"/>
+  <circle cx="445" cy="410" r="6" fill="#ffffff" opacity="0.7"/>
+  <circle cx="579" cy="410" r="6" fill="#ffffff" opacity="0.7"/>
+  <circle cx="420" cy="470" r="5" fill="#4fc3f7" opacity="0.8"/>
+  <circle cx="604" cy="470" r="5" fill="#4fc3f7" opacity="0.8"/>
+
+  <!-- Auto arrows (circular arrows at bottom of shield) -->
+  <g transform="translate(512, 720)" fill="#ffffff" opacity="0.85">
+    <path d="M-25 0 A25 25 0 1 1 0 -25" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+    <polygon points="0,-35 8,-22 -8,-22" fill="#ffffff"/>
+    <path d="M25 0 A25 25 0 1 1 0 25" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+    <polygon points="0,35 8,22 -8,22" fill="#ffffff"/>
+  </g>
+</svg>
