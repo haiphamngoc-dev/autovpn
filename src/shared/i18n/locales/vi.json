@@ -90,7 +90,7 @@
     },
     "appLock": {
       "title": "Khóa ứng dụng",
-      "description": "Giống 1Password: khóa sau khi không hoạt động. Mã PIN được lưu an toàn trong keyring hệ thống.",
+      "description": "Khóa sau khi không hoạt động. Mã PIN được lưu an toàn trong keyring hệ thống.",
       "lockWhenIdle": "Khóa khi không hoạt động",
       "idleTimeout": "Thời gian chờ",
       "lockNow": "Khóa ngay",

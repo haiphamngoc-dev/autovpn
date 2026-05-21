@@ -90,7 +90,7 @@
     },
     "appLock": {
       "title": "App lock",
-      "description": "Like 1Password: locks after inactivity. PIN is stored securely in the system keyring.",
+      "description": "Locks after inactivity. PIN is stored securely in the system keyring.",
       "lockWhenIdle": "Lock when idle",
       "idleTimeout": "Idle timeout",
       "lockNow": "Lock now",
