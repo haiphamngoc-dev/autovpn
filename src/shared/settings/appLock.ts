@@ -13,7 +13,7 @@ export type SaveAppLockSettingsResult = {
 };
 
 const DEFAULT_APP_LOCK: AppLockSettings = {
-  enabled: true,
+  enabled: false,
   lockWhenIdle: true,
   idleTimeout: "5",
 };

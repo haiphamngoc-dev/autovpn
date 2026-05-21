@@ -14,7 +14,7 @@ export function AppHeader() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { settings, lock, hasPin } = useAppLock();
+  const { settings, lock } = useAppLock();
   const isSettings = location.pathname === paths.settings;
 
   function handleLockNow() {
@@ -22,9 +22,7 @@ export function AppHeader() {
 
     notifications.show({
       title: t("settings.appLock.notifications.locked.title"),
-      message: hasPin
-        ? t("settings.appLock.notifications.locked.messageWithPin")
-        : t("settings.appLock.notifications.locked.messageWithoutPin"),
+      message: t("settings.appLock.notifications.locked.messageWithPin"),
       color: "green",
     });
   }

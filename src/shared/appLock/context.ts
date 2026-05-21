@@ -1,5 +1,10 @@
 import type { AppLockSettings } from "@shared/settings/appLock";
 
+export type SavePinResult =
+  | { ok: true }
+  | { ok: false; reason: "mismatch" }
+  | { ok: false; reason: "error"; code: string };
+
 export type AppLockContextValue = {
   settings: AppLockSettings;
   hasPin: boolean;
@@ -10,15 +15,24 @@ export type AppLockContextValue = {
   refreshHasPin: () => Promise<boolean>;
   lock: () => void;
   unlock: (pin: string) => Promise<boolean>;
-  savePin: (
+  enableAppLock: (
     pin: string,
+    confirmPin: string
+  ) => Promise<
+    | { ok: true; persisted: boolean }
+    | { ok: false; reason: "mismatch" }
+    | { ok: false; reason: "error"; code: string }
+  >;
+  changePin: (
+    currentPin: string,
+    newPin: string,
     confirmPin: string
   ) => Promise<
     | { ok: true }
     | { ok: false; reason: "mismatch" }
+    | { ok: false; reason: "invalidPin" }
     | { ok: false; reason: "error"; code: string }
   >;
-  removePin: () => Promise<boolean>;
   disableAppLock: (
     pin: string
   ) => Promise<

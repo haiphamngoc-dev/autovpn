@@ -109,30 +109,51 @@
     },
     "appLock": {
       "title": "Khóa ứng dụng",
-      "description": "Khóa sau khi không hoạt động. Mã PIN được lưu an toàn trong keyring hệ thống.",
+      "description": "Bảo vệ ứng dụng bằng mã PIN. PIN được lưu an toàn trong keyring hệ thống.",
       "enabled": "Bật khóa ứng dụng",
-      "enabledDescription": "Hiện nút khóa trên header và cho phép khóa khi không hoạt động cùng bảo vệ PIN.",
+      "enabledDescription": "Cần đặt mã PIN. Hiện nút khóa trên header và khóa khi không hoạt động.",
+      "enableModal": {
+        "title": "Thiết lập khóa ứng dụng",
+        "description": "Tạo mã PIN để bật khóa ứng dụng.",
+        "pin": "PIN",
+        "confirmPin": "Xác nhận PIN",
+        "pinPlaceholder": "Nhập PIN",
+        "confirmPinPlaceholder": "Xác nhận PIN",
+        "confirm": "Bật khóa ứng dụng",
+        "cancel": "Hủy"
+      },
       "disableModal": {
         "title": "Tắt khóa ứng dụng?",
-        "descriptionWithPin": "Nhập PIN để xác nhận. Tắt khóa ứng dụng sẽ xóa vĩnh viễn PIN khỏi keyring hệ thống.",
-        "descriptionWithoutPin": "Bạn có chắc muốn tắt khóa ứng dụng?",
+        "description": "Nhập PIN để xác nhận. Tắt khóa ứng dụng sẽ xóa vĩnh viễn PIN khỏi keyring hệ thống.",
         "pinPlaceholder": "Nhập PIN",
         "confirm": "Tắt khóa ứng dụng",
         "cancel": "Hủy",
         "invalidPin": "PIN không đúng. Thử lại."
       },
+      "changePinModal": {
+        "title": "Đổi PIN",
+        "description": "Nhập PIN hiện tại và chọn PIN mới.",
+        "currentPin": "PIN hiện tại",
+        "newPin": "PIN mới",
+        "confirmPin": "Xác nhận PIN mới",
+        "currentPinPlaceholder": "Nhập PIN hiện tại",
+        "newPinPlaceholder": "Nhập PIN mới",
+        "confirmPinPlaceholder": "Xác nhận PIN mới",
+        "confirm": "Lưu PIN",
+        "cancel": "Hủy",
+        "invalidCurrentPin": "PIN không đúng. Thử lại."
+      },
       "lockWhenIdle": "Khóa khi không hoạt động",
       "idleTimeout": "Thời gian chờ",
-      "lockNow": "Khóa ngay",
-      "removePin": "Xóa PIN",
-      "changePin": "Đổi PIN (tùy chọn)",
-      "confirmPin": "Xác nhận lại",
-      "pinPlaceholder": "Nhập PIN mới",
-      "confirmPinPlaceholder": "Xác nhận PIN mới",
-      "savePin": "Lưu PIN",
+      "changePin": "Đổi PIN",
+      "strength": {
+        "weak": "Yếu",
+        "fair": "Trung bình",
+        "good": "Khá",
+        "strong": "Mạnh"
+      },
       "errors": {
-        "invalidLength": "PIN phải có từ {{min}} đến {{max}} chữ số.",
-        "notDigitsOnly": "PIN chỉ được chứa chữ số."
+        "invalidLength": "Mật khẩu phải có từ {{min}} đến {{max}} ký tự."
       },
       "notifications": {
         "locked": {
@@ -170,7 +191,6 @@
         },
         "disabled": {
           "title": "Đã tắt khóa ứng dụng",
-          "message": "Khóa ứng dụng đã tắt.",
           "messageWithPin": "Khóa ứng dụng đã tắt và PIN đã được xóa khỏi keyring hệ thống."
         }
       }

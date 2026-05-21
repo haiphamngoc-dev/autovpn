@@ -3,7 +3,7 @@ use keyring_core::Entry;
 const SERVICE: &str = "autovpn";
 const USER: &str = "app-lock-pin";
 const MIN_PIN_LENGTH: usize = 4;
-const MAX_PIN_LENGTH: usize = 8;
+const MAX_PIN_LENGTH: usize = 128;
 
 pub fn init() -> Result<(), String> {
     #[cfg(target_os = "linux")]
@@ -43,10 +43,6 @@ fn pin_entry() -> Result<Entry, String> {
 fn validate_pin(pin: &str) -> Result<(), String> {
     if pin.len() < MIN_PIN_LENGTH || pin.len() > MAX_PIN_LENGTH {
         return Err("pin_invalid_length".to_string());
-    }
-
-    if !pin.chars().all(|ch| ch.is_ascii_digit()) {
-        return Err("pin_not_digits_only".to_string());
     }
 
     Ok(())
@@ -94,17 +90,22 @@ mod tests {
     use super::*;
 
     #[test]
-    fn validate_pin_rejects_non_digits() {
-        assert!(validate_pin("12ab").is_err());
-    }
-
-    #[test]
     fn validate_pin_rejects_short_pin() {
         assert!(validate_pin("123").is_err());
     }
 
     #[test]
-    fn validate_pin_accepts_valid_pin() {
+    fn validate_pin_rejects_long_pin() {
+        assert!(validate_pin(&"a".repeat(MAX_PIN_LENGTH + 1)).is_err());
+    }
+
+    #[test]
+    fn validate_pin_accepts_digits_only() {
         assert!(validate_pin("1234").is_ok());
+    }
+
+    #[test]
+    fn validate_pin_accepts_mixed_characters() {
+        assert!(validate_pin("Abc1!@#").is_ok());
     }
 }

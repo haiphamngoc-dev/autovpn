@@ -1,0 +1,28 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--mantine-spacing-xs);
+}
+
+.segments {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+}
+
+.segment {
+  height: 4px;
+  border-radius: var(--mantine-radius-sm);
+  background-color: var(--mantine-color-default-border);
+  transition: background-color 120ms ease;
+}
+
+.segmentActive {
+  background-color: var(--pin-strength-color, var(--mantine-color-gray-5));
+}
+
+.label {
+  margin: 0;
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-dimmed);
+}

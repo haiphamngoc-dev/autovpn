@@ -7,7 +7,7 @@ import styles from "./AppLockOverlay.module.css";
 
 export function AppLockOverlay() {
   const { t } = useTranslation();
-  const { settings, isLocked, hasPin, unlock } = useAppLock();
+  const { settings, isLocked, unlock } = useAppLock();
   const [pin, setPin] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -16,7 +16,7 @@ export function AppLockOverlay() {
     return null;
   }
 
-  async function handleUnlockWithPin() {
+  async function handleUnlock() {
     setError(null);
     setIsSubmitting(true);
 
@@ -34,16 +34,6 @@ export function AppLockOverlay() {
     }
   }
 
-  async function handleUnlockWithoutPin() {
-    setIsSubmitting(true);
-
-    try {
-      await unlock("");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }
-
   return (
     <Box className={styles.overlay} role="dialog" aria-modal="true">
       <Box className={styles.card}>
@@ -55,54 +45,39 @@ export function AppLockOverlay() {
           />
           <Text className={styles.title}>{t("appLock.overlay.title")}</Text>
           <Text className={styles.description}>
-            {hasPin
-              ? t("appLock.overlay.descriptionWithPin")
-              : t("appLock.overlay.descriptionWithoutPin")}
+            {t("appLock.overlay.descriptionWithPin")}
           </Text>
 
-          {hasPin ? (
-            <Box
-              component="form"
-              onSubmit={(event) => {
-                event.preventDefault();
-                void handleUnlockWithPin();
+          <Box
+            component="form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void handleUnlock();
+            }}
+          >
+            <PasswordInput
+              value={pin}
+              onChange={(event) => {
+                setPin(event.currentTarget.value);
+                setError(null);
               }}
-            >
-              <PasswordInput
-                value={pin}
-                onChange={(event) => {
-                  setPin(event.currentTarget.value);
-                  setError(null);
-                }}
-                placeholder={t("appLock.overlay.pinPlaceholder")}
-                autoFocus
-                mb="sm"
-              />
+              placeholder={t("appLock.overlay.pinPlaceholder")}
+              autoFocus
+              mb="sm"
+            />
 
-              {error ? <Text className={styles.error}>{error}</Text> : null}
+            {error ? <Text className={styles.error}>{error}</Text> : null}
 
-              <Button
-                type="submit"
-                fullWidth
-                color="green"
-                loading={isSubmitting}
-                disabled={pin.length === 0}
-              >
-                {t("appLock.overlay.unlock")}
-              </Button>
-            </Box>
-          ) : (
             <Button
+              type="submit"
               fullWidth
               color="green"
               loading={isSubmitting}
-              onClick={() => {
-                void handleUnlockWithoutPin();
-              }}
+              disabled={pin.length === 0}
             >
               {t("appLock.overlay.unlock")}
             </Button>
-          )}
+          </Box>
         </Stack>
       </Box>
     </Box>

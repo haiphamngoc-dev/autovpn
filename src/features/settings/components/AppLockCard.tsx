@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Group,
-  PasswordInput,
-  Select,
-  Switch,
-  Text,
-} from "@mantine/core";
+import { Box, Button, Group, Select, Switch, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useAppLock } from "@shared/appLock";
 import { getPinErrorMessage } from "@shared/appLock/pinErrors";
@@ -15,26 +7,22 @@ import { IconLock } from "@tabler/icons-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import styles from "./AppLockCard.module.css";
+import { ChangePinModal } from "./ChangePinModal";
 import { DisableAppLockModal } from "./DisableAppLockModal";
+import { EnableAppLockModal } from "./EnableAppLockModal";
 import { SettingField } from "./SettingField";
 
 export function AppLockCard() {
   const { t } = useTranslation();
   const idleTimeoutOptions = useIdleTimeoutOptions();
-  const {
-    settings,
-    hasPin,
-    updateSettings,
-    lock,
-    savePin,
-    removePin,
-    disableAppLock,
-  } = useAppLock();
-  const [pin, setPin] = useState("");
-  const [confirmPin, setConfirmPin] = useState("");
-  const [isSavingPin, setIsSavingPin] = useState(false);
+  const { settings, updateSettings, enableAppLock, changePin, disableAppLock } =
+    useAppLock();
+  const [enableModalOpen, setEnableModalOpen] = useState(false);
   const [disableModalOpen, setDisableModalOpen] = useState(false);
+  const [changePinModalOpen, setChangePinModalOpen] = useState(false);
+  const [isEnabling, setIsEnabling] = useState(false);
   const [isDisabling, setIsDisabling] = useState(false);
+  const [isChangingPin, setIsChangingPin] = useState(false);
 
   function notifySettingsSaved(persisted: boolean) {
     notifications.show(
@@ -54,83 +42,57 @@ export function AppLockCard() {
     );
   }
 
-  function handleLockNow() {
-    lock();
-
+  function notifyPinSaved() {
     notifications.show({
-      title: t("settings.appLock.notifications.locked.title"),
-      message: hasPin
-        ? t("settings.appLock.notifications.locked.messageWithPin")
-        : t("settings.appLock.notifications.locked.messageWithoutPin"),
+      title: t("settings.appLock.notifications.pinSaved.title"),
+      message: t("settings.appLock.notifications.pinSaved.message"),
       color: "green",
     });
   }
 
-  async function handleRemovePin() {
-    const removed = await removePin();
-    setPin("");
-    setConfirmPin("");
-
-    notifications.show(
-      removed
-        ? {
-            title: t("settings.appLock.notifications.pinRemoved.title"),
-            message: t("settings.appLock.notifications.pinRemoved.message"),
-            color: "green",
-          }
-        : {
-            title: t("settings.appLock.notifications.pinRemoveFailed.title"),
-            message: t(
-              "settings.appLock.notifications.pinRemoveFailed.message"
-            ),
-            color: "red",
-          }
-    );
+  function notifyPinError(code: string) {
+    notifications.show({
+      title: t("settings.appLock.notifications.pinSaveFailed.title"),
+      message: getPinErrorMessage(code, t),
+      color: "red",
+    });
   }
 
-  async function handleSavePin() {
-    setIsSavingPin(true);
+  async function handleEnableConfirm(
+    pin: string,
+    confirmPin: string
+  ): Promise<{ ok: boolean; mismatch?: boolean }> {
+    setIsEnabling(true);
 
     try {
-      const result = await savePin(pin, confirmPin);
+      const result = await enableAppLock(pin, confirmPin);
 
       if (!result.ok && result.reason === "mismatch") {
-        notifications.show({
-          title: t("settings.appLock.notifications.pinMismatch.title"),
-          message: t("settings.appLock.notifications.pinMismatch.message"),
-          color: "red",
-        });
-        return;
+        return { ok: false, mismatch: true };
       }
 
       if (!result.ok && result.reason === "error") {
-        notifications.show({
-          title: t("settings.appLock.notifications.pinSaveFailed.title"),
-          message: getPinErrorMessage(result.code, t),
-          color: "red",
-        });
-        return;
+        notifyPinError(result.code);
+        return { ok: false };
       }
 
-      setPin("");
-      setConfirmPin("");
-      notifications.show({
-        title: t("settings.appLock.notifications.pinSaved.title"),
-        message: t("settings.appLock.notifications.pinSaved.message"),
-        color: "green",
-      });
+      setEnableModalOpen(false);
+      notifyPinSaved();
+      notifySettingsSaved(result.persisted);
+
+      return { ok: true };
     } finally {
-      setIsSavingPin(false);
+      setIsEnabling(false);
     }
   }
 
   async function handleDisableConfirm(
-    confirmPin: string
+    pin: string
   ): Promise<{ ok: boolean; invalidPin?: boolean }> {
     setIsDisabling(true);
 
     try {
-      const result = await disableAppLock(confirmPin);
+      const result = await disableAppLock(pin);
 
       if (!result.ok && result.reason === "invalidPin") {
         return { ok: false, invalidPin: true };
@@ -145,17 +107,13 @@ export function AppLockCard() {
         return { ok: false };
       }
 
-      setDisableModalOpen(false);
-      setPin("");
-      setConfirmPin("");
-
       notifications.show(
         result.persisted
           ? {
               title: t("settings.appLock.notifications.disabled.title"),
-              message: hasPin
-                ? t("settings.appLock.notifications.disabled.messageWithPin")
-                : t("settings.appLock.notifications.disabled.message"),
+              message: t(
+                "settings.appLock.notifications.disabled.messageWithPin"
+              ),
               color: "green",
             }
           : {
@@ -172,6 +130,40 @@ export function AppLockCard() {
       return { ok: true };
     } finally {
       setIsDisabling(false);
+    }
+  }
+
+  async function handleChangePinConfirm(
+    currentPin: string,
+    newPin: string,
+    confirmPin: string
+  ): Promise<{
+    ok: boolean;
+    mismatch?: boolean;
+    invalidPin?: boolean;
+    pinError?: string;
+  }> {
+    setIsChangingPin(true);
+
+    try {
+      const result = await changePin(currentPin, newPin, confirmPin);
+
+      if (!result.ok && result.reason === "invalidPin") {
+        return { ok: false, invalidPin: true };
+      }
+
+      if (!result.ok && result.reason === "mismatch") {
+        return { ok: false, mismatch: true };
+      }
+
+      if (!result.ok && result.reason === "error") {
+        return { ok: false, pinError: result.code };
+      }
+
+      notifyPinSaved();
+      return { ok: true };
+    } finally {
+      setIsChangingPin(false);
     }
   }
 
@@ -193,13 +185,8 @@ export function AppLockCard() {
         description={t("settings.appLock.enabledDescription")}
         checked={settings.enabled}
         onChange={(event) => {
-          const nextEnabled = event.currentTarget.checked;
-
-          if (nextEnabled) {
-            void (async () => {
-              const { persisted } = await updateSettings({ enabled: true });
-              notifySettingsSaved(persisted);
-            })();
+          if (event.currentTarget.checked) {
+            setEnableModalOpen(true);
             return;
           }
 
@@ -242,62 +229,36 @@ export function AppLockCard() {
             />
           </SettingField>
 
-          <Group gap="sm" mt="md" mb="md" wrap="wrap">
-            <Button
-              leftSection={<IconLock size={16} stroke={1.5} />}
-              color="green"
-              onClick={handleLockNow}
-            >
-              {t("settings.appLock.lockNow")}
-            </Button>
-            <Button
-              variant="subtle"
-              color="gray"
-              onClick={() => {
-                void handleRemovePin();
-              }}
-              disabled={!hasPin}
-            >
-              {t("settings.appLock.removePin")}
-            </Button>
-          </Group>
-
-          <SettingField label={t("settings.appLock.changePin")}>
-            <PasswordInput
-              value={pin}
-              onChange={(event) => setPin(event.currentTarget.value)}
-              placeholder={t("settings.appLock.pinPlaceholder")}
-            />
-          </SettingField>
-
-          <SettingField label={t("settings.appLock.confirmPin")}>
-            <PasswordInput
-              value={confirmPin}
-              onChange={(event) => setConfirmPin(event.currentTarget.value)}
-              placeholder={t("settings.appLock.confirmPinPlaceholder")}
-            />
-          </SettingField>
-
           <Button
-            mt="md"
+            variant="light"
             color="green"
-            loading={isSavingPin}
-            disabled={pin.length === 0 || confirmPin.length === 0}
-            onClick={() => {
-              void handleSavePin();
-            }}
+            mt="md"
+            onClick={() => setChangePinModalOpen(true)}
           >
-            {t("settings.appLock.savePin")}
+            {t("settings.appLock.changePin")}
           </Button>
         </>
       ) : null}
 
+      <EnableAppLockModal
+        opened={enableModalOpen}
+        loading={isEnabling}
+        onClose={() => setEnableModalOpen(false)}
+        onConfirm={handleEnableConfirm}
+      />
+
       <DisableAppLockModal
         opened={disableModalOpen}
-        hasPin={hasPin}
         loading={isDisabling}
         onClose={() => setDisableModalOpen(false)}
         onConfirm={handleDisableConfirm}
+      />
+
+      <ChangePinModal
+        opened={changePinModalOpen}
+        loading={isChangingPin}
+        onClose={() => setChangePinModalOpen(false)}
+        onConfirm={handleChangePinConfirm}
       />
     </Box>
   );

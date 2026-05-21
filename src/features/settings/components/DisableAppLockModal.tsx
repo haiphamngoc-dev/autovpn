@@ -11,7 +11,6 @@ import { useTranslation } from "react-i18next";
 
 type DisableAppLockModalProps = {
   opened: boolean;
-  hasPin: boolean;
   loading: boolean;
   onClose: () => void;
   onConfirm: (pin: string) => Promise<{ ok: boolean; invalidPin?: boolean }>;
@@ -19,7 +18,6 @@ type DisableAppLockModalProps = {
 
 export function DisableAppLockModal({
   opened,
-  hasPin,
   loading,
   onClose,
   onConfirm,
@@ -44,8 +42,7 @@ export function DisableAppLockModal({
     }
 
     if (result.ok) {
-      setPin("");
-      setError(null);
+      handleClose();
     }
   }
 
@@ -58,23 +55,19 @@ export function DisableAppLockModal({
     >
       <Stack gap="md">
         <Text size="sm" c="dimmed">
-          {hasPin
-            ? t("settings.appLock.disableModal.descriptionWithPin")
-            : t("settings.appLock.disableModal.descriptionWithoutPin")}
+          {t("settings.appLock.disableModal.description")}
         </Text>
 
-        {hasPin ? (
-          <PasswordInput
-            value={pin}
-            onChange={(event) => {
-              setPin(event.currentTarget.value);
-              setError(null);
-            }}
-            placeholder={t("settings.appLock.disableModal.pinPlaceholder")}
-            error={error}
-            autoFocus
-          />
-        ) : null}
+        <PasswordInput
+          value={pin}
+          onChange={(event) => {
+            setPin(event.currentTarget.value);
+            setError(null);
+          }}
+          placeholder={t("settings.appLock.disableModal.pinPlaceholder")}
+          error={error}
+          autoFocus
+        />
 
         <Group justify="flex-end" gap="sm">
           <Button variant="default" onClick={handleClose} disabled={loading}>
@@ -83,7 +76,7 @@ export function DisableAppLockModal({
           <Button
             color="red"
             loading={loading}
-            disabled={hasPin && pin.length === 0}
+            disabled={pin.length === 0}
             onClick={() => {
               void handleConfirm();
             }}

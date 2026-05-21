@@ -62,7 +62,7 @@ impl Default for AppLockSettings {
 }
 
 fn default_app_lock_enabled() -> bool {
-    true
+    false
 }
 
 fn default_lock_when_idle() -> bool {
