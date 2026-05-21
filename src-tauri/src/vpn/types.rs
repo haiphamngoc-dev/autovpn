@@ -8,6 +8,13 @@ pub enum VpnConnectionStatus {
     Connected,
 }
 
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct VpnProfile {
+    pub name: String,
+    pub status: VpnConnectionStatus,
+}
+
 impl VpnConnectionStatus {
     pub fn from_nm_state(state: &str) -> Option<Self> {
         match state {

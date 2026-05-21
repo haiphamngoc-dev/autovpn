@@ -21,11 +21,29 @@
   "home": {
     "vpnStatus": {
       "title": "VPN status",
-      "descriptionConnected": "VPN tunnel is active.",
-      "descriptionDisconnected": "VPN is not connected.",
-      "descriptionConnecting": "Establishing VPN tunnel…",
+      "descriptionConnected": "VPN tunnel is active ({{profile}}).",
+      "descriptionDisconnected": "VPN is not connected. Default profile: {{profile}}.",
+      "descriptionConnecting": "Establishing VPN tunnel ({{profile}})…",
       "connect": "Connect",
-      "disconnect": "Disconnect"
+      "disconnect": "Disconnect",
+      "noDefaultProfile": "Select a default VPN profile below before connecting."
+    },
+    "vpnProfiles": {
+      "title": "VPN profiles",
+      "description": "Choose the default profile used for system connect and disconnect.",
+      "empty": "No VPN profiles found on this system.",
+      "refresh": "Refresh",
+      "loadFailed": "Could not load VPN profiles from the system.",
+      "notifications": {
+        "saved": {
+          "title": "Default profile saved",
+          "message": "{{profile}} is now the default VPN profile."
+        },
+        "saveFailed": {
+          "title": "Could not save default profile",
+          "message": "The selection was updated in the app but not written to the settings file."
+        }
+      }
     }
   },
   "settings": {

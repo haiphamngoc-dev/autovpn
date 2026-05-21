@@ -31,7 +31,7 @@ export function WindowBehaviorProvider({
 
   useEffect(() => {
     void applyWindowBehaviorSettings(settings);
-  }, [settings.useSystemWindowFrame]);
+  }, [settings]);
 
   useEffect(() => {
     void syncTrayIcon(settings.closeToTray, {
@@ -40,7 +40,7 @@ export function WindowBehaviorProvider({
     }).catch((error: unknown) => {
       console.error("Failed to sync tray icon:", error);
     });
-  }, [settings.closeToTray, i18n.language]);
+  }, [settings.closeToTray, i18n.language, t]);
 
   const updateSettings = useCallback(
     async (partial: Partial<WindowBehaviorSettings>) => {

@@ -1,3 +1,5 @@
+import { isLinux } from "@shared/lib/platform";
+import { listen } from "@tauri-apps/api/event";
 import {
   useCallback,
   useEffect,
@@ -5,11 +7,17 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { connectVpn, disconnectVpn, fetchVpnStatus } from "./api";
+import {
+  connectVpn,
+  disconnectVpn,
+  fetchVpnStatus,
+  VPN_STATUS_CHANGED_EVENT,
+} from "./api";
 import { VpnStatusContext } from "./VpnStatusContext";
 import type { VpnConnectionStatus } from "./types";
 
-const STATUS_POLL_INTERVAL_MS = 2_000;
+/** Linux uses NM D-Bus events; other platforms poll more often. */
+const STATUS_POLL_INTERVAL_MS = isLinux ? 30_000 : 2_000;
 
 type VpnStatusProviderProps = {
   children: ReactNode;
@@ -31,24 +39,58 @@ export function VpnStatusProvider({
   }, []);
 
   useEffect(() => {
-    void refreshStatus();
+    let cancelled = false;
+
+    async function pollStatus() {
+      try {
+        const next = await fetchVpnStatus();
+
+        if (!cancelled) {
+          setStatus(next);
+        }
+      } catch {
+        if (!cancelled) {
+          setStatus("disconnected");
+        }
+      }
+    }
+
+    void pollStatus();
 
     const intervalId = globalThis.setInterval(() => {
-      void refreshStatus();
+      void pollStatus();
     }, STATUS_POLL_INTERVAL_MS);
 
     return () => {
+      cancelled = true;
       globalThis.clearInterval(intervalId);
     };
-  }, [refreshStatus]);
+  }, []);
+
+  useEffect(() => {
+    if (!isLinux) {
+      return;
+    }
+
+    let unlisten: (() => void) | undefined;
+
+    void listen<VpnConnectionStatus>(VPN_STATUS_CHANGED_EVENT, (event) => {
+      setStatus(event.payload);
+    }).then((fn) => {
+      unlisten = fn;
+    });
+
+    return () => {
+      unlisten?.();
+    };
+  }, []);
 
   const connect = useCallback(async () => {
-    if (status === "connected" || isBusy) {
+    if (status === "connected" || isBusy || status === "connecting") {
       return;
     }
 
     setIsBusy(true);
-    setStatus("connecting");
 
     try {
       await connectVpn();
@@ -66,7 +108,6 @@ export function VpnStatusProvider({
     }
 
     setIsBusy(true);
-    setStatus("connecting");
 
     try {
       await disconnectVpn();

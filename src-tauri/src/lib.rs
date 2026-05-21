@@ -12,12 +12,15 @@ use keyring_store::{
 };
 use settings::{
     get_app_lock_settings, get_appearance_settings, get_system_integration_settings,
-    get_window_behavior_settings, load_settings, save_app_lock_settings, save_appearance_settings,
-    save_system_integration_settings, save_window_behavior_settings,
+    get_vpn_settings, get_window_behavior_settings, load_settings, save_app_lock_settings,
+    save_appearance_settings, save_system_integration_settings, save_vpn_settings,
+    save_window_behavior_settings,
 };
 use tauri::WindowEvent;
 use tray::TrayLabels;
-use vpn::{connect_vpn, disconnect_vpn, get_vpn_status};
+use vpn::{
+    connect_vpn, disconnect_vpn, get_vpn_profiles, get_vpn_status, start_vpn_status_monitor,
+};
 
 #[tauri::command]
 fn greet(name: &str) -> String {
@@ -67,6 +70,7 @@ pub fn run() {
             window_behavior::apply(app.handle(), &settings.window_behavior)?;
             system_integration::apply(app.handle(), &settings.system_integration)?;
             system_integration::apply_launch_minimized(app.handle(), &settings.system_integration);
+            start_vpn_status_monitor(app.handle().clone());
             Ok(())
         })
         .on_window_event(|window, event| {
@@ -98,7 +102,10 @@ pub fn run() {
             remove_app_lock_pin,
             init_app_lock_secrets,
             remove_app_lock_secrets_command,
+            get_vpn_settings,
+            save_vpn_settings,
             get_vpn_status,
+            get_vpn_profiles,
             connect_vpn,
             disconnect_vpn,
         ])

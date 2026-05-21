@@ -2,7 +2,6 @@ import { Box, Text } from "@mantine/core";
 import type { ReactNode } from "react";
 import { notifications } from "@mantine/notifications";
 import { useAppLock } from "@shared/appLock";
-import { ConnectionStatusBadge, useVpnStatus } from "@shared/vpn";
 import {
   IconArrowLeft,
   IconLock,
@@ -46,7 +45,6 @@ export function AppHeader() {
   const navigate = useNavigate();
   const location = useLocation();
   const { hasPin, lock } = useAppLock();
-  const { status } = useVpnStatus();
   const isSettings = location.pathname === paths.settings;
 
   function handleLockNow() {
@@ -93,7 +91,6 @@ export function AppHeader() {
             </div>
 
             <div className={styles.actions}>
-              <ConnectionStatusBadge status={status} />
               {lockButton}
               <HeaderIconButton
                 label={t("common.settings")}

@@ -1,7 +1,7 @@
 use std::os::windows::process::CommandExt;
 use std::process::Command;
 
-use super::types::VpnConnectionStatus;
+use super::types::{VpnConnectionStatus, VpnProfile};
 
 const CREATE_NO_WINDOW: u32 = 0x0800_0000;
 
@@ -29,30 +29,41 @@ Get-VpnConnection | Select-Object -ExpandProperty ConnectionStatus
     Ok(VpnConnectionStatus::Disconnected)
 }
 
-pub fn connect_system_vpn() -> Result<(), String> {
-    let name = preferred_vpn_name()?;
-    let script = format!("rasdial '{name}'");
+pub fn connect_system_vpn(profile_name: &str) -> Result<(), String> {
+    let script = format!("rasdial '{profile_name}'");
 
     run_cmd(&script)
 }
 
-pub fn disconnect_system_vpn() -> Result<(), String> {
-    let name = active_vpn_name().ok_or("vpn_not_connected".to_string())?;
-    let script = format!("rasdial '{name}' /disconnect");
-
-    run_cmd(&script)
-}
-
-fn preferred_vpn_name() -> Result<String, String> {
+pub fn list_system_vpn_profiles() -> Result<Vec<VpnProfile>, String> {
     let script = r#"
-Get-VpnConnection | Select-Object -First 1 -ExpandProperty Name
+Get-VpnConnection | ForEach-Object { "{0}|{1}" -f $_.Name, $_.ConnectionStatus }
 "#;
 
     let output = run_powershell(script)?;
-    let name = output.lines().map(str::trim).find(|line| !line.is_empty());
 
-    name.map(str::to_string)
-        .ok_or("vpn_profile_not_found".to_string())
+    Ok(output
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .filter_map(|line| {
+            let (name, status) = line.split_once('|')?;
+            Some(VpnProfile {
+                name: name.to_string(),
+                status: map_windows_status(status),
+            })
+        })
+        .collect())
+}
+
+pub fn disconnect_system_vpn(profile_name: Option<&str>) -> Result<(), String> {
+    let name = profile_name
+        .map(str::to_string)
+        .or_else(active_vpn_name)
+        .ok_or("vpn_not_connected".to_string())?;
+    let script = format!("rasdial '{name}' /disconnect");
+
+    run_cmd(&script)
 }
 
 fn active_vpn_name() -> Option<String> {
@@ -87,6 +98,14 @@ fn run_powershell(script: &str) -> Result<String, String> {
     }
 
     Err(String::from_utf8_lossy(&output.stderr).trim().to_string())
+}
+
+fn map_windows_status(value: &str) -> VpnConnectionStatus {
+    match value.trim() {
+        "Connected" => VpnConnectionStatus::Connected,
+        "Connecting" => VpnConnectionStatus::Connecting,
+        _ => VpnConnectionStatus::Disconnected,
+    }
 }
 
 fn run_cmd(script: &str) -> Result<(), String> {

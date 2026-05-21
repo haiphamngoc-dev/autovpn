@@ -4,6 +4,7 @@ import {
   useVpnStatus,
   type VpnConnectionStatus,
 } from "@shared/vpn";
+import { loadVpnSettings } from "@shared/settings/vpn";
 import { settingCardStyles } from "@shared/layout";
 import {
   IconPlugConnected,
@@ -11,6 +12,7 @@ import {
   IconShield,
   IconShieldCheck,
 } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import styles from "./VpnStatusCard.module.css";
 
@@ -35,8 +37,18 @@ const HEADER_ICON = {
 export function VpnStatusCard() {
   const { t } = useTranslation();
   const { status, connect, disconnect, isBusy } = useVpnStatus();
+  const [defaultProfile, setDefaultProfile] = useState<string | null>(null);
+
+  useEffect(() => {
+    void loadVpnSettings().then((settings) => {
+      setDefaultProfile(settings.defaultProfile);
+    });
+  }, [status]);
 
   const isConnected = status === "connected";
+  const isConnectPending = isBusy || status === "connecting";
+  const isDisconnectPending = isBusy || status === "connecting";
+  const canConnect = Boolean(defaultProfile);
   const HeaderIcon = HEADER_ICON[status];
   const descriptionKey = DESCRIPTION_KEY[status];
 
@@ -58,7 +70,8 @@ export function VpnStatusCard() {
           fullWidth={isBottom}
           color="red"
           variant="filled"
-          loading={isBusy}
+          loading={isDisconnectPending}
+          disabled={isDisconnectPending}
           leftSection={
             <IconPlugConnectedX
               size={ACTION_ICON_SIZE}
@@ -79,7 +92,8 @@ export function VpnStatusCard() {
         fullWidth={isBottom}
         color="green"
         variant="filled"
-        loading={isBusy}
+        loading={isConnectPending}
+        disabled={!canConnect || isConnectPending}
         leftSection={
           <IconPlugConnected
             size={ACTION_ICON_SIZE}
@@ -116,7 +130,11 @@ export function VpnStatusCard() {
             <div className={styles.actionInline}>{renderAction("inline")}</div>
           </div>
 
-          <Text className={styles.description}>{t(descriptionKey)}</Text>
+          <Text className={styles.description}>
+            {canConnect
+              ? t(descriptionKey, { profile: defaultProfile })
+              : t("home.vpnStatus.noDefaultProfile")}
+          </Text>
         </div>
       </div>
 

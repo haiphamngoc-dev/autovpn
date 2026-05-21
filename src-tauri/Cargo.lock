@@ -279,6 +279,7 @@ dependencies = [
  "chrono",
  "dbus-secret-service-keyring-store",
  "dirs 6.0.0",
+ "futures-util",
  "hmac",
  "keyring-core",
  "rand",
@@ -295,6 +296,7 @@ dependencies = [
  "tracing",
  "tracing-subscriber",
  "windows-native-keyring-store",
+ "zbus",
 ]
 
 [[package]]
@@ -4141,7 +4143,9 @@ dependencies = [
  "libc",
  "mio",
  "pin-project-lite",
+ "signal-hook-registry",
  "socket2",
+ "tracing",
  "windows-sys 0.61.2",
 ]
 
@@ -5528,6 +5532,7 @@ dependencies = [
  "rustix",
  "serde",
  "serde_repr",
+ "tokio",
  "tracing",
  "uds_windows",
  "uuid",

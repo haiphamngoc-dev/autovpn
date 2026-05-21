@@ -1,4 +1,5 @@
 mod secure;
+mod vpn;
 
 use std::fs;
 use std::path::PathBuf;
@@ -12,6 +13,7 @@ use secure::{open, seal, SecureEnvelope, SensitiveSettings};
 
 pub use crate::system_integration::SystemIntegrationSettings;
 pub use crate::window_behavior::WindowBehaviorSettings;
+pub use vpn::VpnSettings;
 
 const APP_CONFIG_DIR: &str = "autovpn";
 const SETTINGS_FILE: &str = "settings.json";
@@ -63,6 +65,8 @@ pub struct AppSettings {
     pub window_behavior: WindowBehaviorSettings,
     #[serde(default)]
     pub system_integration: SystemIntegrationSettings,
+    #[serde(default)]
+    pub vpn: VpnSettings,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
@@ -76,6 +80,8 @@ struct PersistedSettingsFile {
     window_behavior: WindowBehaviorSettings,
     #[serde(default)]
     system_integration: SystemIntegrationSettings,
+    #[serde(default)]
+    vpn: VpnSettings,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     secure: Option<SecureEnvelope>,
 }
@@ -245,6 +251,7 @@ pub fn load_settings() -> Result<AppSettings, String> {
         app_lock,
         window_behavior: file.window_behavior,
         system_integration: file.system_integration,
+        vpn: file.vpn.sanitize(),
     })
 }
 
@@ -256,6 +263,7 @@ fn build_persisted_file(settings: &AppSettings) -> Result<PersistedSettingsFile,
         app_lock: None,
         window_behavior: settings.window_behavior.clone(),
         system_integration: settings.system_integration.clone(),
+        vpn: settings.vpn.clone().sanitize(),
         secure: None,
     };
 
@@ -278,6 +286,7 @@ pub fn save_settings(settings: &AppSettings) -> Result<(), String> {
         app_lock: sanitize_app_lock(settings.app_lock.clone(), enrolled),
         window_behavior: settings.window_behavior.clone(),
         system_integration: settings.system_integration.clone(),
+        vpn: settings.vpn.clone().sanitize(),
     };
 
     let file = build_persisted_file(&sanitized)?;
@@ -336,6 +345,18 @@ pub fn save_window_behavior_settings(
     settings.window_behavior = window_behavior.clone();
     save_settings(&settings)?;
     crate::window_behavior::apply(&app, &window_behavior)
+}
+
+#[tauri::command]
+pub fn get_vpn_settings() -> Result<VpnSettings, String> {
+    Ok(load_settings()?.vpn)
+}
+
+#[tauri::command]
+pub fn save_vpn_settings(vpn: VpnSettings) -> Result<(), String> {
+    let mut settings = load_settings().unwrap_or_default();
+    settings.vpn = vpn.sanitize();
+    save_settings(&settings)
 }
 
 #[tauri::command]
@@ -431,6 +452,7 @@ mod tests {
             app_lock: None,
             window_behavior: WindowBehaviorSettings::default(),
             system_integration: SystemIntegrationSettings::default(),
+            vpn: VpnSettings::default(),
             secure: Some(envelope),
         };
 

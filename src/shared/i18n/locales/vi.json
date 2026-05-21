@@ -21,11 +21,29 @@
   "home": {
     "vpnStatus": {
       "title": "Trạng thái VPN",
-      "descriptionConnected": "Đường hầm VPN đang hoạt động.",
-      "descriptionDisconnected": "VPN chưa được kết nối.",
-      "descriptionConnecting": "Đang thiết lập đường hầm VPN…",
+      "descriptionConnected": "Đường hầm VPN đang hoạt động ({{profile}}).",
+      "descriptionDisconnected": "VPN chưa được kết nối. Profile mặc định: {{profile}}.",
+      "descriptionConnecting": "Đang thiết lập đường hầm VPN ({{profile}})…",
       "connect": "Kết nối",
-      "disconnect": "Ngắt kết nối"
+      "disconnect": "Ngắt kết nối",
+      "noDefaultProfile": "Hãy chọn profile VPN mặc định bên dưới trước khi kết nối."
+    },
+    "vpnProfiles": {
+      "title": "Danh sách VPN",
+      "description": "Chọn profile mặc định dùng cho thao tác kết nối/ngắt kết nối hệ thống.",
+      "empty": "Không tìm thấy profile VPN nào trên hệ thống.",
+      "refresh": "Làm mới",
+      "loadFailed": "Không thể tải danh sách VPN từ hệ thống.",
+      "notifications": {
+        "saved": {
+          "title": "Đã lưu profile mặc định",
+          "message": "{{profile}} là profile VPN mặc định."
+        },
+        "saveFailed": {
+          "title": "Không thể lưu profile mặc định",
+          "message": "Đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        }
+      }
     }
   },
   "settings": {

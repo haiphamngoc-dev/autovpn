@@ -74,7 +74,7 @@ export function AppLockProvider({
   );
   const [hasPin, setHasPin] = useState(initialHasPin);
   const [isLocked, setIsLocked] = useState(initialHasPin);
-  const lastActivityRef = useRef(Date.now());
+  const lastActivityRef = useRef(0);
 
   const markActivity = useCallback(() => {
     lastActivityRef.current = Date.now();
@@ -93,8 +93,31 @@ export function AppLockProvider({
   }, []);
 
   useEffect(() => {
-    void refreshHasPin();
-  }, [refreshHasPin]);
+    let cancelled = false;
+
+    void (async () => {
+      const nextHasPin = await hasAppLockPin();
+
+      if (cancelled) {
+        return;
+      }
+
+      setHasPin(nextHasPin);
+      setSettings((current) => withEnrollmentState(current, nextHasPin));
+
+      if (!nextHasPin) {
+        setIsLocked(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    lastActivityRef.current = Date.now();
+  }, []);
 
   useEffect(() => {
     if (!hasPin || !settings.lockWhenIdle || isLocked) {

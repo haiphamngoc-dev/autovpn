@@ -1,24 +1,62 @@
 use std::process::Command;
 
-use super::types::VpnConnectionStatus;
+use super::types::{VpnConnectionStatus, VpnProfile};
 
 const NMCLI: &str = "nmcli";
 
 pub fn get_system_vpn_status() -> Result<VpnConnectionStatus, String> {
-    match status_from_nmcli()? {
-        VpnConnectionStatus::Disconnected if has_active_vpn_interface() => {
-            Ok(VpnConnectionStatus::Connected)
-        }
-        other => Ok(other),
+    let status = status_from_nmcli()?;
+
+    if has_active_vpn_interface()
+        && matches!(
+            status,
+            VpnConnectionStatus::Disconnected | VpnConnectionStatus::Connecting
+        )
+    {
+        return Ok(VpnConnectionStatus::Connected);
     }
+
+    Ok(status)
 }
 
-pub fn connect_system_vpn() -> Result<(), String> {
-    let name = preferred_vpn_profile()?;
-    run_nmcli_void(&["connection", "up", "id", &name])
+pub fn connect_system_vpn(profile_name: &str) -> Result<(), String> {
+    // Do not block until activation finishes (default nmcli wait is 90s).
+    run_nmcli_void_with_wait(&["connection", "up", "id", profile_name], 0)
 }
 
-pub fn disconnect_system_vpn() -> Result<(), String> {
+pub fn list_system_vpn_profiles() -> Result<Vec<VpnProfile>, String> {
+    let output = run_nmcli(&["-t", "-f", "NAME,TYPE,STATE", "connection", "show"])?;
+
+    Ok(output
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty())
+        .filter_map(|line| {
+            let mut parts = line.split(':');
+            let name = parts.next()?;
+            let conn_type = parts.next()?;
+            let state = parts.next()?;
+
+            if conn_type != "vpn" {
+                return None;
+            }
+
+            let status = VpnConnectionStatus::from_nm_state(state)
+                .unwrap_or(VpnConnectionStatus::Disconnected);
+
+            Some(VpnProfile {
+                name: name.to_string(),
+                status,
+            })
+        })
+        .collect())
+}
+
+pub fn disconnect_system_vpn(profile_name: Option<&str>) -> Result<(), String> {
+    if let Some(name) = profile_name {
+        return run_nmcli_void(&["connection", "down", "id", name]);
+    }
+
     let active = active_vpn_connection_names()?;
 
     if active.is_empty() {
@@ -112,27 +150,6 @@ fn active_vpn_connection_names() -> Result<Vec<String>, String> {
         .collect())
 }
 
-fn preferred_vpn_profile() -> Result<String, String> {
-    let output = run_nmcli(&["-t", "-f", "NAME,TYPE", "connection", "show"])?;
-
-    let profiles: Vec<String> = output
-        .lines()
-        .map(str::trim)
-        .filter(|line| !line.is_empty())
-        .filter_map(|line| {
-            let mut parts = line.split(':');
-            let name = parts.next()?;
-            let conn_type = parts.next()?;
-            (conn_type == "vpn").then_some(name.to_string())
-        })
-        .collect();
-
-    profiles
-        .into_iter()
-        .next()
-        .ok_or("vpn_profile_not_found".to_string())
-}
-
 fn has_active_vpn_interface() -> bool {
     let Ok(output) = Command::new("ip")
         .args(["-o", "link", "show", "up"])
@@ -160,12 +177,31 @@ fn run_nmcli_void(args: &[&str]) -> Result<(), String> {
     run_nmcli(args).map(|_| ())
 }
 
+fn run_nmcli_void_with_wait(args: &[&str], wait_seconds: u32) -> Result<(), String> {
+    run_nmcli_with_wait(args, wait_seconds).map(|_| ())
+}
+
 fn run_nmcli(args: &[&str]) -> Result<String, String> {
     let output = Command::new(NMCLI)
         .args(args)
         .output()
         .map_err(|error| format!("nmcli_spawn_failed:{error}"))?;
 
+    map_nmcli_output(output)
+}
+
+fn run_nmcli_with_wait(args: &[&str], wait_seconds: u32) -> Result<String, String> {
+    let output = Command::new(NMCLI)
+        .arg("-w")
+        .arg(wait_seconds.to_string())
+        .args(args)
+        .output()
+        .map_err(|error| format!("nmcli_spawn_failed:{error}"))?;
+
+    map_nmcli_output(output)
+}
+
+fn map_nmcli_output(output: std::process::Output) -> Result<String, String> {
     if output.status.success() {
         return Ok(String::from_utf8_lossy(&output.stdout).trim().to_string());
     }

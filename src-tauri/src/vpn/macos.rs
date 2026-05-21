@@ -1,6 +1,6 @@
 use std::process::Command;
 
-use super::types::VpnConnectionStatus;
+use super::types::{VpnConnectionStatus, VpnProfile};
 
 pub fn get_system_vpn_status() -> Result<VpnConnectionStatus, String> {
     let output = Command::new("scutil")
@@ -35,24 +35,33 @@ pub fn get_system_vpn_status() -> Result<VpnConnectionStatus, String> {
     Ok(VpnConnectionStatus::Disconnected)
 }
 
-pub fn connect_system_vpn() -> Result<(), String> {
-    let service = preferred_vpn_service()?;
-    run_scutil(&["--nc", "start", &service])
+pub fn connect_system_vpn(profile_name: &str) -> Result<(), String> {
+    run_scutil(&["--nc", "start", profile_name])
 }
 
-pub fn disconnect_system_vpn() -> Result<(), String> {
-    let service = active_vpn_service().ok_or("vpn_not_connected".to_string())?;
-    run_scutil(&["--nc", "stop", &service])
-}
-
-fn preferred_vpn_service() -> Result<String, String> {
+pub fn list_system_vpn_profiles() -> Result<Vec<VpnProfile>, String> {
     let output = Command::new("scutil")
         .arg("--nc")
         .arg("list")
         .output()
         .map_err(|error| format!("scutil_spawn_failed:{error}"))?;
 
-    parse_first_vpn_service(&String::from_utf8_lossy(&output.stdout))
+    if !output.status.success() {
+        return Err(String::from_utf8_lossy(&output.stderr).trim().to_string());
+    }
+
+    let stdout = String::from_utf8_lossy(&output.stdout);
+
+    Ok(stdout.lines().filter_map(parse_scutil_profile).collect())
+}
+
+pub fn disconnect_system_vpn(profile_name: Option<&str>) -> Result<(), String> {
+    let service = profile_name
+        .map(str::to_string)
+        .or_else(active_vpn_service)
+        .ok_or("vpn_not_connected".to_string())?;
+
+    run_scutil(&["--nc", "stop", &service])
 }
 
 fn active_vpn_service() -> Option<String> {
@@ -77,14 +86,17 @@ fn active_vpn_service() -> Option<String> {
     None
 }
 
-fn parse_first_vpn_service(stdout: &str) -> Result<String, String> {
-    for line in stdout.lines() {
-        if let Some(name) = parse_service_name(line) {
-            return Ok(name);
-        }
-    }
+fn parse_scutil_profile(line: &str) -> Option<VpnProfile> {
+    let name = parse_service_name(line)?;
+    let status = if line.contains("(Connected)") {
+        VpnConnectionStatus::Connected
+    } else if line.contains("Connecting") {
+        VpnConnectionStatus::Connecting
+    } else {
+        VpnConnectionStatus::Disconnected
+    };
 
-    Err("vpn_profile_not_found".to_string())
+    Some(VpnProfile { name, status })
 }
 
 fn parse_service_name(line: &str) -> Option<String> {
