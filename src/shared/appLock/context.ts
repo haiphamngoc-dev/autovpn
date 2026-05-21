@@ -19,4 +19,11 @@ export type AppLockContextValue = {
     | { ok: false; reason: "error"; code: string }
   >;
   removePin: () => Promise<boolean>;
+  disableAppLock: (
+    pin: string
+  ) => Promise<
+    | { ok: true; persisted: boolean }
+    | { ok: false; reason: "invalidPin" }
+    | { ok: false; reason: "removePinFailed" }
+  >;
 };

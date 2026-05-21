@@ -57,7 +57,7 @@ export function AppLockProvider({
   }, [refreshHasPin]);
 
   useEffect(() => {
-    if (!settings.lockWhenIdle || isLocked) {
+    if (!settings.enabled || !settings.lockWhenIdle || isLocked) {
       return;
     }
 
@@ -81,7 +81,13 @@ export function AppLockProvider({
         document.removeEventListener(eventName, markActivity);
       }
     };
-  }, [isLocked, markActivity, settings.idleTimeout, settings.lockWhenIdle]);
+  }, [
+    isLocked,
+    markActivity,
+    settings.enabled,
+    settings.idleTimeout,
+    settings.lockWhenIdle,
+  ]);
 
   const updateSettings = useCallback(
     async (partial: Partial<AppLockSettings>) => {
@@ -94,8 +100,12 @@ export function AppLockProvider({
   );
 
   const lock = useCallback(() => {
+    if (!settings.enabled) {
+      return;
+    }
+
     setIsLocked(true);
-  }, []);
+  }, [settings.enabled]);
 
   const unlock = useCallback(
     async (pin: string) => {
@@ -146,6 +156,34 @@ export function AppLockProvider({
     }
   }, []);
 
+  const disableAppLock = useCallback(
+    async (pin: string) => {
+      if (!settings.enabled) {
+        return { ok: true as const, persisted: true };
+      }
+
+      if (hasPin) {
+        const verified = await verifyAppLockPin(pin);
+
+        if (!verified) {
+          return { ok: false as const, reason: "invalidPin" as const };
+        }
+      }
+
+      const removed = await removePin();
+
+      if (!removed && hasPin) {
+        return { ok: false as const, reason: "removePinFailed" as const };
+      }
+
+      const { persisted } = await updateSettings({ enabled: false });
+      setIsLocked(false);
+
+      return { ok: true as const, persisted };
+    },
+    [hasPin, removePin, settings.enabled, updateSettings]
+  );
+
   const value = useMemo(
     () => ({
       settings,
@@ -157,8 +195,10 @@ export function AppLockProvider({
       unlock,
       savePin,
       removePin,
+      disableAppLock,
     }),
     [
+      disableAppLock,
       hasPin,
       isLocked,
       lock,

@@ -43,6 +43,8 @@ pub struct AppSettings {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct AppLockSettings {
+    #[serde(default = "default_app_lock_enabled")]
+    pub enabled: bool,
     #[serde(default = "default_lock_when_idle")]
     pub lock_when_idle: bool,
     #[serde(default = "default_idle_timeout")]
@@ -52,10 +54,15 @@ pub struct AppLockSettings {
 impl Default for AppLockSettings {
     fn default() -> Self {
         Self {
+            enabled: default_app_lock_enabled(),
             lock_when_idle: default_lock_when_idle(),
             idle_timeout: default_idle_timeout(),
         }
     }
+}
+
+fn default_app_lock_enabled() -> bool {
+    true
 }
 
 fn default_lock_when_idle() -> bool {
@@ -93,6 +100,7 @@ fn sanitize_app_lock(app_lock: AppLockSettings) -> AppLockSettings {
     };
 
     AppLockSettings {
+        enabled: app_lock.enabled,
         lock_when_idle: app_lock.lock_when_idle,
         idle_timeout,
     }
@@ -255,9 +263,10 @@ mod tests {
 
     #[test]
     fn deserializes_frontend_app_lock_payload() {
-        let json = r#"{"lockWhenIdle":false,"idleTimeout":"15"}"#;
+        let json = r#"{"enabled":false,"lockWhenIdle":false,"idleTimeout":"15"}"#;
         let app_lock: AppLockSettings = serde_json::from_str(json).unwrap();
 
+        assert!(!app_lock.enabled);
         assert!(!app_lock.lock_when_idle);
         assert_eq!(app_lock.idle_timeout, "15");
     }
@@ -265,6 +274,7 @@ mod tests {
     #[test]
     fn sanitize_rejects_invalid_idle_timeout() {
         let app_lock = AppLockSettings {
+            enabled: true,
             lock_when_idle: true,
             idle_timeout: "99".to_string(),
         };

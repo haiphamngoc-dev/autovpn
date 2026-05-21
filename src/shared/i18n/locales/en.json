@@ -4,6 +4,7 @@
   },
   "common": {
     "back": "Back",
+    "lock": "Lock now",
     "settings": "Settings"
   },
   "footer": {
@@ -109,6 +110,17 @@
     "appLock": {
       "title": "App lock",
       "description": "Locks after inactivity. PIN is stored securely in the system keyring.",
+      "enabled": "Enable app lock",
+      "enabledDescription": "Show the lock button in the header and allow idle lock and PIN protection.",
+      "disableModal": {
+        "title": "Disable app lock?",
+        "descriptionWithPin": "Enter your PIN to confirm. Disabling app lock will permanently remove your PIN from the system keyring.",
+        "descriptionWithoutPin": "Are you sure you want to disable app lock?",
+        "pinPlaceholder": "Enter PIN",
+        "confirm": "Disable app lock",
+        "cancel": "Cancel",
+        "invalidPin": "Incorrect PIN. Try again."
+      },
       "lockWhenIdle": "Lock when idle",
       "idleTimeout": "Idle timeout",
       "lockNow": "Lock now",
@@ -155,6 +167,11 @@
         "settingsSaveFailed": {
           "title": "Could not save app lock settings",
           "message": "Settings were updated in the app but not written to the settings file."
+        },
+        "disabled": {
+          "title": "App lock disabled",
+          "message": "App lock is off.",
+          "messageWithPin": "App lock is off and your PIN has been removed from the system keyring."
         }
       }
     }

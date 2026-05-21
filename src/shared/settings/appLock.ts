@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { IDLE_TIMEOUT_VALUES } from "@features/settings/constants";
 
 export type AppLockSettings = {
+  enabled: boolean;
   lockWhenIdle: boolean;
   idleTimeout: (typeof IDLE_TIMEOUT_VALUES)[number];
 };
@@ -12,6 +13,7 @@ export type SaveAppLockSettingsResult = {
 };
 
 const DEFAULT_APP_LOCK: AppLockSettings = {
+  enabled: true,
   lockWhenIdle: true,
   idleTimeout: "5",
 };
@@ -28,6 +30,7 @@ function normalizeAppLock(
   settings: Partial<AppLockSettings> | null | undefined
 ): AppLockSettings {
   return {
+    enabled: settings?.enabled ?? DEFAULT_APP_LOCK.enabled,
     lockWhenIdle: settings?.lockWhenIdle ?? DEFAULT_APP_LOCK.lockWhenIdle,
     idleTimeout: isIdleTimeout(settings?.idleTimeout)
       ? settings.idleTimeout

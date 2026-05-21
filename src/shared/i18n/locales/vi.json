@@ -4,6 +4,7 @@
   },
   "common": {
     "back": "Quay lại",
+    "lock": "Khóa ngay",
     "settings": "Cài đặt"
   },
   "footer": {
@@ -109,6 +110,17 @@
     "appLock": {
       "title": "Khóa ứng dụng",
       "description": "Khóa sau khi không hoạt động. Mã PIN được lưu an toàn trong keyring hệ thống.",
+      "enabled": "Bật khóa ứng dụng",
+      "enabledDescription": "Hiện nút khóa trên header và cho phép khóa khi không hoạt động cùng bảo vệ PIN.",
+      "disableModal": {
+        "title": "Tắt khóa ứng dụng?",
+        "descriptionWithPin": "Nhập PIN để xác nhận. Tắt khóa ứng dụng sẽ xóa vĩnh viễn PIN khỏi keyring hệ thống.",
+        "descriptionWithoutPin": "Bạn có chắc muốn tắt khóa ứng dụng?",
+        "pinPlaceholder": "Nhập PIN",
+        "confirm": "Tắt khóa ứng dụng",
+        "cancel": "Hủy",
+        "invalidPin": "PIN không đúng. Thử lại."
+      },
       "lockWhenIdle": "Khóa khi không hoạt động",
       "idleTimeout": "Thời gian chờ",
       "lockNow": "Khóa ngay",
@@ -155,6 +167,11 @@
         "settingsSaveFailed": {
           "title": "Không thể lưu cài đặt khóa ứng dụng",
           "message": "Cài đặt đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        },
+        "disabled": {
+          "title": "Đã tắt khóa ứng dụng",
+          "message": "Khóa ứng dụng đã tắt.",
+          "messageWithPin": "Khóa ứng dụng đã tắt và PIN đã được xóa khỏi keyring hệ thống."
         }
       }
     }
