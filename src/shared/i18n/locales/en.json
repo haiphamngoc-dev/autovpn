@@ -289,6 +289,10 @@
           "message": "Settings were updated in the app but not written to the settings file."
         }
       }
+    },
+    "aboutAuthor": {
+      "title": "About Author",
+      "role": "Software Engineer & Creator"
     }
   },
   "appLock": {

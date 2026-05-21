@@ -1,4 +1,5 @@
 export { SettingField } from "./SettingField";
+export { AboutAuthorCard } from "./AboutAuthorCard";
 export { AppearanceCard } from "./AppearanceCard";
 export { AppLockCard } from "./AppLockCard";
 export { AutoConnectCard } from "./AutoConnectCard";

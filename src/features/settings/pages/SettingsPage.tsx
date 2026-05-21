@@ -1,4 +1,5 @@
 import {
+  AboutAuthorCard,
   AppearanceCard,
   AppLockCard,
   AutoConnectCard,
@@ -19,6 +20,7 @@ export function SettingsPage() {
         <SystemIntegrationCard />
         <WindowBehaviorCard />
         <AppLockCard />
+        <AboutAuthorCard />
       </Box>
     </Box>
   );

@@ -289,6 +289,10 @@
           "message": "Cài đặt đã đổi trong app nhưng chưa ghi vào file cấu hình."
         }
       }
+    },
+    "aboutAuthor": {
+      "title": "Về tác giả",
+      "role": "Kỹ sư phần mềm & Sáng lập"
     }
   },
   "appLock": {
