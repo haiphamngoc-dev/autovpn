@@ -258,6 +258,37 @@
           "messageWithPin": "App lock is off and your PIN has been removed from the system keyring."
         }
       }
+    },
+    "autoReconnect": {
+      "title": "Auto-reconnect",
+      "enabled": "Reconnect when connection drops",
+      "enabledDescription": "Does not apply when you press Disconnect. 15s delay between attempts.",
+      "maxAttempts": "Maximum attempts",
+      "notifications": {
+        "saved": {
+          "title": "Auto-reconnect settings saved",
+          "message": "Your auto-reconnect preferences have been saved."
+        },
+        "saveFailed": {
+          "title": "Could not save auto-reconnect settings",
+          "message": "Settings were updated in the app but not written to the settings file."
+        }
+      }
+    },
+    "autoConnect": {
+      "title": "Auto-connect",
+      "enabled": "Connect default VPN on startup",
+      "enabledDescription": "Automatically connect to the default VPN profile when the app starts.",
+      "notifications": {
+        "saved": {
+          "title": "Auto-connect settings saved",
+          "message": "Your auto-connect preferences have been saved."
+        },
+        "saveFailed": {
+          "title": "Could not save auto-connect settings",
+          "message": "Settings were updated in the app but not written to the settings file."
+        }
+      }
     }
   },
   "appLock": {

@@ -26,10 +26,7 @@ pub fn get_system_vpn_status() -> Result<VpnConnectionStatus, String> {
     Ok(status)
 }
 
-pub fn connect_system_vpn(
-    profile_name: &str,
-    auth: Option<&VpnConnectAuth>,
-) -> Result<(), String> {
+pub fn connect_system_vpn(profile_name: &str, auth: Option<&VpnConnectAuth>) -> Result<(), String> {
     if let Some(auth) = auth {
         return connect_with_passwd_file(profile_name, auth);
     }
@@ -47,7 +44,8 @@ fn connect_with_passwd_file(profile_name: &str, auth: &VpnConnectAuth) -> Result
 
     let passwd_content = format!("vpn.secrets.password:{}\n", auth.password);
 
-    fs::write(&passwd_path, passwd_content).map_err(|error| format!("passwd_file_write:{error}"))?;
+    fs::write(&passwd_path, passwd_content)
+        .map_err(|error| format!("passwd_file_write:{error}"))?;
 
     #[cfg(unix)]
     {
@@ -83,13 +81,7 @@ fn connect_with_passwd_file(profile_name: &str, auth: &VpnConnectAuth) -> Result
 fn sanitize_profile_file_key(profile_name: &str) -> String {
     profile_name
         .chars()
-        .map(|ch| {
-            if ch.is_ascii_alphanumeric() {
-                ch
-            } else {
-                '_'
-            }
-        })
+        .map(|ch| if ch.is_ascii_alphanumeric() { ch } else { '_' })
         .collect()
 }
 

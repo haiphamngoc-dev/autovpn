@@ -13,6 +13,35 @@ pub struct VpnProfileConfig {
     pub has_credentials: bool,
 }
 
+fn default_auto_reconnect_max_attempts() -> u32 {
+    3
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AutoReconnectSettings {
+    #[serde(default)]
+    pub enabled: bool,
+    #[serde(default = "default_auto_reconnect_max_attempts")]
+    pub max_attempts: u32,
+}
+
+impl Default for AutoReconnectSettings {
+    fn default() -> Self {
+        Self {
+            enabled: false,
+            max_attempts: default_auto_reconnect_max_attempts(),
+        }
+    }
+}
+
+impl AutoReconnectSettings {
+    pub fn sanitize(mut self) -> Self {
+        self.max_attempts = self.max_attempts.clamp(1, 10);
+        self
+    }
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct VpnSettings {
@@ -20,6 +49,10 @@ pub struct VpnSettings {
     pub default_profile: Option<String>,
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub profile_configs: BTreeMap<String, VpnProfileConfig>,
+    #[serde(default)]
+    pub auto_connect: bool,
+    #[serde(default)]
+    pub auto_reconnect: AutoReconnectSettings,
 }
 
 impl VpnSettings {
@@ -42,6 +75,7 @@ impl VpnSettings {
         }
 
         self.profile_configs = sanitized_configs;
+        self.auto_reconnect = self.auto_reconnect.sanitize();
         self
     }
 

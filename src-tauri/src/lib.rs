@@ -19,8 +19,9 @@ use settings::{
 use tauri::WindowEvent;
 use tray::TrayLabels;
 use vpn::{
-    connect_vpn, disconnect_vpn, get_vpn_profile_credentials, get_vpn_profiles, get_vpn_status,
-    remove_vpn_profile_credentials, save_vpn_profile_credentials, start_vpn_status_monitor,
+    connect_system_vpn, connect_vpn, disconnect_vpn, get_vpn_profile_credentials, get_vpn_profiles,
+    get_vpn_status, remove_vpn_profile_credentials, save_vpn_profile_credentials,
+    start_vpn_status_monitor,
 };
 
 #[tauri::command]
@@ -72,6 +73,18 @@ pub fn run() {
             system_integration::apply(app.handle(), &settings.system_integration)?;
             system_integration::apply_launch_minimized(app.handle(), &settings.system_integration);
             start_vpn_status_monitor(app.handle().clone());
+
+            if settings.vpn.auto_connect {
+                tauri::async_runtime::spawn(async {
+                    let result = tauri::async_runtime::spawn_blocking(connect_system_vpn).await;
+                    match result {
+                        Ok(Ok(())) => {}
+                        Ok(Err(error)) => eprintln!("Auto-connect failed: {error}"),
+                        Err(error) => eprintln!("Auto-connect task failed: {error}"),
+                    }
+                });
+            }
+
             Ok(())
         })
         .on_window_event(|window, event| {

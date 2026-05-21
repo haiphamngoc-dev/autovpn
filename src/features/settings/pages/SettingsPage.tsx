@@ -1,6 +1,8 @@
 import {
   AppearanceCard,
   AppLockCard,
+  AutoConnectCard,
+  AutoReconnectCard,
   SystemIntegrationCard,
   WindowBehaviorCard,
 } from "@features/settings/components";
@@ -12,6 +14,8 @@ export function SettingsPage() {
     <Box className={pageContentStyles.page}>
       <Box className={pageContentStyles.stack}>
         <AppearanceCard />
+        <AutoConnectCard />
+        <AutoReconnectCard />
         <SystemIntegrationCard />
         <WindowBehaviorCard />
         <AppLockCard />

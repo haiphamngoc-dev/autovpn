@@ -135,8 +135,9 @@ fn save_profile_credentials(payload: SaveVpnProfileCredentialsPayload) -> Result
         return Err("vpn_username_required".to_string());
     }
 
-    let mut stored = crate::keyring_store::vpn_credentials::load_vpn_profile_credentials(&profile_name)?
-        .unwrap_or_default();
+    let mut stored =
+        crate::keyring_store::vpn_credentials::load_vpn_profile_credentials(&profile_name)?
+            .unwrap_or_default();
 
     if let Some(base_password) = payload.base_password {
         stored.base_password = base_password;

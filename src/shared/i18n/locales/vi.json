@@ -258,6 +258,37 @@
           "messageWithPin": "Khóa ứng dụng đã tắt và PIN đã được xóa khỏi keyring hệ thống."
         }
       }
+    },
+    "autoReconnect": {
+      "title": "Tự động kết nối lại",
+      "enabled": "Kết nối lại khi mất kết nối",
+      "enabledDescription": "Không áp dụng khi bạn nhấn Ngắt kết nối. Chờ 15 giây giữa các lần thử.",
+      "maxAttempts": "Số lần thử tối đa",
+      "notifications": {
+        "saved": {
+          "title": "Đã lưu cài đặt tự động kết nối lại",
+          "message": "Tùy chọn tự động kết nối lại đã được lưu."
+        },
+        "saveFailed": {
+          "title": "Không thể lưu cài đặt tự động kết nối lại",
+          "message": "Cài đặt đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        }
+      }
+    },
+    "autoConnect": {
+      "title": "Tự động kết nối",
+      "enabled": "Kết nối VPN mặc định khi khởi động",
+      "enabledDescription": "Tự động kết nối đến profile VPN mặc định khi ứng dụng khởi động.",
+      "notifications": {
+        "saved": {
+          "title": "Đã lưu cài đặt tự động kết nối",
+          "message": "Tùy chọn tự động kết nối đã được lưu."
+        },
+        "saveFailed": {
+          "title": "Không thể lưu cài đặt tự động kết nối",
+          "message": "Cài đặt đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        }
+      }
     }
   },
   "appLock": {

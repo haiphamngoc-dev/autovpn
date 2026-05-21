@@ -6,9 +6,16 @@ export type VpnProfileConfig = {
   hasCredentials: boolean;
 };
 
+export type AutoReconnectSettings = {
+  enabled: boolean;
+  maxAttempts: number;
+};
+
 export type VpnSettings = {
   defaultProfile: string | null;
   profileConfigs: Record<string, VpnProfileConfig>;
+  autoConnect: boolean;
+  autoReconnect: AutoReconnectSettings;
 };
 
 export type SaveVpnSettingsResult = {
@@ -33,9 +40,16 @@ export type SaveVpnProfileCredentialsPayload = {
   totpSecret?: string;
 };
 
+const DEFAULT_AUTO_RECONNECT: AutoReconnectSettings = {
+  enabled: false,
+  maxAttempts: 3,
+};
+
 const DEFAULT_VPN_SETTINGS: VpnSettings = {
   defaultProfile: null,
   profileConfigs: {},
+  autoConnect: false,
+  autoReconnect: DEFAULT_AUTO_RECONNECT,
 };
 
 let cache: VpnSettings | null = null;
@@ -49,6 +63,17 @@ function normalizeProfileConfig(
     username: username || null,
     useTotp: Boolean(config?.useTotp),
     hasCredentials: Boolean(config?.hasCredentials),
+  };
+}
+
+function normalizeAutoReconnect(
+  settings: Partial<AutoReconnectSettings> | null | undefined
+): AutoReconnectSettings {
+  const maxAttempts = Math.max(1, Math.min(10, settings?.maxAttempts ?? 3));
+
+  return {
+    enabled: Boolean(settings?.enabled),
+    maxAttempts,
   };
 }
 
@@ -71,6 +96,8 @@ function normalizeVpnSettings(
   return {
     defaultProfile: defaultProfile || null,
     profileConfigs,
+    autoConnect: Boolean(settings?.autoConnect),
+    autoReconnect: normalizeAutoReconnect(settings?.autoReconnect),
   };
 }
 
@@ -122,6 +149,10 @@ export async function saveVpnSettings(
     profileConfigs: {
       ...getVpnSettingsCache().profileConfigs,
       ...partial.profileConfigs,
+    },
+    autoReconnect: {
+      ...getVpnSettingsCache().autoReconnect,
+      ...partial.autoReconnect,
     },
   });
 
