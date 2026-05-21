@@ -153,7 +153,8 @@
         "strong": "Mạnh"
       },
       "errors": {
-        "invalidLength": "Mật khẩu phải có từ {{min}} đến {{max}} ký tự."
+        "invalidLength": "Mật khẩu phải có từ {{min}} đến {{max}} ký tự.",
+        "notPersisted": "Không thể lưu PIN vào keyring hệ thống. Hãy mở khóa keyring (ví dụ đăng nhập keyring) rồi thử lại."
       },
       "notifications": {
         "locked": {
@@ -197,6 +198,10 @@
     }
   },
   "appLock": {
+    "tampered": {
+      "title": "Không thể xác minh cài đặt",
+      "message": "Cài đặt được bảo vệ đã bị thay đổi bên ngoài ứng dụng. Tùy chọn khóa ứng dụng đã được đặt lại về mặc định an toàn."
+    },
     "overlay": {
       "title": "Ứng dụng đã khóa",
       "descriptionWithPin": "Nhập PIN để mở khóa autovpn.",

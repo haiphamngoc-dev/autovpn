@@ -6,6 +6,10 @@ export function normalizePinErrorCode(message: string): string {
     return "pin_invalid_length";
   }
 
+  if (message.includes("pin_not_persisted")) {
+    return "pin_not_persisted";
+  }
+
   return message;
 }
 
@@ -16,6 +20,8 @@ export function getPinErrorMessage(code: string, t: TFunction): string {
         min: MIN_PIN_LENGTH,
         max: MAX_PIN_LENGTH,
       });
+    case "pin_not_persisted":
+      return t("settings.appLock.errors.notPersisted");
     default:
       return t("settings.appLock.notifications.pinSaveFailed.message");
   }

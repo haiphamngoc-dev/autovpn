@@ -153,7 +153,8 @@
         "strong": "Strong"
       },
       "errors": {
-        "invalidLength": "Password must be between {{min}} and {{max}} characters."
+        "invalidLength": "Password must be between {{min}} and {{max}} characters.",
+        "notPersisted": "PIN could not be stored in the system keyring. Unlock your keyring (e.g. login keyring) and try again."
       },
       "notifications": {
         "locked": {
@@ -197,6 +198,10 @@
     }
   },
   "appLock": {
+    "tampered": {
+      "title": "Settings could not be verified",
+      "message": "Protected settings were changed outside the app. App lock preferences were reset to safe defaults."
+    },
     "overlay": {
       "title": "App locked",
       "descriptionWithPin": "Enter your PIN to unlock autovpn.",

@@ -14,7 +14,7 @@ export function AppHeader() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { settings, lock } = useAppLock();
+  const { hasPin, lock } = useAppLock();
   const isSettings = location.pathname === paths.settings;
 
   function handleLockNow() {
@@ -27,7 +27,7 @@ export function AppHeader() {
     });
   }
 
-  const lockButton = settings.enabled ? (
+  const lockButton = hasPin ? (
     <ActionIcon
       variant="subtle"
       size="md"

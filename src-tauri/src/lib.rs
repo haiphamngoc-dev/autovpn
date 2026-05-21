@@ -4,7 +4,10 @@ mod system_integration;
 mod tray;
 mod window_behavior;
 
-use keyring_store::{has_app_lock_pin, remove_app_lock_pin, set_app_lock_pin, verify_app_lock_pin};
+use keyring_store::{
+    has_app_lock_pin, init_app_lock_secrets, remove_app_lock_pin, remove_app_lock_secrets_command,
+    set_app_lock_pin, verify_app_lock_pin,
+};
 use settings::{
     get_app_lock_settings, get_appearance_settings, get_system_integration_settings,
     get_window_behavior_settings, load_settings, save_app_lock_settings, save_appearance_settings,
@@ -38,7 +41,7 @@ fn sync_tray_icon(
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     if let Err(error) = keyring_store::init() {
-        eprintln!("Failed to initialize keyring store: {error}");
+        eprintln!("Failed to initialize keyring store: {error}. App lock PIN will not persist.");
     }
 
     tauri::Builder::default()
@@ -81,6 +84,8 @@ pub fn run() {
             set_app_lock_pin,
             verify_app_lock_pin,
             remove_app_lock_pin,
+            init_app_lock_secrets,
+            remove_app_lock_secrets_command,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

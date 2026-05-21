@@ -15,8 +15,14 @@ import { SettingField } from "./SettingField";
 export function AppLockCard() {
   const { t } = useTranslation();
   const idleTimeoutOptions = useIdleTimeoutOptions();
-  const { settings, updateSettings, enableAppLock, changePin, disableAppLock } =
-    useAppLock();
+  const {
+    settings,
+    hasPin,
+    updateSettings,
+    enableAppLock,
+    changePin,
+    disableAppLock,
+  } = useAppLock();
   const [enableModalOpen, setEnableModalOpen] = useState(false);
   const [disableModalOpen, setDisableModalOpen] = useState(false);
   const [changePinModalOpen, setChangePinModalOpen] = useState(false);
@@ -183,7 +189,7 @@ export function AppLockCard() {
       <Switch
         label={t("settings.appLock.enabled")}
         description={t("settings.appLock.enabledDescription")}
-        checked={settings.enabled}
+        checked={hasPin}
         onChange={(event) => {
           if (event.currentTarget.checked) {
             setEnableModalOpen(true);
@@ -196,7 +202,7 @@ export function AppLockCard() {
         mb="md"
       />
 
-      {settings.enabled ? (
+      {hasPin ? (
         <>
           <Switch
             label={t("settings.appLock.lockWhenIdle")}

@@ -2,6 +2,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { IDLE_TIMEOUT_VALUES } from "@features/settings/constants";
 
 export type AppLockSettings = {
+  /** Derived from keyring enrollment; not trusted from disk when enrolled. */
   enabled: boolean;
   lockWhenIdle: boolean;
   idleTimeout: (typeof IDLE_TIMEOUT_VALUES)[number];
@@ -26,11 +27,18 @@ function isIdleTimeout(
   return IDLE_TIMEOUT_VALUES.includes(value as AppLockSettings["idleTimeout"]);
 }
 
+function isSettingsTamperedError(error: unknown): boolean {
+  return getInvokeErrorMessage(error) === "settings_tampered";
+}
+
 function normalizeAppLock(
-  settings: Partial<AppLockSettings> | null | undefined
+  settings: Partial<AppLockSettings> | null | undefined,
+  enrolled?: boolean
 ): AppLockSettings {
+  const enabled = enrolled ?? settings?.enabled ?? DEFAULT_APP_LOCK.enabled;
+
   return {
-    enabled: settings?.enabled ?? DEFAULT_APP_LOCK.enabled,
+    enabled,
     lockWhenIdle: settings?.lockWhenIdle ?? DEFAULT_APP_LOCK.lockWhenIdle,
     idleTimeout: isIdleTimeout(settings?.idleTimeout)
       ? settings.idleTimeout
@@ -38,15 +46,22 @@ function normalizeAppLock(
   };
 }
 
-export async function loadAppLockSettings(): Promise<AppLockSettings> {
-  if (cache) {
-    return cache;
+export async function loadAppLockSettings(
+  enrolled?: boolean
+): Promise<AppLockSettings> {
+  if (cache && enrolled !== undefined) {
+    return normalizeAppLock(cache, enrolled);
   }
 
   try {
     const settings = await invoke<AppLockSettings>("get_app_lock_settings");
-    cache = normalizeAppLock(settings);
-  } catch {
+    const hasPin = enrolled ?? (await hasAppLockPin());
+    cache = normalizeAppLock(settings, hasPin);
+  } catch (error) {
+    if (isSettingsTamperedError(error)) {
+      throw error;
+    }
+
     cache = DEFAULT_APP_LOCK;
   }
 
@@ -60,10 +75,15 @@ export function getAppLockSettingsCache(): AppLockSettings {
 export async function saveAppLockSettings(
   partial: Partial<AppLockSettings>
 ): Promise<SaveAppLockSettingsResult> {
-  const next = normalizeAppLock({
-    ...getAppLockSettingsCache(),
-    ...partial,
-  });
+  const enrolled = await hasAppLockPin();
+  const next = normalizeAppLock(
+    {
+      ...getAppLockSettingsCache(),
+      ...partial,
+      ...(enrolled ? { enabled: true } : { enabled: false }),
+    },
+    enrolled
+  );
 
   cache = next;
 
@@ -81,6 +101,14 @@ export async function hasAppLockPin(): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+export async function initAppLockSecrets(): Promise<void> {
+  await invoke("init_app_lock_secrets");
+}
+
+export async function removeAppLockSecrets(): Promise<void> {
+  await invoke("remove_app_lock_secrets_command");
 }
 
 export function getInvokeErrorMessage(error: unknown): string {

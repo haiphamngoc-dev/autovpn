@@ -1,3 +1,9 @@
+mod secrets;
+
+pub use secrets::{
+    init_app_lock_secrets, load_app_lock_secrets, remove_app_lock_secrets_command, AppLockSecrets,
+};
+
 use keyring_core::Entry;
 
 const SERVICE: &str = "autovpn";

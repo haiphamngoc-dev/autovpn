@@ -1,5 +1,7 @@
 import { createTheme, MantineProvider } from "@mantine/core";
-import { Notifications } from "@mantine/notifications";
+import { Notifications, notifications } from "@mantine/notifications";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { AppRoutes } from "@/app/routers/routes";
 import { AppLockProvider } from "@shared/appLock";
 import { WindowBehaviorProvider } from "@shared/windowBehavior";
@@ -18,12 +20,35 @@ type AppProps = {
   appearance: AppearanceSettings;
   appLock: AppLockSettings;
   windowBehavior: WindowBehaviorSettings;
+  hasPin: boolean;
+  settingsTampered?: boolean;
 };
+
+function SettingsTamperedNotice({ show }: Readonly<{ show: boolean }>) {
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    if (!show) {
+      return;
+    }
+
+    notifications.show({
+      title: t("appLock.tampered.title"),
+      message: t("appLock.tampered.message"),
+      color: "red",
+      autoClose: false,
+    });
+  }, [show, t]);
+
+  return null;
+}
 
 export default function App({
   appearance,
   appLock,
   windowBehavior,
+  hasPin,
+  settingsTampered = false,
 }: Readonly<AppProps>) {
   const colorSchemeManager = createAppearanceColorSchemeManager(
     appearance.colorScheme
@@ -37,7 +62,8 @@ export default function App({
     >
       <Notifications />
       <WindowBehaviorProvider initialSettings={windowBehavior}>
-        <AppLockProvider initialSettings={appLock}>
+        <AppLockProvider initialSettings={appLock} initialHasPin={hasPin}>
+          <SettingsTamperedNotice show={settingsTampered} />
           <MemoryRouter>
             <I18nLanguageSync />
             <AppRoutes />

@@ -7,12 +7,12 @@ import styles from "./AppLockOverlay.module.css";
 
 export function AppLockOverlay() {
   const { t } = useTranslation();
-  const { settings, isLocked, unlock } = useAppLock();
+  const { hasPin, isLocked, unlock } = useAppLock();
   const [pin, setPin] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  if (!settings.enabled || !isLocked) {
+  if (!hasPin || !isLocked) {
     return null;
   }
 

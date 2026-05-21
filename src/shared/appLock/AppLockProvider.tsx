@@ -1,7 +1,9 @@
 import {
   getInvokeErrorMessage,
   hasAppLockPin,
+  initAppLockSecrets,
   removeAppLockPin,
+  removeAppLockSecrets,
   saveAppLockSettings,
   setAppLockPin,
   verifyAppLockPin,
@@ -31,6 +33,7 @@ const IDLE_CHECK_INTERVAL_MS = 1000;
 
 type AppLockProviderProps = {
   initialSettings: AppLockSettings;
+  initialHasPin: boolean;
   children: ReactNode;
 };
 
@@ -54,13 +57,23 @@ async function savePinToKeyring(
   }
 }
 
+function withEnrollmentState(
+  settings: AppLockSettings,
+  enrolled: boolean
+): AppLockSettings {
+  return { ...settings, enabled: enrolled };
+}
+
 export function AppLockProvider({
   initialSettings,
+  initialHasPin,
   children,
 }: Readonly<AppLockProviderProps>) {
-  const [settings, setSettings] = useState(initialSettings);
-  const [hasPin, setHasPin] = useState(false);
-  const [isLocked, setIsLocked] = useState(false);
+  const [settings, setSettings] = useState(() =>
+    withEnrollmentState(initialSettings, initialHasPin)
+  );
+  const [hasPin, setHasPin] = useState(initialHasPin);
+  const [isLocked, setIsLocked] = useState(initialHasPin);
   const lastActivityRef = useRef(Date.now());
 
   const markActivity = useCallback(() => {
@@ -70,6 +83,12 @@ export function AppLockProvider({
   const refreshHasPin = useCallback(async () => {
     const nextHasPin = await hasAppLockPin();
     setHasPin(nextHasPin);
+    setSettings((current) => withEnrollmentState(current, nextHasPin));
+
+    if (!nextHasPin) {
+      setIsLocked(false);
+    }
+
     return nextHasPin;
   }, []);
 
@@ -78,22 +97,7 @@ export function AppLockProvider({
   }, [refreshHasPin]);
 
   useEffect(() => {
-    if (!settings.enabled || hasPin) {
-      return;
-    }
-
-    void (async () => {
-      const { persisted } = await saveAppLockSettings({ enabled: false });
-      setSettings((current) => ({ ...current, enabled: false }));
-
-      if (!persisted) {
-        console.error("Failed to persist app lock disabled state");
-      }
-    })();
-  }, [hasPin, settings.enabled]);
-
-  useEffect(() => {
-    if (!settings.enabled || !settings.lockWhenIdle || isLocked) {
+    if (!hasPin || !settings.lockWhenIdle || isLocked) {
       return;
     }
 
@@ -118,9 +122,9 @@ export function AppLockProvider({
       }
     };
   }, [
+    hasPin,
     isLocked,
     markActivity,
-    settings.enabled,
     settings.idleTimeout,
     settings.lockWhenIdle,
   ]);
@@ -129,19 +133,19 @@ export function AppLockProvider({
     async (partial: Partial<AppLockSettings>) => {
       const { settings: nextSettings, persisted } =
         await saveAppLockSettings(partial);
-      setSettings(nextSettings);
+      setSettings(withEnrollmentState(nextSettings, hasPin));
       return { persisted };
     },
-    []
+    [hasPin]
   );
 
   const lock = useCallback(() => {
-    if (!settings.enabled || !hasPin) {
+    if (!hasPin) {
       return;
     }
 
     setIsLocked(true);
-  }, [hasPin, settings.enabled]);
+  }, [hasPin]);
 
   const unlock = useCallback(
     async (pin: string) => {
@@ -154,11 +158,17 @@ export function AppLockProvider({
       if (verified) {
         setIsLocked(false);
         markActivity();
+      } else {
+        const stillEnrolled = await refreshHasPin();
+
+        if (!stillEnrolled) {
+          setIsLocked(false);
+        }
       }
 
       return verified;
     },
-    [hasPin, markActivity]
+    [hasPin, markActivity, refreshHasPin]
   );
 
   const enableAppLock = useCallback(
@@ -169,8 +179,31 @@ export function AppLockProvider({
         return pinResult;
       }
 
+      try {
+        await initAppLockSecrets();
+      } catch (error) {
+        return {
+          ok: false as const,
+          reason: "error" as const,
+          code: normalizePinErrorCode(getInvokeErrorMessage(error)),
+        };
+      }
+
+      const stored = await hasAppLockPin();
+
+      if (!stored) {
+        return {
+          ok: false as const,
+          reason: "error" as const,
+          code: "pin_not_persisted",
+        };
+      }
+
       setHasPin(true);
-      const { persisted } = await updateSettings({ enabled: true });
+      const { persisted } = await updateSettings({
+        lockWhenIdle: true,
+        idleTimeout: "5",
+      });
 
       return { ok: true as const, persisted };
     },
@@ -202,7 +235,7 @@ export function AppLockProvider({
 
   const disableAppLock = useCallback(
     async (pin: string) => {
-      if (!settings.enabled) {
+      if (!hasPin) {
         return { ok: true as const, persisted: true };
       }
 
@@ -214,17 +247,28 @@ export function AppLockProvider({
 
       try {
         await removeAppLockPin();
+        await removeAppLockSecrets();
         setHasPin(false);
         setIsLocked(false);
       } catch {
         return { ok: false as const, reason: "removePinFailed" as const };
       }
 
-      const { persisted } = await updateSettings({ enabled: false });
+      const { persisted } = await saveAppLockSettings({
+        enabled: false,
+        lockWhenIdle: true,
+        idleTimeout: "5",
+      });
+      setSettings((current) =>
+        withEnrollmentState(
+          { ...current, lockWhenIdle: true, idleTimeout: "5" },
+          false
+        )
+      );
 
       return { ok: true as const, persisted };
     },
-    [settings.enabled, updateSettings]
+    [hasPin]
   );
 
   const value = useMemo(
