@@ -73,6 +73,8 @@ async fn publish_status(app: &AppHandle, last_emitted: &mut Option<VpnConnection
 
     *last_emitted = Some(status);
 
+    let _ = crate::tray::refresh_tray_menu(app);
+
     if let Err(error) = app.emit(VPN_STATUS_CHANGED_EVENT, status) {
         eprintln!("Failed to emit VPN status event: {error}");
     }

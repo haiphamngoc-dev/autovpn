@@ -25,10 +25,14 @@ fn clear_tray_title<R: Runtime>(tray: &TrayIcon<R>) -> Result<(), String> {
 pub const TRAY_ID: &str = "autovpn-tray";
 
 static TRAY_SYNC: Mutex<()> = Mutex::new(());
+static TRAY_LABELS: Mutex<Option<TrayLabels>> = Mutex::new(None);
 
+#[derive(Clone)]
 pub struct TrayLabels {
     pub show: String,
     pub quit: String,
+    pub connect: String,
+    pub disconnect: String,
 }
 
 fn tray_icon<'a, R: Runtime>(app: &'a AppHandle<R>) -> Result<Image<'a>, String> {
@@ -51,7 +55,27 @@ fn build_tray_menu<R: Runtime>(app: &AppHandle<R>, labels: &TrayLabels) -> Resul
     let quit_item = MenuItem::with_id(app, "tray_quit", &labels.quit, true, None::<&str>)
         .map_err(|error| error.to_string())?;
 
-    Menu::with_items(app, &[&show_item, &quit_item]).map_err(|error| error.to_string())
+    let settings = crate::settings::load_settings().unwrap_or_default();
+    let mut menu_items: Vec<&dyn tauri::menu::IsMenuItem<R>> = vec![&show_item];
+
+    let conn_item; // Keep it in scope
+    if let Some(ref default_profile) = settings.vpn.default_profile {
+        if !default_profile.is_empty() {
+            let status = crate::vpn::get_system_vpn_status().unwrap_or(crate::vpn::VpnConnectionStatus::Disconnected);
+            let label = if status == crate::vpn::VpnConnectionStatus::Disconnected {
+                format!("{}: {}", labels.connect, default_profile)
+            } else {
+                format!("{}: {}", labels.disconnect, default_profile)
+            };
+            conn_item = MenuItem::with_id(app, "tray_connect_disconnect", &label, true, None::<&str>)
+                .map_err(|error| error.to_string())?;
+            menu_items.push(&conn_item);
+        }
+    }
+
+    menu_items.push(&quit_item);
+
+    Menu::with_items(app, &menu_items).map_err(|error| error.to_string())
 }
 
 pub fn sync_tray<R: Runtime>(
@@ -62,6 +86,12 @@ pub fn sync_tray<R: Runtime>(
     let _guard = TRAY_SYNC
         .lock()
         .map_err(|error| format!("tray sync lock poisoned: {error}"))?;
+
+    {
+        if let Ok(mut guard) = TRAY_LABELS.lock() {
+            *guard = Some(labels.clone());
+        }
+    }
 
     if !enabled {
         if let Some(tray) = app.tray_by_id(TRAY_ID) {
@@ -100,6 +130,18 @@ pub fn sync_tray<R: Runtime>(
                     let _ = window.set_focus();
                 }
             }
+            "tray_connect_disconnect" => {
+                let status = crate::vpn::get_system_vpn_status().unwrap_or(crate::vpn::VpnConnectionStatus::Disconnected);
+                let app_clone = app.clone();
+                tauri::async_runtime::spawn(async move {
+                    if status == crate::vpn::VpnConnectionStatus::Disconnected {
+                        let _ = tauri::async_runtime::spawn_blocking(crate::vpn::connect_system_vpn).await;
+                    } else {
+                        let _ = tauri::async_runtime::spawn_blocking(crate::vpn::disconnect_system_vpn).await;
+                    }
+                    let _ = refresh_tray_menu(&app_clone);
+                });
+            }
             "tray_quit" => {
                 app.exit(0);
             }
@@ -120,6 +162,21 @@ pub fn sync_tray<R: Runtime>(
         })
         .build(app)
         .map_err(|error| error.to_string())?;
+
+    Ok(())
+}
+
+pub fn refresh_tray_menu<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
+    let labels = {
+        let guard = TRAY_LABELS.lock().map_err(|e| e.to_string())?;
+        guard.clone()
+    };
+
+    if let Some(labels) = labels {
+        if app.tray_by_id(TRAY_ID).is_some() {
+            sync_tray(app, true, &labels)?;
+        }
+    }
 
     Ok(())
 }

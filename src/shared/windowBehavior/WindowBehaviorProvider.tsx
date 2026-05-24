@@ -37,6 +37,8 @@ export function WindowBehaviorProvider({
     void syncTrayIcon(settings.closeToTray, {
       show: t("settings.windowBehavior.tray.show"),
       quit: t("settings.windowBehavior.tray.quit"),
+      connect: t("settings.windowBehavior.tray.connect"),
+      disconnect: t("settings.windowBehavior.tray.disconnect"),
     }).catch((error: unknown) => {
       console.error("Failed to sync tray icon:", error);
     });

@@ -158,8 +158,10 @@
       "closeToTray": "Close to tray icon",
       "closeToTrayDescription": "Hide the window to the system tray when closing instead of quitting the app.",
       "tray": {
-        "show": "Show autovpn",
-        "quit": "Quit"
+        "show": "Show AutoVPN",
+        "quit": "Quit",
+        "connect": "Connect",
+        "disconnect": "Disconnect"
       },
       "notifications": {
         "saved": {

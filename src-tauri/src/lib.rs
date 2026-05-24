@@ -35,6 +35,8 @@ fn sync_tray_icon(
     close_to_tray: bool,
     show_label: String,
     quit_label: String,
+    connect_label: String,
+    disconnect_label: String,
 ) -> Result<(), String> {
     tray::sync_tray(
         &app,
@@ -42,6 +44,8 @@ fn sync_tray_icon(
         &TrayLabels {
             show: show_label,
             quit: quit_label,
+            connect: connect_label,
+            disconnect: disconnect_label,
         },
     )
 }

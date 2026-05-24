@@ -3,6 +3,8 @@ import { invoke } from "@tauri-apps/api/core";
 type TrayLabels = {
   show: string;
   quit: string;
+  connect: string;
+  disconnect: string;
 };
 
 export async function syncTrayIcon(
@@ -13,6 +15,8 @@ export async function syncTrayIcon(
     closeToTray,
     showLabel: labels.show,
     quitLabel: labels.quit,
+    connectLabel: labels.connect,
+    disconnectLabel: labels.disconnect,
   });
 }
 
@@ -21,5 +25,7 @@ export async function destroyTrayIcon(): Promise<void> {
     closeToTray: false,
     showLabel: "",
     quitLabel: "",
+    connectLabel: "",
+    disconnectLabel: "",
   });
 }

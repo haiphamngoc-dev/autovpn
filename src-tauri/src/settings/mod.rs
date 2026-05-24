@@ -353,10 +353,12 @@ pub fn get_vpn_settings() -> Result<VpnSettings, String> {
 }
 
 #[tauri::command]
-pub fn save_vpn_settings(vpn: VpnSettings) -> Result<(), String> {
+pub fn save_vpn_settings(app: tauri::AppHandle, vpn: VpnSettings) -> Result<(), String> {
     let mut settings = load_settings().unwrap_or_default();
     settings.vpn = vpn.sanitize();
-    save_settings(&settings)
+    save_settings(&settings)?;
+    let _ = crate::tray::refresh_tray_menu(&app);
+    Ok(())
 }
 
 #[tauri::command]

@@ -158,8 +158,10 @@
       "closeToTray": "Đóng xuống khay hệ thống",
       "closeToTrayDescription": "Ẩn cửa sổ xuống khay hệ thống khi đóng thay vì thoát ứng dụng.",
       "tray": {
-        "show": "Hiện autovpn",
-        "quit": "Thoát"
+        "show": "Hiện AutoVPN",
+        "quit": "Thoát",
+        "connect": "Kết nối",
+        "disconnect": "Ngắt kết nối"
       },
       "notifications": {
         "saved": {
