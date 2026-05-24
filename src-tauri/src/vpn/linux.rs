@@ -85,6 +85,29 @@ fn sanitize_profile_file_key(profile_name: &str) -> String {
         .collect()
 }
 
+pub fn get_system_vpn_profile_username(profile_name: &str) -> Result<String, String> {
+    if let Ok(output) = run_nmcli(&["-s", "-g", "vpn.user-name", "connection", "show", profile_name]) {
+        let trimmed = output.trim();
+        if !trimmed.is_empty() && trimmed != "--" {
+            return Ok(trimmed.to_string());
+        }
+    }
+    if let Ok(output) = run_nmcli(&["-s", "-g", "vpn.data", "connection", "show", profile_name]) {
+        for part in output.split(',') {
+            let part = part.trim();
+            if part.starts_with("username") {
+                if let Some((_, val)) = part.split_once('=') {
+                    let val = val.trim();
+                    if !val.is_empty() {
+                        return Ok(val.to_string());
+                    }
+                }
+            }
+        }
+    }
+    Ok(String::new())
+}
+
 pub fn list_system_vpn_profiles() -> Result<Vec<VpnProfile>, String> {
     let output = run_nmcli(&["-t", "-f", "NAME,TYPE,STATE", "connection", "show"])?;
 

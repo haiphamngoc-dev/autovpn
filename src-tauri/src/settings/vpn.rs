@@ -5,8 +5,6 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct VpnProfileConfig {
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub username: Option<String>,
     #[serde(default)]
     pub use_totp: bool,
     #[serde(default)]
@@ -91,12 +89,7 @@ impl VpnSettings {
 }
 
 impl VpnProfileConfig {
-    pub fn sanitize(mut self) -> Self {
-        self.username = self
-            .username
-            .map(|value| value.trim().to_string())
-            .filter(|value| !value.is_empty());
-
+    pub fn sanitize(self) -> Self {
         self
     }
 }

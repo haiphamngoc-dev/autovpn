@@ -124,3 +124,7 @@ fn run_cmd(script: &str) -> Result<(), String> {
 
     Err(String::from_utf8_lossy(&output.stderr).trim().to_string())
 }
+
+pub fn get_system_vpn_profile_username(_profile_name: &str) -> Result<String, String> {
+    Ok(String::new())
+}

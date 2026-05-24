@@ -112,7 +112,6 @@ export function VpnProfileCredentialsModal({
     try {
       await saveVpnProfileCredentials({
         profileName,
-        username: username.trim(),
         useTotp,
         basePassword: basePassword || undefined,
         totpSecret: totpSecret || undefined,
@@ -200,12 +199,9 @@ export function VpnProfileCredentialsModal({
         >
           <TextInput
             value={username}
-            onChange={(event) => {
-              setUsername(event.currentTarget.value);
-              setError(null);
-            }}
-            disabled={isLoading || isSaving || isRemoving}
-            required
+            placeholder={t("home.vpnCredentials.noUsernameDetected")}
+            disabled
+            readOnly
           />
         </SettingField>
 

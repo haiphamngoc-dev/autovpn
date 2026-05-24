@@ -5,8 +5,6 @@ use super::totp;
 
 #[derive(Debug, Clone)]
 pub struct VpnConnectAuth {
-    #[allow(dead_code)]
-    pub username: String,
     pub password: String,
 }
 
@@ -40,12 +38,11 @@ pub fn resolve_connect_auth(profile_name: &str) -> Result<Option<VpnConnectAuth>
         return Ok(None);
     };
 
-    let username = config
-        .username
-        .as_deref()
-        .filter(|value| !value.is_empty())
-        .ok_or("vpn_username_missing".to_string())?
-        .to_string();
+    let username = super::platform::get_system_vpn_profile_username(profile_name)?;
+
+    if username.is_empty() {
+        return Err("vpn_username_missing".to_string());
+    }
 
     let secrets = vpn_credentials::load_vpn_profile_credentials(profile_name)?
         .ok_or("vpn_credentials_missing".to_string())?;
@@ -56,5 +53,5 @@ pub fn resolve_connect_auth(profile_name: &str) -> Result<Option<VpnConnectAuth>
         return Err("vpn_password_missing".to_string());
     }
 
-    Ok(Some(VpnConnectAuth { username, password }))
+    Ok(Some(VpnConnectAuth { password }))
 }

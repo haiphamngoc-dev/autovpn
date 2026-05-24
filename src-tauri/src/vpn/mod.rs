@@ -4,26 +4,26 @@ mod totp;
 mod types;
 
 #[cfg(target_os = "linux")]
-mod linux;
+pub(crate) mod linux;
 #[cfg(target_os = "macos")]
-mod macos;
+pub(crate) mod macos;
 #[cfg(target_os = "linux")]
-mod nm_monitor;
+pub(crate) mod nm_monitor;
 #[cfg(not(any(target_os = "linux", target_os = "macos", target_os = "windows")))]
-mod unsupported;
+pub(crate) mod unsupported;
 #[cfg(target_os = "windows")]
-mod windows;
+pub(crate) mod windows;
 
 pub use types::{VpnConnectionStatus, VpnProfile};
 
 #[cfg(target_os = "linux")]
-use linux as platform;
+pub(crate) use linux as platform;
 #[cfg(target_os = "macos")]
-use macos as platform;
+pub(crate) use macos as platform;
 #[cfg(not(any(target_os = "linux", target_os = "macos", target_os = "windows")))]
-use unsupported as platform;
+pub(crate) use unsupported as platform;
 #[cfg(target_os = "windows")]
-use windows as platform;
+pub(crate) use windows as platform;
 
 pub fn get_system_vpn_status() -> Result<VpnConnectionStatus, String> {
     platform::get_system_vpn_status()
@@ -94,7 +94,6 @@ pub struct VpnProfileCredentialsView {
 #[serde(rename_all = "camelCase")]
 pub struct SaveVpnProfileCredentialsPayload {
     pub profile_name: String,
-    pub username: String,
     pub use_totp: bool,
     pub base_password: Option<String>,
     pub totp_secret: Option<String>,
@@ -111,9 +110,10 @@ fn get_profile_credentials_view(profile_name: &str) -> Result<VpnProfileCredenti
         .unwrap_or_default();
 
     let totp_secret = stored.totp_secret.clone().unwrap_or_default();
+    let username = platform::get_system_vpn_profile_username(profile_name).unwrap_or_default();
 
     Ok(VpnProfileCredentialsView {
-        username: config.username.unwrap_or_default(),
+        username,
         use_totp: config.use_totp,
         base_password: stored.base_password.clone(),
         totp_secret: totp_secret.clone(),
@@ -127,12 +127,6 @@ fn save_profile_credentials(payload: SaveVpnProfileCredentialsPayload) -> Result
 
     if profile_name.is_empty() {
         return Err("vpn_profile_name_required".to_string());
-    }
-
-    let username = payload.username.trim().to_string();
-
-    if username.is_empty() {
-        return Err("vpn_username_required".to_string());
     }
 
     let mut stored =
@@ -167,7 +161,6 @@ fn save_profile_credentials(payload: SaveVpnProfileCredentialsPayload) -> Result
     }
 
     let preview_config = crate::settings::VpnProfileConfig {
-        username: Some(username.clone()),
         use_totp: payload.use_totp,
         has_credentials: true,
     };
@@ -177,7 +170,6 @@ fn save_profile_credentials(payload: SaveVpnProfileCredentialsPayload) -> Result
 
     let mut settings = crate::settings::load_settings().unwrap_or_default();
     let config = settings.vpn.profile_config_mut(&profile_name);
-    config.username = Some(username);
     config.use_totp = payload.use_totp;
     config.has_credentials = true;
 
@@ -196,7 +188,6 @@ fn remove_profile_credentials(profile_name: &str) -> Result<(), String> {
     let mut settings = crate::settings::load_settings().unwrap_or_default();
 
     if let Some(config) = settings.vpn.profile_configs.get_mut(&profile_name) {
-        config.username = None;
         config.use_totp = false;
         config.has_credentials = false;
     }
@@ -225,6 +216,13 @@ pub async fn save_vpn_profile_credentials(
 #[tauri::command]
 pub async fn remove_vpn_profile_credentials(profile_name: String) -> Result<(), String> {
     tauri::async_runtime::spawn_blocking(move || remove_profile_credentials(&profile_name))
+        .await
+        .map_err(|error| format!("vpn_task_failed:{error}"))?
+}
+
+#[tauri::command]
+pub async fn get_system_vpn_profile_username(profile_name: String) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || platform::get_system_vpn_profile_username(&profile_name))
         .await
         .map_err(|error| format!("vpn_task_failed:{error}"))?
 }

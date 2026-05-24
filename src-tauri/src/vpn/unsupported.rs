@@ -18,3 +18,7 @@ pub fn disconnect_system_vpn(_profile_name: Option<&str>) -> Result<(), String> 
 pub fn list_system_vpn_profiles() -> Result<Vec<VpnProfile>, String> {
     Ok(Vec::new())
 }
+
+pub fn get_system_vpn_profile_username(_profile_name: &str) -> Result<String, String> {
+    Ok(String::new())
+}

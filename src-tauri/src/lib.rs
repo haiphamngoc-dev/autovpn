@@ -21,7 +21,7 @@ use tray::TrayLabels;
 use vpn::{
     connect_system_vpn, connect_vpn, disconnect_vpn, get_vpn_profile_credentials, get_vpn_profiles,
     get_vpn_status, remove_vpn_profile_credentials, save_vpn_profile_credentials,
-    start_vpn_status_monitor,
+    start_vpn_status_monitor, get_system_vpn_profile_username,
 };
 
 #[tauri::command]
@@ -125,6 +125,7 @@ pub fn run() {
             get_vpn_profile_credentials,
             save_vpn_profile_credentials,
             remove_vpn_profile_credentials,
+            get_system_vpn_profile_username,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -1,7 +1,6 @@
 import { invoke } from "@tauri-apps/api/core";
 
 export type VpnProfileConfig = {
-  username: string | null;
   useTotp: boolean;
   hasCredentials: boolean;
 };
@@ -34,7 +33,6 @@ export type VpnProfileCredentialsView = {
 
 export type SaveVpnProfileCredentialsPayload = {
   profileName: string;
-  username: string;
   useTotp: boolean;
   basePassword?: string;
   totpSecret?: string;
@@ -57,10 +55,7 @@ let cache: VpnSettings | null = null;
 function normalizeProfileConfig(
   config: Partial<VpnProfileConfig> | null | undefined
 ): VpnProfileConfig {
-  const username = config?.username?.trim();
-
   return {
-    username: username || null,
     useTotp: Boolean(config?.useTotp),
     hasCredentials: Boolean(config?.hasCredentials),
   };
@@ -118,7 +113,7 @@ export function isProfileReadyForConnect(
 
   const config = getProfileConfig(settings, profileName);
 
-  return Boolean(config?.hasCredentials && config.username);
+  return Boolean(config?.hasCredentials);
 }
 
 export async function loadVpnSettings(): Promise<VpnSettings> {
