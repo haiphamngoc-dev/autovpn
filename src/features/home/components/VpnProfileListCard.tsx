@@ -66,6 +66,7 @@ function credentialsBadgeColor(
 export function VpnProfileListCard() {
   const { t } = useTranslation();
   const { status: vpnStatus } = useVpnStatus();
+  const isVpnActive = vpnStatus !== "disconnected";
   const [profiles, setProfiles] = useState<VpnProfile[]>([]);
   const [vpnSettings, setVpnSettings] = useState<VpnSettings | null>(null);
   const [selectedProfile, setSelectedProfile] = useState<string | null>(null);
@@ -218,9 +219,15 @@ export function VpnProfileListCard() {
             <Text className={settingCardStyles.sectionTitle} mb={4}>
               {t("home.vpnProfiles.title")}
             </Text>
-            <Text className={settingCardStyles.cardDescription} mb={0}>
-              {t("home.vpnProfiles.description")}
-            </Text>
+            {isVpnActive ? (
+              <Text className={styles.warning} mb={0}>
+                {t("home.vpnProfiles.disabledWhileActive")}
+              </Text>
+            ) : (
+              <Text className={settingCardStyles.cardDescription} mb={0}>
+                {t("home.vpnProfiles.description")}
+              </Text>
+            )}
           </div>
         </div>
 
@@ -229,6 +236,7 @@ export function VpnProfileListCard() {
           color="gray"
           size="compact-sm"
           loading={isLoading}
+          disabled={isVpnActive}
           leftSection={
             <IconRefresh size={ICON_SIZE} stroke={ICON_STROKE} aria-hidden />
           }
@@ -268,7 +276,7 @@ export function VpnProfileListCard() {
                 <div key={profile.name} className={styles.row}>
                   <Radio
                     value={profile.name}
-                    disabled={isSaving}
+                    disabled={isSaving || isVpnActive}
                     className={styles.radio}
                     aria-label={profile.name}
                   />
@@ -286,6 +294,7 @@ export function VpnProfileListCard() {
                     variant="subtle"
                     color="gray"
                     size="compact-sm"
+                    disabled={isVpnActive}
                     leftSection={
                       <IconSettings
                         size={ICON_SIZE}

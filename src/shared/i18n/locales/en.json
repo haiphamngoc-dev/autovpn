@@ -33,6 +33,7 @@
     "vpnProfiles": {
       "title": "VPN profiles",
       "description": "Choose the default profile used for system connect and disconnect.",
+      "disabledWhileActive": "Cannot change default profile or configure settings while VPN is active.",
       "empty": "No VPN profiles found on this system.",
       "refresh": "Refresh",
       "configure": "Configure",
@@ -292,7 +293,8 @@
     },
     "aboutAuthor": {
       "title": "About Author",
-      "role": "Software Engineer & Creator"
+      "role": "Software Engineer & Creator",
+      "license": "License"
     }
   },
   "appLock": {

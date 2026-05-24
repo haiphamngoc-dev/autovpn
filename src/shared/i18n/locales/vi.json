@@ -33,6 +33,7 @@
     "vpnProfiles": {
       "title": "Danh sách VPN",
       "description": "Chọn profile mặc định dùng cho thao tác kết nối/ngắt kết nối hệ thống.",
+      "disabledWhileActive": "Không thể thay đổi profile mặc định hoặc cấu hình khi VPN đang hoạt động.",
       "empty": "Không tìm thấy profile VPN nào trên hệ thống.",
       "refresh": "Làm mới",
       "configure": "Cấu hình",
@@ -292,7 +293,8 @@
     },
     "aboutAuthor": {
       "title": "Về tác giả",
-      "role": "Kỹ sư phần mềm & Sáng lập"
+      "role": "Kỹ sư phần mềm & Sáng lập",
+      "license": "Giấy phép"
     }
   },
   "appLock": {

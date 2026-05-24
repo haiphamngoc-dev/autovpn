@@ -61,3 +61,10 @@
 .error {
   color: var(--mantine-color-red-6);
 }
+
+.warning {
+  margin: 0;
+  font-size: var(--mantine-font-size-xs);
+  color: var(--mantine-color-orange-6);
+  line-height: 1.45;
+}

@@ -1,4 +1,4 @@
-import { ActionIcon, Box, Group, Text } from "@mantine/core";
+import { ActionIcon, Box, Group, Text, Badge } from "@mantine/core";
 import { IconBrandGithub, IconUserCircle } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { settingCardStyles } from "@shared/layout";
@@ -8,7 +8,7 @@ export function AboutAuthorCard() {
   const { t } = useTranslation();
 
   const handleOpenGithub = () => {
-    void openUrl("https://github.com/haiphamngoc-dev");
+    void openUrl("https://github.com/haiphamngoc-dev/autovpn");
   };
 
   return (
@@ -39,10 +39,24 @@ export function AboutAuthorCard() {
           color="gray"
           size="lg"
           onClick={handleOpenGithub}
-          aria-label="GitHub Profile"
+          aria-label="GitHub Repository"
         >
           <IconBrandGithub size={18} stroke={1.5} />
         </ActionIcon>
+      </Group>
+
+      <Group justify="space-between" align="center" mt="md" pt="sm" style={{ borderTop: "1px solid var(--mantine-color-default-border)" }}>
+        <Box>
+          <Text size="xs" c="dimmed">
+            {t("settings.aboutAuthor.license")}
+          </Text>
+          <Text size="xs" fw={500} c="dimmed">
+            MIT License &copy; 2026 Hai Pham Ngoc
+          </Text>
+        </Box>
+        <Badge variant="outline" color="blue" size="sm">
+          MIT
+        </Badge>
       </Group>
     </Box>
   );
