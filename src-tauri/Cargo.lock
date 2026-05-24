@@ -3,6 +3,38 @@
 version = 4
 
 [[package]]
+name = "AutoVPN"
+version = "0.1.1"
+dependencies = [
+ "aes-gcm",
+ "apple-native-keyring-store",
+ "base64 0.22.1",
+ "chrono",
+ "data-encoding",
+ "dbus-secret-service-keyring-store",
+ "dirs 6.0.0",
+ "futures-util",
+ "hmac",
+ "keyring-core",
+ "rand",
+ "serde",
+ "serde_json",
+ "sha2",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-autostart",
+ "tauri-plugin-opener",
+ "tauri-plugin-single-instance",
+ "thiserror 2.0.18",
+ "tokio",
+ "totp-lite",
+ "tracing",
+ "tracing-subscriber",
+ "windows-native-keyring-store",
+ "zbus",
+]
+
+[[package]]
 name = "adler2"
 version = "2.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -268,38 +300,6 @@ name = "autocfg"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c08606f8c3cbf4ce6ec8e28fb0014a2c086708fe954eaa885384a6165172e7e8"
-
-[[package]]
-name = "autovpn"
-version = "0.1.0"
-dependencies = [
- "aes-gcm",
- "apple-native-keyring-store",
- "base64 0.22.1",
- "chrono",
- "data-encoding",
- "dbus-secret-service-keyring-store",
- "dirs 6.0.0",
- "futures-util",
- "hmac",
- "keyring-core",
- "rand",
- "serde",
- "serde_json",
- "sha2",
- "tauri",
- "tauri-build",
- "tauri-plugin-autostart",
- "tauri-plugin-opener",
- "tauri-plugin-single-instance",
- "thiserror 2.0.18",
- "tokio",
- "totp-lite",
- "tracing",
- "tracing-subscriber",
- "windows-native-keyring-store",
- "zbus",
-]
 
 [[package]]
 name = "base64"
