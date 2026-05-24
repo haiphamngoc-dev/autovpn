@@ -32,6 +32,7 @@ fn sanitize_profile_key(profile_name: &str) -> String {
         .collect()
 }
 
+#[allow(dead_code)]
 pub fn has_vpn_profile_credentials(profile_name: &str) -> Result<bool, String> {
     let entry = profile_entry(profile_name)?;
 

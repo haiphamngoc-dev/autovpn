@@ -5,6 +5,7 @@ use super::totp;
 
 #[derive(Debug, Clone)]
 pub struct VpnConnectAuth {
+    #[allow(dead_code)]
     pub username: String,
     pub password: String,
 }
