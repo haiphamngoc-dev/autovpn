@@ -21,7 +21,7 @@ export function WindowTitleBar() {
           <Group gap="xs" wrap="nowrap" className={styles.brand}>
             <Image
               className={styles.logo}
-              src="/tauri.svg"
+              src="/logo.png"
               alt=""
               w={16}
               h={16}
