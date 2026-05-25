@@ -106,7 +106,7 @@ jobs:
             
             git add updater.json
             git commit -m "chore: update updater.json for version $VERSION [skip ci]" || true
-            git push origin main || true
+            git push origin HEAD:main || true
           else
             echo "No signature or update package file found, skipping updater.json update"
           fi
