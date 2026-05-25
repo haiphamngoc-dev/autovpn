@@ -69,9 +69,9 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: "AutoVPN ${{ github.ref_name }}"
           releaseBody: |
-            Release version ${{ github.ref_name }} with manual .deb package download option.
-            - Added UI buttons to allow downloading the new `.deb` installation package via native save file dialog.
-            - Added backend download controller using Rust.
+            Release version ${{ github.ref_name }} to test manual .deb package download.
+            - Includes the complete UI manual download buttons and Rust background controller.
+            - Allows testing the new Debian package direct download and native Save Dialog flow.
           releaseDraft: false
           prerelease: false
 
