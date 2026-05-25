@@ -69,8 +69,8 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: "AutoVPN ${{ github.ref_name }}"
           releaseBody: |
-            Release version ${{ github.ref_name }} with updater asset path fix.
-            - Fixed updater.json to reference the correct target update package instead of intermediate package.
+            Release version ${{ github.ref_name }} with AppImage updater support.
+            - Configured updater.json generation to use the AppImage package as the updater target.
           releaseDraft: false
           prerelease: false
 
@@ -79,8 +79,13 @@ jobs:
           VERSION=${{ github.ref_name }}
           VERSION_NUM=${VERSION#v}
           
-          TAR_PATH=$(find src-tauri/target/release/bundle -name "*.tar.gz" ! -name "control.tar.gz" ! -name "data.tar.gz" | head -n 1)
-          SIG_PATH=$(find src-tauri/target/release/bundle -name "*.sig" ! -name "*control*" ! -name "*data*" | head -n 1)
+          TAR_PATH=$(find src-tauri/target/release/bundle -name "*.AppImage" | head -n 1)
+          SIG_PATH=$(find src-tauri/target/release/bundle -name "*.AppImage.sig" | head -n 1)
+          
+          if [ -z "$TAR_PATH" ] || [ -z "$SIG_PATH" ]; then
+            TAR_PATH=$(find src-tauri/target/release/bundle -name "*.tar.gz" ! -name "control.tar.gz" ! -name "data.tar.gz" | head -n 1)
+            SIG_PATH=$(find src-tauri/target/release/bundle -name "*.sig" ! -name "*control*" ! -name "*data*" | head -n 1)
+          fi
           
           if [ -n "$SIG_PATH" ] && [ -n "$TAR_PATH" ]; then
             SIGNATURE=$(cat "$SIG_PATH")
