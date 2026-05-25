@@ -1,5 +1,5 @@
-import { ActionIcon, Box, Group, Text, Badge } from "@mantine/core";
-import { IconBrandGithub, IconUserCircle } from "@tabler/icons-react";
+import { ActionIcon, Box, Group, Text, Badge, Button } from "@mantine/core";
+import { IconBrandGithub, IconUserCircle, IconMessageReport } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { settingCardStyles } from "@shared/layout";
 import { openUrl } from "@tauri-apps/plugin-opener";
@@ -9,6 +9,10 @@ export function AboutAuthorCard() {
 
   const handleOpenGithub = () => {
     void openUrl("https://github.com/haiphamngoc-dev/autovpn");
+  };
+
+  const handleOpenFeedback = () => {
+    void openUrl("https://github.com/haiphamngoc-dev/autovpn/issues");
   };
 
   return (
@@ -34,15 +38,27 @@ export function AboutAuthorCard() {
           </Text>
         </Box>
 
-        <ActionIcon
-          variant="light"
-          color="gray"
-          size="lg"
-          onClick={handleOpenGithub}
-          aria-label="GitHub Repository"
-        >
-          <IconBrandGithub size={18} stroke={1.5} />
-        </ActionIcon>
+        <Group gap="xs">
+          <Button
+            variant="light"
+            color="blue"
+            size="xs"
+            leftSection={<IconMessageReport size={14} />}
+            onClick={handleOpenFeedback}
+          >
+            {t("settings.aboutAuthor.feedback", { defaultValue: "Feedback" })}
+          </Button>
+
+          <ActionIcon
+            variant="light"
+            color="gray"
+            size="md"
+            onClick={handleOpenGithub}
+            aria-label="GitHub Repository"
+          >
+            <IconBrandGithub size={16} stroke={1.5} />
+          </ActionIcon>
+        </Group>
       </Group>
 
       <Group justify="space-between" align="center" mt="md" pt="sm" style={{ borderTop: "1px solid var(--mantine-color-default-border)" }}>
