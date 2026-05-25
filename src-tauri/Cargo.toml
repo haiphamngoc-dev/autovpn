@@ -1,6 +1,6 @@
 [package]
 name = "AutoVPN"
-version = "0.3.1"
+version = "0.4.0"
 description = "A premium system tray utility for auto-connecting, auto-reconnecting, and managing dynamic OTP/TOTP credentials for system VPN connections."
 authors = ["Hai Pham Ngoc <ngochai285nd@gmail.com>"]
 edition = "2021"
@@ -38,6 +38,7 @@ tokio = "1.52.3"
 tracing = "0.1.44"
 tracing-subscriber = "0.3.23"
 tauri-plugin-autostart = "2.5.1"
+tauri-plugin-updater = "2"
 data-encoding = "2.9"
 totp-lite = "2.0"
 

@@ -63,22 +63,51 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "AutoVPN ${{ github.ref_name }}"
           releaseBody: |
-            ## What's New in AutoVPN ${{ github.ref_name }} 🚀
-
-            We are excited to release AutoVPN ${{ github.ref_name }}, featuring a major upgrade to real-time system monitoring, enhanced system tray controls, and optimized continuous integration!
-
-            ### Key Enhancements:
-            * 📊 **Real-time Activity Console**: Added a high-performance terminal console directly on the home page displaying detailed NetworkManager VPN activities (connection, failure, and state transitions) in real-time.
-            * 💾 **State Persistence**: Log logs are buffered securely in the Rust backend (`std::sync::OnceLock`), ensuring your log history is preserved perfectly across page navigations and settings changes.
-            * 🎨 **Adaptive Themes**: The log console background dynamically inherits native Mantine theme properties (`var(--mantine-color-default-hover)`), rendering beautifully in both Light & Dark modes.
-            * 📐 **Smart Collapsible Layout**: The console can be collapsed or expanded at will. Your preference is persisted automatically using local storage.
-            * ⚙️ **Tray Controls Simplified**: Simplified the tray system "Reconnect" option for a cleaner menu aesthetics.
-            * 🛠️ **DevOps & CI/CD**: Seamless GitHub Actions automated packaging (Node.js 24 runtime, advanced cache layers) to build and release `.deb` packages effortlessly.
-
-            Enjoy secure, automated, and beautiful VPN controls on Linux!
+            Release version ${{ github.ref_name }} with automatic updater support.
+            - Added native auto-updater plugin and configurations.
+            - Automated updater manifest file updates inside release pipeline.
           releaseDraft: false
           prerelease: false
+
+      - name: Generate and Update updater.json
+        run: |
+          VERSION=${{ github.ref_name }}
+          VERSION_NUM=${VERSION#v}
+          
+          DEB_PATH=$(find src-tauri/target/release/bundle -name "*.deb" | head -n 1)
+          SIG_PATH=$(find src-tauri/target/release/bundle -name "*.deb.sig" | head -n 1)
+          
+          if [ -n "$SIG_PATH" ]; then
+            SIGNATURE=$(cat "$SIG_PATH")
+            
+            cat <<EOF > updater.json
+          {
+            "version": "$VERSION_NUM",
+            "notes": "Release AutoVPN $VERSION with auto-update support.",
+            "pub_date": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+            "platforms": {
+              "linux-x86_64": {
+                "signature": "$SIGNATURE",
+                "url": "https://github.com/haiphamngoc-dev/autovpn/releases/download/$VERSION/AutoVPN_${VERSION_NUM}_amd64.deb"
+              }
+            }
+          }
+          EOF
+            
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            
+            git add updater.json
+            git commit -m "chore: update updater.json for version $VERSION [skip ci]" || true
+            git push origin main || true
+          else
+            echo "No signature file found, skipping updater.json update"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

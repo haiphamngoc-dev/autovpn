@@ -73,6 +73,7 @@ pub fn run() {
             tauri_plugin_autostart::MacosLauncher::LaunchAgent,
             None,
         ))
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .setup(|app| {
             let settings = load_settings().unwrap_or_default();
             window_behavior::apply(app.handle(), &settings.window_behavior)?;
