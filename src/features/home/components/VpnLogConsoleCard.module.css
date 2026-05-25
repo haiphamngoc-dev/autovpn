@@ -2,7 +2,11 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--mantine-spacing-md);
+  transition: opacity 0.2s ease;
+}
+
+.cardHeader:hover {
+  opacity: 0.9;
 }
 
 .titleGroup {
@@ -18,11 +22,11 @@
 }
 
 .consoleContainer {
-  background-color: #0b0c10;
-  border-radius: 8px;
-  border: 1px solid #1a1c23;
+  background-color: var(--mantine-color-default-hover);
+  border-radius: var(--mantine-radius-md);
+  border: 1px solid var(--mantine-color-default-border);
   padding: var(--mantine-spacing-md);
-  height: 240px;
+  height: 200px;
   overflow-y: auto;
   font-family: var(--mantine-font-family-monospace, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
   font-size: 12px;
@@ -31,21 +35,21 @@
 
 /* Scrollbar styles for a custom terminal look */
 .consoleContainer::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 .consoleContainer::-webkit-scrollbar-track {
-  background: #0b0c10;
+  background: transparent;
 }
 
 .consoleContainer::-webkit-scrollbar-thumb {
-  background: #1a1c23;
-  border-radius: 4px;
+  background: var(--mantine-color-default-border);
+  border-radius: 3px;
 }
 
 .consoleContainer::-webkit-scrollbar-thumb:hover {
-  background: #2b2f3d;
+  background: var(--mantine-color-dimmed);
 }
 
 .logLine {
@@ -56,13 +60,13 @@
 }
 
 .logTimestamp {
-  color: #4b5563;
+  color: var(--mantine-color-dimmed);
   flex-shrink: 0;
   user-select: none;
 }
 
 .logSource {
-  color: #818cf8;
+  color: var(--mantine-color-indigo-filled);
   font-weight: 600;
   flex-shrink: 0;
   user-select: none;
@@ -76,19 +80,19 @@
 }
 
 .level_info {
-  color: #38bdf8;
+  color: var(--mantine-color-cyan-filled);
 }
 
 .level_success {
-  color: #34d399;
+  color: var(--mantine-color-teal-filled);
 }
 
 .level_error {
-  color: #f87171;
+  color: var(--mantine-color-red-filled);
 }
 
 .logMessage {
-  color: #d1d5db;
+  color: var(--mantine-color-text);
   word-break: break-all;
 }
 
@@ -97,7 +101,7 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: #4b5563;
+  color: var(--mantine-color-dimmed);
   font-style: italic;
-  font-size: 13px;
+  font-size: 12px;
 }
