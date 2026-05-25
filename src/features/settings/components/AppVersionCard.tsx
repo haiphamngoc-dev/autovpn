@@ -17,7 +17,6 @@ export function AppVersionCard() {
   const [newVersion, setNewVersion] = useState<string>("");
   const [changelog, setChangelog] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [updateObj, setUpdateObj] = useState<any>(null);
 
   useEffect(() => {
     void getVersion().then((version) => {
@@ -35,7 +34,6 @@ export function AppVersionCard() {
       setChecking(false);
 
       if (update) {
-        setUpdateObj(update);
         setNewVersion(update.version);
         setChangelog(update.body || "");
         setUpdateState("available");
@@ -62,34 +60,6 @@ export function AppVersionCard() {
       
       notifications.show({
         title: t("settings.update.notifications.error.title", { defaultValue: "Update Check Failed" }),
-        message: errMsg,
-        color: "red",
-      });
-    }
-  };
-
-  const handleInstallUpdate = async () => {
-    if (!updateObj) return;
-
-    setUpdateState("downloading");
-    try {
-      // Start download and installation
-      await updateObj.downloadAndInstall();
-      setUpdateState("upToDate");
-      
-      notifications.show({
-        title: t("settings.update.notifications.success.title", { defaultValue: "Update Completed" }),
-        message: t("settings.update.notifications.success.message", { defaultValue: "AutoVPN has been upgraded successfully! Please restart the application to apply the changes." }),
-        color: "green",
-        autoClose: false,
-      });
-    } catch (err: any) {
-      setUpdateState("error");
-      const errMsg = err?.toString() || "Failed to download update";
-      setErrorMessage(errMsg);
-      
-      notifications.show({
-        title: t("settings.update.notifications.installFailed.title", { defaultValue: "Installation Failed" }),
         message: errMsg,
         color: "red",
       });
@@ -178,24 +148,15 @@ export function AppVersionCard() {
               {changelog}
             </Text>
           )}
-          <Group grow gap="xs">
-            <Button
-              size="xs"
-              variant="filled"
-              leftSection={<IconCloudDownload size={14} />}
-              onClick={handleDownloadDeb}
-            >
-              {t("settings.update.actions.downloadDeb", { defaultValue: "Download .deb" })}
-            </Button>
-            <Button
-              size="xs"
-              variant="outline"
-              leftSection={<IconRefresh size={14} />}
-              onClick={handleInstallUpdate}
-            >
-              {t("settings.update.actions.downloadInstall", { defaultValue: "Auto Update (AppImage)" })}
-            </Button>
-          </Group>
+          <Button
+            size="xs"
+            variant="filled"
+            leftSection={<IconCloudDownload size={14} />}
+            onClick={handleDownloadDeb}
+            fullWidth
+          >
+            {t("settings.update.actions.downloadDeb", { defaultValue: "Download .deb" })}
+          </Button>
         </Alert>
       )}
 
