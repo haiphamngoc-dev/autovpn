@@ -69,9 +69,9 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: "AutoVPN ${{ github.ref_name }}"
           releaseBody: |
-            Release version ${{ github.ref_name }} with automatic updater support.
-            - Added native auto-updater plugin and configurations.
-            - Automated updater manifest file updates inside release pipeline.
+            Release version ${{ github.ref_name }} with auto-updater interface.
+            - Added premium "Version & Update" setting card to check for updates.
+            - Fully integrated tauri v2 updater download and application flows.
           releaseDraft: false
           prerelease: false
 
