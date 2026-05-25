@@ -33,6 +33,7 @@ pub struct TrayLabels {
     pub quit: String,
     pub connect: String,
     pub disconnect: String,
+    pub reconnect: String,
 }
 
 fn tray_icon<'a, R: Runtime>(app: &'a AppHandle<R>) -> Result<Image<'a>, String> {
@@ -59,6 +60,7 @@ fn build_tray_menu<R: Runtime>(app: &AppHandle<R>, labels: &TrayLabels) -> Resul
     let mut menu_items: Vec<&dyn tauri::menu::IsMenuItem<R>> = vec![&show_item];
 
     let conn_item; // Keep it in scope
+    let reconn_item; // Keep it in scope
     if let Some(ref default_profile) = settings.vpn.default_profile {
         if !default_profile.is_empty() {
             let status = crate::vpn::get_system_vpn_status().unwrap_or(crate::vpn::VpnConnectionStatus::Disconnected);
@@ -70,6 +72,13 @@ fn build_tray_menu<R: Runtime>(app: &AppHandle<R>, labels: &TrayLabels) -> Resul
             conn_item = MenuItem::with_id(app, "tray_connect_disconnect", &label, true, None::<&str>)
                 .map_err(|error| error.to_string())?;
             menu_items.push(&conn_item);
+
+            if status != crate::vpn::VpnConnectionStatus::Disconnected {
+                let reconn_label = format!("{}: {}", labels.reconnect, default_profile);
+                reconn_item = MenuItem::with_id(app, "tray_reconnect", &reconn_label, true, None::<&str>)
+                    .map_err(|error| error.to_string())?;
+                menu_items.push(&reconn_item);
+            }
         }
     }
 
@@ -139,6 +148,13 @@ pub fn sync_tray<R: Runtime>(
                     } else {
                         let _ = tauri::async_runtime::spawn_blocking(crate::vpn::disconnect_system_vpn).await;
                     }
+                    let _ = refresh_tray_menu(&app_clone);
+                });
+            }
+            "tray_reconnect" => {
+                let app_clone = app.clone();
+                tauri::async_runtime::spawn(async move {
+                    let _ = tauri::async_runtime::spawn_blocking(crate::vpn::reconnect_system_vpn).await;
                     let _ = refresh_tray_menu(&app_clone);
                 });
             }

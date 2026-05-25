@@ -10,6 +10,7 @@ import {
 import {
   connectVpn,
   disconnectVpn,
+  reconnectVpn,
   fetchVpnStatus,
   VPN_STATUS_CHANGED_EVENT,
 } from "./api";
@@ -119,15 +120,33 @@ export function VpnStatusProvider({
     }
   }, [isBusy, refreshStatus, status]);
 
+  const reconnect = useCallback(async () => {
+    if (isBusy) {
+      return;
+    }
+
+    setIsBusy(true);
+
+    try {
+      await reconnectVpn();
+      await refreshStatus();
+    } catch {
+      await refreshStatus();
+    } finally {
+      setIsBusy(false);
+    }
+  }, [isBusy, refreshStatus]);
+
   const value = useMemo(
     () => ({
       status,
       connect,
       disconnect,
+      reconnect,
       isBusy,
       refreshStatus,
     }),
-    [connect, disconnect, isBusy, refreshStatus, status]
+    [connect, disconnect, reconnect, isBusy, refreshStatus, status]
   );
 
   return (

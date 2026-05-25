@@ -40,6 +40,12 @@ pub fn disconnect_system_vpn() -> Result<(), String> {
     platform::disconnect_system_vpn(profile.as_deref())
 }
 
+pub fn reconnect_system_vpn() -> Result<(), String> {
+    let _ = disconnect_system_vpn();
+    std::thread::sleep(std::time::Duration::from_millis(1500));
+    connect_system_vpn()
+}
+
 pub fn list_system_vpn_profiles() -> Result<Vec<VpnProfile>, String> {
     platform::list_system_vpn_profiles()
 }
@@ -72,6 +78,11 @@ pub async fn connect_vpn() -> Result<(), String> {
 #[tauri::command]
 pub async fn disconnect_vpn() -> Result<(), String> {
     run_vpn_task(disconnect_system_vpn).await
+}
+
+#[tauri::command]
+pub async fn reconnect_vpn() -> Result<(), String> {
+    run_vpn_task(reconnect_system_vpn).await
 }
 
 #[tauri::command]

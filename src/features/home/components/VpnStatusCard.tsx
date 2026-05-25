@@ -1,4 +1,4 @@
-import { Box, Button, Text } from "@mantine/core";
+import { Box, Button, Text, Group } from "@mantine/core";
 import {
   ConnectionStatusBadge,
   useVpnStatus,
@@ -16,6 +16,7 @@ import {
   IconPlugConnectedX,
   IconShield,
   IconShieldCheck,
+  IconRefresh,
 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -41,7 +42,7 @@ const HEADER_ICON = {
 
 export function VpnStatusCard() {
   const { t } = useTranslation();
-  const { status, connect, disconnect, isBusy } = useVpnStatus();
+  const { status, connect, disconnect, reconnect, isBusy } = useVpnStatus();
   const [vpnSettings, setVpnSettings] = useState<VpnSettings | null>(null);
 
   useEffect(() => {
@@ -77,6 +78,10 @@ export function VpnStatusCard() {
     disconnect().catch(() => undefined);
   }
 
+  function handleReconnect() {
+    reconnect().catch(() => undefined);
+  }
+
   function renderDescription() {
     if (!hasDefaultProfile) {
       return t("home.vpnStatus.noDefaultProfile");
@@ -98,24 +103,44 @@ export function VpnStatusCard() {
 
     if (isConnected) {
       return (
-        <Button
-          size={isBottom ? "sm" : "compact-sm"}
-          fullWidth={isBottom}
-          color="red"
-          variant="filled"
-          loading={isDisconnectPending}
-          disabled={isDisconnectPending}
-          leftSection={
-            <IconPlugConnectedX
-              size={ACTION_ICON_SIZE}
-              stroke={ICON_STROKE}
-              aria-hidden
-            />
-          }
-          onClick={handleDisconnect}
-        >
-          {t("home.vpnStatus.disconnect")}
-        </Button>
+        <Group gap="xs" grow={isBottom} wrap={isBottom ? undefined : "nowrap"}>
+          <Button
+            size={isBottom ? "sm" : "compact-sm"}
+            fullWidth={isBottom}
+            color="red"
+            variant="filled"
+            loading={isDisconnectPending}
+            disabled={isDisconnectPending || isConnectPending}
+            leftSection={
+              <IconPlugConnectedX
+                size={ACTION_ICON_SIZE}
+                stroke={ICON_STROKE}
+                aria-hidden
+              />
+            }
+            onClick={handleDisconnect}
+          >
+            {t("home.vpnStatus.disconnect")}
+          </Button>
+          <Button
+            size={isBottom ? "sm" : "compact-sm"}
+            fullWidth={isBottom}
+            color="blue"
+            variant="light"
+            loading={isConnectPending}
+            disabled={isDisconnectPending || isConnectPending}
+            leftSection={
+              <IconRefresh
+                size={ACTION_ICON_SIZE}
+                stroke={ICON_STROKE}
+                aria-hidden
+              />
+            }
+            onClick={handleReconnect}
+          >
+            {t("home.vpnStatus.reconnect")}
+          </Button>
+        </Group>
       );
     }
 

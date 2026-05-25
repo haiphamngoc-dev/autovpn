@@ -5,6 +5,7 @@ type TrayLabels = {
   quit: string;
   connect: string;
   disconnect: string;
+  reconnect: string;
 };
 
 export async function syncTrayIcon(
@@ -17,6 +18,7 @@ export async function syncTrayIcon(
     quitLabel: labels.quit,
     connectLabel: labels.connect,
     disconnectLabel: labels.disconnect,
+    reconnectLabel: labels.reconnect,
   });
 }
 
@@ -27,5 +29,6 @@ export async function destroyTrayIcon(): Promise<void> {
     quitLabel: "",
     connectLabel: "",
     disconnectLabel: "",
+    reconnectLabel: "",
   });
 }

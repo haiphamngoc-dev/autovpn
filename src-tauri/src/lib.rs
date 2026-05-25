@@ -19,7 +19,7 @@ use settings::{
 use tauri::WindowEvent;
 use tray::TrayLabels;
 use vpn::{
-    connect_system_vpn, connect_vpn, disconnect_vpn, get_vpn_profile_credentials, get_vpn_profiles,
+    connect_system_vpn, connect_vpn, disconnect_vpn, reconnect_vpn, get_vpn_profile_credentials, get_vpn_profiles,
     get_vpn_status, remove_vpn_profile_credentials, save_vpn_profile_credentials,
     start_vpn_status_monitor, get_system_vpn_profile_username,
 };
@@ -37,6 +37,7 @@ fn sync_tray_icon(
     quit_label: String,
     connect_label: String,
     disconnect_label: String,
+    reconnect_label: String,
 ) -> Result<(), String> {
     tray::sync_tray(
         &app,
@@ -46,6 +47,7 @@ fn sync_tray_icon(
             quit: quit_label,
             connect: connect_label,
             disconnect: disconnect_label,
+            reconnect: reconnect_label,
         },
     )
 }
@@ -126,6 +128,7 @@ pub fn run() {
             get_vpn_profiles,
             connect_vpn,
             disconnect_vpn,
+            reconnect_vpn,
             get_vpn_profile_credentials,
             save_vpn_profile_credentials,
             remove_vpn_profile_credentials,

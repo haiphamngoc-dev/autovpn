@@ -26,6 +26,7 @@
       "descriptionConnecting": "Đang thiết lập đường hầm VPN ({{profile}})…",
       "connect": "Kết nối",
       "disconnect": "Ngắt kết nối",
+      "reconnect": "Kết nối lại",
       "noDefaultProfile": "Hãy chọn profile VPN mặc định bên dưới trước khi kết nối.",
       "noCredentials": "Hãy cấu hình {{profile}} trong danh sách VPN trước khi kết nối.",
       "usesTotp": "Mật khẩu OTP động sẽ được tạo khi kết nối."
@@ -161,7 +162,8 @@
         "show": "Hiện AutoVPN",
         "quit": "Thoát",
         "connect": "Kết nối",
-        "disconnect": "Ngắt kết nối"
+        "disconnect": "Ngắt kết nối",
+        "reconnect": "Kết nối lại"
       },
       "notifications": {
         "saved": {

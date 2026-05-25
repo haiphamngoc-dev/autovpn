@@ -16,6 +16,10 @@ export async function disconnectVpn(): Promise<void> {
   await invoke("disconnect_vpn");
 }
 
+export async function reconnectVpn(): Promise<void> {
+  await invoke("reconnect_vpn");
+}
+
 export async function fetchVpnProfiles(): Promise<VpnProfile[]> {
   return invoke<VpnProfile[]>("get_vpn_profiles");
 }

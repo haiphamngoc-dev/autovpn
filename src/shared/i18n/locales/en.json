@@ -26,6 +26,7 @@
       "descriptionConnecting": "Establishing VPN tunnel ({{profile}})…",
       "connect": "Connect",
       "disconnect": "Disconnect",
+      "reconnect": "Reconnect",
       "noDefaultProfile": "Select a default VPN profile below before connecting.",
       "noCredentials": "Configure {{profile}} in the VPN list before connecting.",
       "usesTotp": "Dynamic OTP password will be generated when connecting."
@@ -161,7 +162,8 @@
         "show": "Show AutoVPN",
         "quit": "Quit",
         "connect": "Connect",
-        "disconnect": "Disconnect"
+        "disconnect": "Disconnect",
+        "reconnect": "Reconnect"
       },
       "notifications": {
         "saved": {
