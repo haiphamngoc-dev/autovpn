@@ -308,6 +308,42 @@
       "title": "Về tác giả",
       "role": "Kỹ sư phần mềm & Sáng lập",
       "license": "Giấy phép"
+    },
+    "update": {
+      "title": "Phiên bản & Cập nhật",
+      "currentVersion": "Phiên bản hiện tại",
+      "badges": {
+        "upToDate": "Mới nhất",
+        "available": "Có bản cập nhật"
+      },
+      "actions": {
+        "downloadInstall": "Tải về & Cài đặt cập nhật",
+        "checking": "Đang kiểm tra...",
+        "check": "Kiểm tra cập nhật"
+      },
+      "states": {
+        "downloading": "Đang tải và cập nhật ứng dụng..."
+      },
+      "notifications": {
+        "available": {
+          "title": "Có phiên bản mới",
+          "message": "Phiên bản {{version}} đã sẵn sàng tải về."
+        },
+        "upToDate": {
+          "title": "Đã là mới nhất",
+          "message": "Bạn đang sử dụng phiên bản mới nhất của AutoVPN."
+        },
+        "success": {
+          "title": "Cập nhật thành công",
+          "message": "AutoVPN đã được nâng cấp thành công! Vui lòng khởi động lại ứng dụng để áp dụng các thay đổi."
+        },
+        "installFailed": {
+          "title": "Cài đặt thất bại"
+        },
+        "error": {
+          "title": "Kiểm tra cập nhật thất bại"
+        }
+      }
     }
   },
   "appLock": {

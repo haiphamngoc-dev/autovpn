@@ -15,6 +15,25 @@ const DEBOUNCE_MS: u64 = 150;
 use super::types::VpnLogEntry;
 
 use std::sync::{Mutex, OnceLock};
+use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
+
+static INTENDED_ACTIVE: AtomicBool = AtomicBool::new(false);
+static RECONNECT_ATTEMPTS: AtomicU32 = AtomicU32::new(0);
+
+pub fn set_intended_active(active: bool) {
+    INTENDED_ACTIVE.store(active, Ordering::Relaxed);
+    if active {
+        RECONNECT_ATTEMPTS.store(0, Ordering::Relaxed);
+    }
+}
+
+pub fn intended_active() -> bool {
+    INTENDED_ACTIVE.load(Ordering::Relaxed)
+}
+
+pub fn reset_reconnect_attempts() {
+    RECONNECT_ATTEMPTS.store(0, Ordering::Relaxed);
+}
 
 fn log_buffer() -> &'static Mutex<Vec<VpnLogEntry>> {
     static BUFFER: OnceLock<Mutex<Vec<VpnLogEntry>>> = OnceLock::new();
@@ -46,6 +65,71 @@ pub fn emit_vpn_log(app: &AppHandle, level: &str, source: &str, message: &str) {
     }
     
     let _ = app.emit("vpn-log", entry);
+}
+
+async fn try_auto_reconnect(app: &AppHandle) {
+    let settings = match crate::settings::load_settings() {
+        Ok(s) => s.vpn,
+        Err(_) => return,
+    };
+
+    if !settings.auto_reconnect.enabled {
+        return;
+    }
+
+    if !intended_active() {
+        return;
+    }
+
+    if let Ok(status) = get_system_vpn_status() {
+        if status == VpnConnectionStatus::Connected || status == VpnConnectionStatus::Connecting {
+            return;
+        }
+    }
+
+    let attempts = RECONNECT_ATTEMPTS.load(Ordering::Relaxed);
+    let max_attempts = settings.auto_reconnect.max_attempts;
+
+    if attempts >= max_attempts {
+        emit_vpn_log(
+            app,
+            "warning",
+            "AutoVPN",
+            &format!("Reached maximum auto-reconnect attempts ({}/{}). Stopping auto-reconnect.", attempts, max_attempts)
+        );
+        return;
+    }
+
+    let next_attempt = attempts + 1;
+    RECONNECT_ATTEMPTS.store(next_attempt, Ordering::Relaxed);
+
+    emit_vpn_log(
+        app,
+        "info",
+        "AutoVPN",
+        &format!("Auto-reconnect triggered (Attempt {}/{})...", next_attempt, max_attempts)
+    );
+
+    let app_clone = app.clone();
+    tauri::async_runtime::spawn(async move {
+        sleep(Duration::from_secs(3)).await;
+
+        if !intended_active() {
+            return;
+        }
+
+        match tauri::async_runtime::spawn_blocking(super::connect_system_vpn).await {
+            Ok(Ok(())) => {
+                emit_vpn_log(&app_clone, "success", "AutoVPN", "Auto-reconnect successful.");
+            }
+            Ok(Err(err)) => {
+                emit_vpn_log(&app_clone, "error", "AutoVPN", &format!("Auto-reconnect attempt failed: {}", err));
+            }
+            Err(err) => {
+                emit_vpn_log(&app_clone, "error", "AutoVPN", &format!("Auto-reconnect task failed: {}", err));
+            }
+        }
+    });
 }
 
 pub fn start(app: AppHandle) {
@@ -100,6 +184,15 @@ async fn run(app: AppHandle) -> Result<(), String> {
                             70 => "CONNECTED_GLOBAL",
                             _ => "UNKNOWN",
                         };
+                        
+                        if state == 70 {
+                            let app_clone = app_for_stream.clone();
+                            tauri::async_runtime::spawn(async move {
+                                sleep(Duration::from_millis(500)).await;
+                                try_auto_reconnect(&app_clone).await;
+                            });
+                        }
+                        
                         Some(format!("Global network state: {} (State: {})", state_str, state))
                     } else {
                         Some("Global network state changed".to_string())
@@ -135,6 +228,16 @@ async fn run(app: AppHandle) -> Result<(), String> {
                         };
                         let level = if state == 6 { "error" } else if state == 5 { "success" } else { "info" };
                         emit_vpn_log(&app_for_stream, level, "NetworkManager", &format!("VPN connection: {} (State: {}, Reason: {})", state_str, state, reason));
+                        
+                        if state == 5 {
+                            reset_reconnect_attempts();
+                        } else if state == 6 || state == 7 {
+                            let app_clone = app_for_stream.clone();
+                            tauri::async_runtime::spawn(async move {
+                                sleep(Duration::from_secs(2)).await;
+                                try_auto_reconnect(&app_clone).await;
+                            });
+                        }
                         None
                     } else {
                         Some("VPN connection state changed".to_string())

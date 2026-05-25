@@ -79,6 +79,12 @@ pub fn run() {
             window_behavior::apply(app.handle(), &settings.window_behavior)?;
             system_integration::apply(app.handle(), &settings.system_integration)?;
             system_integration::apply_launch_minimized(app.handle(), &settings.system_integration);
+            
+            #[cfg(target_os = "linux")]
+            if settings.vpn.auto_connect {
+                vpn::nm_monitor::set_intended_active(true);
+            }
+            
             start_vpn_status_monitor(app.handle().clone());
 
             if settings.vpn.auto_connect {

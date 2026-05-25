@@ -308,6 +308,42 @@
       "title": "About Author",
       "role": "Software Engineer & Creator",
       "license": "License"
+    },
+    "update": {
+      "title": "Version & Update",
+      "currentVersion": "Current version",
+      "badges": {
+        "upToDate": "Up to Date",
+        "available": "Update Available"
+      },
+      "actions": {
+        "downloadInstall": "Download & Install Update",
+        "checking": "Checking...",
+        "check": "Check for Updates"
+      },
+      "states": {
+        "downloading": "Downloading and applying update..."
+      },
+      "notifications": {
+        "available": {
+          "title": "New Version Available",
+          "message": "Version {{version}} is ready to download."
+        },
+        "upToDate": {
+          "title": "Up to Date",
+          "message": "You are already using the latest version of AutoVPN."
+        },
+        "success": {
+          "title": "Update Completed",
+          "message": "AutoVPN has been upgraded successfully! Please restart the application to apply the changes."
+        },
+        "installFailed": {
+          "title": "Installation Failed"
+        },
+        "error": {
+          "title": "Update Check Failed"
+        }
+      }
     }
   },
   "appLock": {

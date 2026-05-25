@@ -73,7 +73,10 @@ pub async fn get_vpn_status() -> Result<VpnConnectionStatus, String> {
 #[tauri::command]
 pub async fn connect_vpn(app: tauri::AppHandle) -> Result<(), String> {
     #[cfg(target_os = "linux")]
-    nm_monitor::emit_vpn_log(&app, "info", "AutoVPN", "Initiating VPN connection process...");
+    {
+        nm_monitor::set_intended_active(true);
+        nm_monitor::emit_vpn_log(&app, "info", "AutoVPN", "Initiating VPN connection process...");
+    }
     
     match run_vpn_task(connect_system_vpn).await {
         Ok(_) => {
@@ -92,7 +95,10 @@ pub async fn connect_vpn(app: tauri::AppHandle) -> Result<(), String> {
 #[tauri::command]
 pub async fn disconnect_vpn(app: tauri::AppHandle) -> Result<(), String> {
     #[cfg(target_os = "linux")]
-    nm_monitor::emit_vpn_log(&app, "info", "AutoVPN", "Initiating VPN disconnection process...");
+    {
+        nm_monitor::set_intended_active(false);
+        nm_monitor::emit_vpn_log(&app, "info", "AutoVPN", "Initiating VPN disconnection process...");
+    }
     
     match run_vpn_task(disconnect_system_vpn).await {
         Ok(_) => {
@@ -111,7 +117,10 @@ pub async fn disconnect_vpn(app: tauri::AppHandle) -> Result<(), String> {
 #[tauri::command]
 pub async fn reconnect_vpn(app: tauri::AppHandle) -> Result<(), String> {
     #[cfg(target_os = "linux")]
-    nm_monitor::emit_vpn_log(&app, "info", "AutoVPN", "Initiating VPN reconnection process...");
+    {
+        nm_monitor::set_intended_active(true);
+        nm_monitor::emit_vpn_log(&app, "info", "AutoVPN", "Initiating VPN reconnection process...");
+    }
     
     match run_vpn_task(reconnect_system_vpn).await {
         Ok(_) => {
