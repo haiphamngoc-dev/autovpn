@@ -1,0 +1,11 @@
+{
+  "version": "0.4.2",
+  "notes": "Release AutoVPN v0.4.2 with auto-update support.",
+  "pub_date": "2026-05-25T15:02:41Z",
+  "platforms": {
+    "linux-x86_64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYzZ5NkNzdVNwajNiT0l0VXdqVHcyeXBVWFRKcTR4UXR6eHR4eG8wajArTTltemRYeHh2dTVzZ1ZIbDZVVXZGbnRkYUJBb2ljNzI4YS9uc2E0THlKbHJqWWRQeXdtMndNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5NzIxMzUyCWZpbGU6QXV0b1ZQTi0wLjQuMi0xLng4Nl82NC5ycG0KbXdxWlhHUEx2ZERnejVkbnFMUVF6T3FyditXeWpib1BEcVdLSWh1YU8xcmQzeUV0RzY1bExOVnpoaDRpNmlkZUY3T3pBSmIwNkhlN1BtVE5FTXZLRHc9PQo=",
+      "url": "https://github.com/haiphamngoc-dev/autovpn/releases/download/v0.4.2/control.tar.gz"
+    }
+  }
+}
