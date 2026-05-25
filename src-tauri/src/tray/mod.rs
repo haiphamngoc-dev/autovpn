@@ -74,7 +74,7 @@ fn build_tray_menu<R: Runtime>(app: &AppHandle<R>, labels: &TrayLabels) -> Resul
             menu_items.push(&conn_item);
 
             if status != crate::vpn::VpnConnectionStatus::Disconnected {
-                let reconn_label = format!("{}: {}", labels.reconnect, default_profile);
+                let reconn_label = labels.reconnect.clone();
                 reconn_item = MenuItem::with_id(app, "tray_reconnect", &reconn_label, true, None::<&str>)
                     .map_err(|error| error.to_string())?;
                 menu_items.push(&reconn_item);
