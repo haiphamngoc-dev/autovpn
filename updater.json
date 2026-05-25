@@ -1,11 +1,11 @@
 {
-  "version": "0.5.2",
-  "notes": "Release AutoVPN v0.5.2 with auto-update support.",
-  "pub_date": "2026-05-25T16:30:23Z",
+  "version": "0.5.4",
+  "notes": "Release AutoVPN v0.5.4 with auto-update support.",
+  "pub_date": "2026-05-25T17:00:51Z",
   "platforms": {
     "linux-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYzZ5NkNzdVNwajBDVDNvcWlpSlkrV2xVQWRCNmF4QkVVTGdVbTNUSHRXWWdlaXY4bEg5RloxZmZzLzNTcHhmVGNyMXhLMHIrZ1ZGOVNwQjRLbVhiNGZkYytIQWpMU1FNPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5NzI2NjE0CWZpbGU6QXV0b1ZQTi0wLjUuMi0xLng4Nl82NC5ycG0KMlo4YjB1OHJuZkRYbXg2YWpLRThTMUhETnl3bVBnRjFKUk9SRXpKR0hIMGFDU0JPRklPNTNwODl6SHNQR2toUWt0QUNvK1p0Rk1IRmpUTFpaWGY4RFE9PQo=",
-      "url": "https://github.com/haiphamngoc-dev/autovpn/releases/download/v0.5.2/control.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYzZ5NkNzdVNwajIvalhoMWVzQnhCVTVFYVFIOUk3S3JmaERubDIxYkVWd3V2elhiM2FnWGFxNHZQc2VsK2JiMVN5YkRWWUtsS1lTdm0yV0pHQzNONVlqR1NiSCtDTmdRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5NzI4NDQyCWZpbGU6QXV0b1ZQTl8wLjUuNF9hbWQ2NC5BcHBJbWFnZQpJSDk0bU1yY3FVcFJwTmVYWjJXb0loVXZieG95K0lta3JtaDlSUzh4UUlaOWFqZDdEcVp5a2VzTERWVmxTVVRWdzVUYlBKVm5rNVQ1aWs5VjFDWWhBdz09Cg==",
+      "url": "https://github.com/haiphamngoc-dev/autovpn/releases/download/v0.5.4/AutoVPN_0.5.4_amd64.AppImage"
     }
   }
 }
