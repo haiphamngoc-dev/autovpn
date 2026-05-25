@@ -80,11 +80,12 @@ jobs:
           VERSION=${{ github.ref_name }}
           VERSION_NUM=${VERSION#v}
           
-          DEB_PATH=$(find src-tauri/target/release/bundle -name "*.deb" | head -n 1)
-          SIG_PATH=$(find src-tauri/target/release/bundle -name "*.deb.sig" | head -n 1)
+          TAR_PATH=$(find src-tauri/target/release/bundle -name "*.tar.gz" | head -n 1)
+          SIG_PATH=$(find src-tauri/target/release/bundle -name "*.sig" | head -n 1)
           
-          if [ -n "$SIG_PATH" ]; then
+          if [ -n "$SIG_PATH" ] && [ -n "$TAR_PATH" ]; then
             SIGNATURE=$(cat "$SIG_PATH")
+            TAR_NAME=$(basename "$TAR_PATH")
             
             cat <<EOF > updater.json
           {
@@ -94,7 +95,7 @@ jobs:
             "platforms": {
               "linux-x86_64": {
                 "signature": "$SIGNATURE",
-                "url": "https://github.com/haiphamngoc-dev/autovpn/releases/download/$VERSION/AutoVPN_${VERSION_NUM}_amd64.deb"
+                "url": "https://github.com/haiphamngoc-dev/autovpn/releases/download/$VERSION/$TAR_NAME"
               }
             }
           }
@@ -107,7 +108,7 @@ jobs:
             git commit -m "chore: update updater.json for version $VERSION [skip ci]" || true
             git push origin main || true
           else
-            echo "No signature file found, skipping updater.json update"
+            echo "No signature or update package file found, skipping updater.json update"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
