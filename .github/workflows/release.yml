@@ -66,6 +66,19 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "AutoVPN ${{ github.ref_name }}"
-          releaseBody: "Automated release of AutoVPN ${{ github.ref_name }}."
+          releaseBody: |
+            ## What's New in AutoVPN ${{ github.ref_name }} 🚀
+
+            We are excited to release AutoVPN ${{ github.ref_name }}, featuring a major upgrade to real-time system monitoring, enhanced system tray controls, and optimized continuous integration!
+
+            ### Key Enhancements:
+            * 📊 **Real-time Activity Console**: Added a high-performance terminal console directly on the home page displaying detailed NetworkManager VPN activities (connection, failure, and state transitions) in real-time.
+            * 💾 **State Persistence**: Log logs are buffered securely in the Rust backend (`std::sync::OnceLock`), ensuring your log history is preserved perfectly across page navigations and settings changes.
+            * 🎨 **Adaptive Themes**: The log console background dynamically inherits native Mantine theme properties (`var(--mantine-color-default-hover)`), rendering beautifully in both Light & Dark modes.
+            * 📐 **Smart Collapsible Layout**: The console can be collapsed or expanded at will. Your preference is persisted automatically using local storage.
+            * ⚙️ **Tray Controls Simplified**: Simplified the tray system "Reconnect" option for a cleaner menu aesthetics.
+            * 🛠️ **DevOps & CI/CD**: Seamless GitHub Actions automated packaging (Node.js 24 runtime, advanced cache layers) to build and release `.deb` packages effortlessly.
+
+            Enjoy secure, automated, and beautiful VPN controls on Linux!
           releaseDraft: false
           prerelease: false
