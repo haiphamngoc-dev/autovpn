@@ -14,7 +14,7 @@ pub(crate) mod unsupported;
 #[cfg(target_os = "windows")]
 pub(crate) mod windows;
 
-pub use types::{VpnConnectionStatus, VpnProfile};
+pub use types::{VpnConnectionStatus, VpnProfile, VpnLogEntry};
 
 #[cfg(target_os = "linux")]
 pub(crate) use linux as platform;
@@ -130,6 +130,18 @@ pub async fn reconnect_vpn(app: tauri::AppHandle) -> Result<(), String> {
 #[tauri::command]
 pub async fn get_vpn_profiles() -> Result<Vec<VpnProfile>, String> {
     run_vpn_task(list_system_vpn_profiles).await
+}
+
+#[tauri::command]
+pub async fn get_vpn_logs() -> Result<Vec<VpnLogEntry>, String> {
+    #[cfg(target_os = "linux")]
+    {
+        Ok(nm_monitor::get_buffered_logs())
+    }
+    #[cfg(not(target_os = "linux"))]
+    {
+        Ok(Vec::new())
+    }
 }
 
 #[derive(serde::Serialize)]

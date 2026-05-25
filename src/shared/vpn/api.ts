@@ -1,5 +1,5 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { VpnConnectionStatus, VpnProfile } from "./types";
+import type { VpnConnectionStatus, VpnProfile, VpnLogEntry } from "./types";
 
 /** Emitted from Rust on Linux when NetworkManager signals a change. */
 export const VPN_STATUS_CHANGED_EVENT = "vpn-status-changed";
@@ -22,4 +22,8 @@ export async function reconnectVpn(): Promise<void> {
 
 export async function fetchVpnProfiles(): Promise<VpnProfile[]> {
   return invoke<VpnProfile[]>("get_vpn_profiles");
+}
+
+export async function fetchVpnLogs(): Promise<VpnLogEntry[]> {
+  return invoke<VpnLogEntry[]>("get_vpn_logs");
 }

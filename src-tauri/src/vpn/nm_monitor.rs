@@ -1,7 +1,6 @@
 use std::time::Duration;
 
 use futures_util::StreamExt;
-use serde::Serialize;
 use tauri::{AppHandle, Emitter};
 use tokio::sync::mpsc;
 use tokio::time::sleep;
@@ -13,13 +12,21 @@ pub const VPN_STATUS_CHANGED_EVENT: &str = "vpn-status-changed";
 
 const DEBOUNCE_MS: u64 = 150;
 
-#[derive(Serialize, Clone)]
-#[serde(rename_all = "camelCase")]
-pub struct VpnLogEntry {
-    pub timestamp: String,
-    pub level: String, // "info" | "success" | "error"
-    pub source: String,
-    pub message: String,
+use super::types::VpnLogEntry;
+
+use std::sync::{Mutex, OnceLock};
+
+fn log_buffer() -> &'static Mutex<Vec<VpnLogEntry>> {
+    static BUFFER: OnceLock<Mutex<Vec<VpnLogEntry>>> = OnceLock::new();
+    BUFFER.get_or_init(|| Mutex::new(Vec::new()))
+}
+
+pub fn get_buffered_logs() -> Vec<VpnLogEntry> {
+    if let Ok(buffer) = log_buffer().lock() {
+        buffer.clone()
+    } else {
+        Vec::new()
+    }
 }
 
 pub fn emit_vpn_log(app: &AppHandle, level: &str, source: &str, message: &str) {
@@ -30,6 +37,14 @@ pub fn emit_vpn_log(app: &AppHandle, level: &str, source: &str, message: &str) {
         source: source.to_string(),
         message: message.to_string(),
     };
+    
+    if let Ok(mut buffer) = log_buffer().lock() {
+        buffer.push(entry.clone());
+        if buffer.len() > 500 {
+            buffer.remove(0);
+        }
+    }
+    
     let _ = app.emit("vpn-log", entry);
 }
 

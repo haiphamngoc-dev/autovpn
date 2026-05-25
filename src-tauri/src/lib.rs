@@ -20,7 +20,7 @@ use tauri::WindowEvent;
 use tray::TrayLabels;
 use vpn::{
     connect_system_vpn, connect_vpn, disconnect_vpn, reconnect_vpn, get_vpn_profile_credentials, get_vpn_profiles,
-    get_vpn_status, remove_vpn_profile_credentials, save_vpn_profile_credentials,
+    get_vpn_status, get_vpn_logs, remove_vpn_profile_credentials, save_vpn_profile_credentials,
     start_vpn_status_monitor, get_system_vpn_profile_username,
 };
 
@@ -126,6 +126,7 @@ pub fn run() {
             save_vpn_settings,
             get_vpn_status,
             get_vpn_profiles,
+            get_vpn_logs,
             connect_vpn,
             disconnect_vpn,
             reconnect_vpn,

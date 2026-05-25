@@ -26,3 +26,12 @@ impl VpnConnectionStatus {
         }
     }
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct VpnLogEntry {
+    pub timestamp: String,
+    pub level: String, // "info" | "success" | "error"
+    pub source: String,
+    pub message: String,
+}

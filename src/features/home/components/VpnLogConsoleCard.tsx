@@ -1,5 +1,6 @@
 import { Box, Checkbox, Text, Tooltip, ActionIcon, Group, Collapse } from "@mantine/core";
 import { settingCardStyles } from "@shared/layout";
+import { fetchVpnLogs } from "@shared/vpn";
 import {
   IconTerminal,
   IconTrash,
@@ -32,7 +33,12 @@ export function VpnLogConsoleCard() {
   const consoleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Listen to "vpn-log" events from Tauri backend
+    // 1. Fetch historical buffered logs from the Rust backend
+    void fetchVpnLogs().then((bufferedLogs) => {
+      setLogs(bufferedLogs);
+    });
+
+    // 2. Listen to real-time "vpn-log" events from Tauri backend
     const unlistenPromise = listen<LogEntry>("vpn-log", (event) => {
       setLogs((prev) => {
         const next = [...prev, event.payload];
