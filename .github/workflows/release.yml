@@ -69,9 +69,10 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: "AutoVPN ${{ github.ref_name }}"
           releaseBody: |
-            Release version ${{ github.ref_name }} with auto-updater interface.
-            - Added premium "Version & Update" setting card to check for updates.
-            - Fully integrated tauri v2 updater download and application flows.
+            Release version ${{ github.ref_name }} with auto-reconnect and i18n support.
+            - Added D-Bus monitor based automatic reconnection on network restoration.
+            - Full bilingual translation for Version & Update setting card.
+            - Integrated UI Feedback button pointing directly to GitHub Issues.
           releaseDraft: false
           prerelease: false
 
