@@ -69,10 +69,9 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: "AutoVPN ${{ github.ref_name }}"
           releaseBody: |
-            Release version ${{ github.ref_name }} with auto-reconnect and i18n support.
-            - Added D-Bus monitor based automatic reconnection on network restoration.
-            - Full bilingual translation for Version & Update setting card.
-            - Integrated UI Feedback button pointing directly to GitHub Issues.
+            Release version ${{ github.ref_name }} with tray menu behavior fix.
+            - Prevented automatic reconnection when disconnecting the VPN via the tray icon dropdown menu.
+            - Granted full update permissions for Tauri auto-updater module.
           releaseDraft: false
           prerelease: false
 

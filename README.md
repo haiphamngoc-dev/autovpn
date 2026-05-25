@@ -5,7 +5,7 @@
 [![React Version](https://img.shields.io/badge/React-19.0-blue?style=flat-square&logo=react&logoColor=white)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Mantine UI](https://img.shields.io/badge/Mantine-v9.0-teal?style=flat-square&logo=mantine&logoColor=white)](https://mantine.dev/)
-[![App Version](https://img.shields.io/badge/Version-0.5.0-success?style=flat-square)](https://github.com/haiphamngoc-dev/autovpn/releases)
+[![App Version](https://img.shields.io/badge/Version-0.5.2-success?style=flat-square)](https://github.com/haiphamngoc-dev/autovpn/releases)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
 AutoVPN là một ứng dụng desktop chuyên nghiệp chạy ngầm trên khay hệ thống (System Tray), được thiết kế để tự động kết nối, khôi phục kết nối thông minh và quản lý credentials cũng như mã xác thực OTP/TOTP động cho các kết nối VPN hệ thống.

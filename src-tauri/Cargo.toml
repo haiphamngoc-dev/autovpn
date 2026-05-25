@@ -1,6 +1,6 @@
 [package]
 name = "AutoVPN"
-version = "0.5.1"
+version = "0.5.2"
 description = "A premium system tray utility for auto-connecting, auto-reconnecting, and managing dynamic OTP/TOTP credentials for system VPN connections."
 authors = ["Hai Pham Ngoc <ngochai285nd@gmail.com>"]
 edition = "2021"
