@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 use futures_util::StreamExt;
+use serde::Serialize;
 use tauri::{AppHandle, Emitter};
 use tokio::sync::mpsc;
 use tokio::time::sleep;
@@ -11,6 +12,26 @@ use super::{get_system_vpn_status, types::VpnConnectionStatus};
 pub const VPN_STATUS_CHANGED_EVENT: &str = "vpn-status-changed";
 
 const DEBOUNCE_MS: u64 = 150;
+
+#[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase")]
+pub struct VpnLogEntry {
+    pub timestamp: String,
+    pub level: String, // "info" | "success" | "error"
+    pub source: String,
+    pub message: String,
+}
+
+pub fn emit_vpn_log(app: &AppHandle, level: &str, source: &str, message: &str) {
+    let timestamp = chrono::Local::now().format("%H:%M:%S").to_string();
+    let entry = VpnLogEntry {
+        timestamp,
+        level: level.to_string(),
+        source: source.to_string(),
+        message: message.to_string(),
+    };
+    let _ = app.emit("vpn-log", entry);
+}
 
 pub fn start(app: AppHandle) {
     tauri::async_runtime::spawn(async move {
@@ -37,10 +58,85 @@ async fn run(app: AppHandle) -> Result<(), String> {
 
     let (signal_tx, mut signal_rx) = mpsc::unbounded_channel();
 
+    let app_for_stream = app.clone();
     tauri::async_runtime::spawn(async move {
-        while let Some(message) = stream.next().await {
-            if message.is_err() {
+        emit_vpn_log(&app_for_stream, "info", "AutoVPN", "Real-time NetworkManager monitor active.");
+
+        while let Some(msg_res) = stream.next().await {
+            let Ok(message) = msg_res else {
                 break;
+            };
+
+            let header = message.header();
+            let interface = header.interface().map(|i| i.to_string()).unwrap_or_default();
+            let member = header.member().map(|m| m.to_string()).unwrap_or_default();
+
+            let log_msg = match (interface.as_str(), member.as_str()) {
+                ("org.freedesktop.NetworkManager", "StateChanged") => {
+                    if let Ok(state) = message.body().deserialize::<u32>() {
+                        let state_str = match state {
+                            0 => "UNKNOWN",
+                            10 => "ASLEEP",
+                            20 => "DISCONNECTED",
+                            30 => "DISCONNECTING",
+                            40 => "CONNECTING",
+                            50 => "CONNECTED_LOCAL",
+                            60 => "CONNECTED_SITE",
+                            70 => "CONNECTED_GLOBAL",
+                            _ => "UNKNOWN",
+                        };
+                        Some(format!("Global network state: {} (State: {})", state_str, state))
+                    } else {
+                        Some("Global network state changed".to_string())
+                    }
+                }
+                ("org.freedesktop.NetworkManager.Connection.Active", "StateChanged") => {
+                    if let Ok((state, reason)) = message.body().deserialize::<(u32, u32)>() {
+                        let state_str = match state {
+                            0 => "UNKNOWN",
+                            1 => "ACTIVATING",
+                            2 => "ACTIVATED",
+                            3 => "DEACTIVATING",
+                            4 => "DEACTIVATED",
+                            _ => "UNKNOWN",
+                        };
+                        Some(format!("Active connection: {} (State: {}, Reason: {})", state_str, state, reason))
+                    } else {
+                        Some("Active connection state changed".to_string())
+                    }
+                }
+                ("org.freedesktop.NetworkManager.VPN.Connection", "VpnStateChanged") => {
+                    if let Ok((state, reason)) = message.body().deserialize::<(u32, u32)>() {
+                        let state_str = match state {
+                            0 => "UNKNOWN",
+                            1 => "PREPARE",
+                            2 => "NEED_AUTH",
+                            3 => "CONNECT",
+                            4 => "GET_CONFIG",
+                            5 => "ACTIVATED",
+                            6 => "FAILED",
+                            7 => "DISCONNECTED",
+                            _ => "UNKNOWN",
+                        };
+                        let level = if state == 6 { "error" } else if state == 5 { "success" } else { "info" };
+                        emit_vpn_log(&app_for_stream, level, "NetworkManager", &format!("VPN connection: {} (State: {}, Reason: {})", state_str, state, reason));
+                        None
+                    } else {
+                        Some("VPN connection state changed".to_string())
+                    }
+                }
+                _ => None,
+            };
+
+            if let Some(msg) = log_msg {
+                let level = if msg.contains("FAILED") || msg.contains("UNKNOWN") {
+                    "error"
+                } else if msg.contains("ACTIVATED") || msg.contains("CONNECTED_GLOBAL") {
+                    "success"
+                } else {
+                    "info"
+                };
+                emit_vpn_log(&app_for_stream, level, "NetworkManager", &msg);
             }
 
             let _ = signal_tx.send(());

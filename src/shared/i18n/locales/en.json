@@ -53,6 +53,14 @@
         }
       }
     },
+    "vpnLogs": {
+      "title": "Real-time Activity Logs",
+      "autoscroll": "Auto scroll",
+      "copy": "Copy logs",
+      "copied": "Copied!",
+      "clear": "Clear logs",
+      "empty": "No logs recorded from the system yet..."
+    },
     "vpnCredentials": {
       "title": "Configure: {{profile}}",
       "titleFallback": "VPN configuration",

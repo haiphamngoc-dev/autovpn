@@ -71,18 +71,60 @@ pub async fn get_vpn_status() -> Result<VpnConnectionStatus, String> {
 }
 
 #[tauri::command]
-pub async fn connect_vpn() -> Result<(), String> {
-    run_vpn_task(connect_system_vpn).await
+pub async fn connect_vpn(app: tauri::AppHandle) -> Result<(), String> {
+    #[cfg(target_os = "linux")]
+    nm_monitor::emit_vpn_log(&app, "info", "AutoVPN", "Initiating VPN connection process...");
+    
+    match run_vpn_task(connect_system_vpn).await {
+        Ok(_) => {
+            #[cfg(target_os = "linux")]
+            nm_monitor::emit_vpn_log(&app, "success", "AutoVPN", "VPN connection request completed successfully.");
+            Ok(())
+        }
+        Err(err) => {
+            #[cfg(target_os = "linux")]
+            nm_monitor::emit_vpn_log(&app, "error", "AutoVPN", &format!("VPN connection failed: {}", err));
+            Err(err)
+        }
+    }
 }
 
 #[tauri::command]
-pub async fn disconnect_vpn() -> Result<(), String> {
-    run_vpn_task(disconnect_system_vpn).await
+pub async fn disconnect_vpn(app: tauri::AppHandle) -> Result<(), String> {
+    #[cfg(target_os = "linux")]
+    nm_monitor::emit_vpn_log(&app, "info", "AutoVPN", "Initiating VPN disconnection process...");
+    
+    match run_vpn_task(disconnect_system_vpn).await {
+        Ok(_) => {
+            #[cfg(target_os = "linux")]
+            nm_monitor::emit_vpn_log(&app, "success", "AutoVPN", "VPN disconnection request completed successfully.");
+            Ok(())
+        }
+        Err(err) => {
+            #[cfg(target_os = "linux")]
+            nm_monitor::emit_vpn_log(&app, "error", "AutoVPN", &format!("VPN disconnection failed: {}", err));
+            Err(err)
+        }
+    }
 }
 
 #[tauri::command]
-pub async fn reconnect_vpn() -> Result<(), String> {
-    run_vpn_task(reconnect_system_vpn).await
+pub async fn reconnect_vpn(app: tauri::AppHandle) -> Result<(), String> {
+    #[cfg(target_os = "linux")]
+    nm_monitor::emit_vpn_log(&app, "info", "AutoVPN", "Initiating VPN reconnection process...");
+    
+    match run_vpn_task(reconnect_system_vpn).await {
+        Ok(_) => {
+            #[cfg(target_os = "linux")]
+            nm_monitor::emit_vpn_log(&app, "success", "AutoVPN", "VPN reconnection process finished.");
+            Ok(())
+        }
+        Err(err) => {
+            #[cfg(target_os = "linux")]
+            nm_monitor::emit_vpn_log(&app, "error", "AutoVPN", &format!("VPN reconnection failed: {}", err));
+            Err(err)
+        }
+    }
 }
 
 #[tauri::command]

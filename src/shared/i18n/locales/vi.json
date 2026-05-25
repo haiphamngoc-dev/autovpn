@@ -53,6 +53,14 @@
         }
       }
     },
+    "vpnLogs": {
+      "title": "Log hoạt động thời gian thực",
+      "autoscroll": "Tự động cuộn",
+      "copy": "Sao chép log",
+      "copied": "Đã sao chép!",
+      "clear": "Xóa log",
+      "empty": "Chưa có bản ghi log nào từ hệ thống..."
+    },
     "vpnCredentials": {
       "title": "Cấu hình: {{profile}}",
       "titleFallback": "Cấu hình VPN",

@@ -1,0 +1,103 @@
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--mantine-spacing-md);
+}
+
+.titleGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+}
+
+.actionsGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--mantine-spacing-xs);
+}
+
+.consoleContainer {
+  background-color: #0b0c10;
+  border-radius: 8px;
+  border: 1px solid #1a1c23;
+  padding: var(--mantine-spacing-md);
+  height: 240px;
+  overflow-y: auto;
+  font-family: var(--mantine-font-family-monospace, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Scrollbar styles for a custom terminal look */
+.consoleContainer::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.consoleContainer::-webkit-scrollbar-track {
+  background: #0b0c10;
+}
+
+.consoleContainer::-webkit-scrollbar-thumb {
+  background: #1a1c23;
+  border-radius: 4px;
+}
+
+.consoleContainer::-webkit-scrollbar-thumb:hover {
+  background: #2b2f3d;
+}
+
+.logLine {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.logTimestamp {
+  color: #4b5563;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.logSource {
+  color: #818cf8;
+  font-weight: 600;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.logLevel {
+  font-weight: 700;
+  flex-shrink: 0;
+  user-select: none;
+  min-width: 55px;
+}
+
+.level_info {
+  color: #38bdf8;
+}
+
+.level_success {
+  color: #34d399;
+}
+
+.level_error {
+  color: #f87171;
+}
+
+.logMessage {
+  color: #d1d5db;
+  word-break: break-all;
+}
+
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: #4b5563;
+  font-style: italic;
+  font-size: 13px;
+}
