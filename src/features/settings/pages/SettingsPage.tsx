@@ -6,6 +6,7 @@ import {
   AutoReconnectCard,
   SystemIntegrationCard,
   WindowBehaviorCard,
+  AppVersionCard,
 } from "@features/settings/components";
 import { Box } from "@mantine/core";
 import { pageContentStyles } from "@shared/layout";
@@ -20,6 +21,7 @@ export function SettingsPage() {
         <SystemIntegrationCard />
         <WindowBehaviorCard />
         <AppLockCard />
+        <AppVersionCard />
         <AboutAuthorCard />
       </Box>
     </Box>

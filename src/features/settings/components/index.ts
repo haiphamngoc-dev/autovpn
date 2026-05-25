@@ -6,3 +6,4 @@ export { AutoConnectCard } from "./AutoConnectCard";
 export { AutoReconnectCard } from "./AutoReconnectCard";
 export { SystemIntegrationCard } from "./SystemIntegrationCard";
 export { WindowBehaviorCard } from "./WindowBehaviorCard";
+export { AppVersionCard } from "./AppVersionCard";
