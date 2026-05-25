@@ -1,10 +1,10 @@
 {
   "version": "0.5.1",
   "notes": "Release AutoVPN v0.5.1 with auto-update support.",
-  "pub_date": "2026-05-25T15:57:03Z",
+  "pub_date": "2026-05-25T16:11:13Z",
   "platforms": {
     "linux-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYzZ5NkNzdVNwajBvRzFDa3daVkVRQXIzd3V4eTdCTWU2N2lrZmQram0rOEE0OTZPRHliMm1WWXVJaXVjemZtRGRlaXF1RmdNUEE2Y3FYVnpIZFJvdzdiRWd0ajM4QWd3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5NzI0NjE1CWZpbGU6QXV0b1ZQTi0wLjUuMS0xLng4Nl82NC5ycG0KRDNYSk1WNFNVdVo1aHZSTUZucUpnRCs1Zk4xY3g4VDJnUGVZUVVud2tEOXlkbzg2WnFwNytnMUlSM09lUVBFK3c3L3k1NDhFN1QwZlBFZUZ4Y0svQ3c9PQo=",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYzZ5NkNzdVNwaitqQ25TQ2FmMjBVT3ltZ2tpejB5SmlUL2JYaGdqMmZsQzk3MHgvY3lsTmJDakVuU05tbEI3OVhOOWVOUENOclpkL0RLeEY3ZE5XZjZPUlZVaGpYUVFnPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzc5NzI1NDY0CWZpbGU6QXV0b1ZQTi0wLjUuMS0xLng4Nl82NC5ycG0KL0RQRzNyUzllVHh2VVRBR0VpNVNINFFnUTliZ1ViSXhQN09CSE8wb1YyT2xBQ2NpNngrME5IZFYva2Zvd3VjOW5zVXg1MVZRck9MbENYZlZZYUtpREE9PQo=",
       "url": "https://github.com/haiphamngoc-dev/autovpn/releases/download/v0.5.1/control.tar.gz"
     }
   }
