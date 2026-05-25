@@ -144,8 +144,14 @@ pub fn sync_tray<R: Runtime>(
                 let app_clone = app.clone();
                 tauri::async_runtime::spawn(async move {
                     if status == crate::vpn::VpnConnectionStatus::Disconnected {
+                        #[cfg(target_os = "linux")]
+                        crate::vpn::nm_monitor::set_intended_active(true);
+                        
                         let _ = tauri::async_runtime::spawn_blocking(crate::vpn::connect_system_vpn).await;
                     } else {
+                        #[cfg(target_os = "linux")]
+                        crate::vpn::nm_monitor::set_intended_active(false);
+                        
                         let _ = tauri::async_runtime::spawn_blocking(crate::vpn::disconnect_system_vpn).await;
                     }
                     let _ = refresh_tray_menu(&app_clone);
@@ -154,6 +160,9 @@ pub fn sync_tray<R: Runtime>(
             "tray_reconnect" => {
                 let app_clone = app.clone();
                 tauri::async_runtime::spawn(async move {
+                    #[cfg(target_os = "linux")]
+                    crate::vpn::nm_monitor::set_intended_active(true);
+                    
                     let _ = tauri::async_runtime::spawn_blocking(crate::vpn::reconnect_system_vpn).await;
                     let _ = refresh_tray_menu(&app_clone);
                 });
