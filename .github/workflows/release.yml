@@ -69,8 +69,9 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: "AutoVPN ${{ github.ref_name }}"
           releaseBody: |
-            Release version ${{ github.ref_name }} with AppImage updater support.
-            - Configured updater.json generation to use the AppImage package as the updater target.
+            Release version ${{ github.ref_name }} with manual .deb package download option.
+            - Added UI buttons to allow downloading the new `.deb` installation package via native save file dialog.
+            - Added backend download controller using Rust.
           releaseDraft: false
           prerelease: false
 

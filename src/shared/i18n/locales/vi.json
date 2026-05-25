@@ -318,7 +318,8 @@
         "available": "Có bản cập nhật"
       },
       "actions": {
-        "downloadInstall": "Tải về & Cài đặt cập nhật",
+        "downloadDeb": "Tải gói .deb",
+        "downloadInstall": "Cập nhật tự động (AppImage)",
         "checking": "Đang kiểm tra...",
         "check": "Kiểm tra cập nhật"
       },
@@ -340,6 +341,13 @@
         },
         "installFailed": {
           "title": "Cài đặt thất bại"
+        },
+        "debDownloaded": {
+          "title": "Tải gói .deb thành công",
+          "message": "Đã tải gói cài đặt về: {{path}}. Hãy chạy lệnh 'sudo dpkg -i {{path}}' để cài đặt."
+        },
+        "debDownloadFailed": {
+          "title": "Tải gói .deb thất bại"
         },
         "error": {
           "title": "Kiểm tra cập nhật thất bại"

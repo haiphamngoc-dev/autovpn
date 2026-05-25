@@ -52,6 +52,40 @@ fn sync_tray_icon(
     )
 }
 
+#[tauri::command]
+async fn download_deb_package(url: String, filename: String) -> Result<String, String> {
+    let file_path = tauri::async_runtime::spawn_blocking(move || {
+        rfd::FileDialog::new()
+            .set_file_name(&filename)
+            .add_filter("Debian Package", &["deb"])
+            .save_file()
+    }).await.map_err(|e| e.to_string())?;
+
+    let file_path = match file_path {
+        Some(path) => path,
+        None => return Ok("cancelled".to_string()),
+    };
+
+    let url_clone = url.clone();
+    let file_path_clone = file_path.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        let resp = ureq::get(&url_clone)
+            .call()
+            .map_err(|e| format!("Failed to connect: {}", e))?;
+            
+        let mut reader = resp.into_reader();
+        let mut file = std::fs::File::create(&file_path_clone)
+            .map_err(|e| format!("Failed to create file: {}", e))?;
+            
+        std::io::copy(&mut reader, &mut file)
+            .map_err(|e| format!("Failed to write file: {}", e))?;
+            
+        Ok::<(), String>(())
+    }).await.map_err(|e| e.to_string())??;
+
+    Ok(file_path.to_string_lossy().to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     if let Err(error) = keyring_store::init() {
@@ -141,6 +175,7 @@ pub fn run() {
             save_vpn_profile_credentials,
             remove_vpn_profile_credentials,
             get_system_vpn_profile_username,
+            download_deb_package,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

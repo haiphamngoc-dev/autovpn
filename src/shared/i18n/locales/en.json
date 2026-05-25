@@ -318,7 +318,8 @@
         "available": "Update Available"
       },
       "actions": {
-        "downloadInstall": "Download & Install Update",
+        "downloadDeb": "Download .deb",
+        "downloadInstall": "Auto Update (AppImage)",
         "checking": "Checking...",
         "check": "Check for Updates"
       },
@@ -340,6 +341,13 @@
         },
         "installFailed": {
           "title": "Installation Failed"
+        },
+        "debDownloaded": {
+          "title": "Download Successful",
+          "message": "Successfully downloaded package to: {{path}}. Please run 'sudo dpkg -i {{path}}' to install it."
+        },
+        "debDownloadFailed": {
+          "title": "Download Failed"
         },
         "error": {
           "title": "Update Check Failed"

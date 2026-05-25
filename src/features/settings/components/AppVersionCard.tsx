@@ -96,6 +96,49 @@ export function AppVersionCard() {
     }
   };
 
+  const handleDownloadDeb = async () => {
+    if (!newVersion) return;
+
+    setUpdateState("downloading");
+    try {
+      const { invoke } = await import("@tauri-apps/api/core");
+      const debFilename = `AutoVPN_${newVersion}_amd64.deb`;
+      const debUrl = `https://github.com/haiphamngoc-dev/autovpn/releases/download/v${newVersion}/${debFilename}`;
+      
+      const result = await invoke<string>("download_deb_package", {
+        url: debUrl,
+        filename: debFilename,
+      });
+
+      if (result === "cancelled") {
+        setUpdateState("available");
+        return;
+      }
+
+      setUpdateState("upToDate");
+      
+      notifications.show({
+        title: t("settings.update.notifications.debDownloaded.title", { defaultValue: "Download Successful" }),
+        message: t("settings.update.notifications.debDownloaded.message", { 
+          path: result, 
+          defaultValue: `Successfully downloaded package to: ${result}. Please run 'sudo dpkg -i ${result}' to install it.` 
+        }),
+        color: "green",
+        autoClose: false,
+      });
+    } catch (err: any) {
+      setUpdateState("error");
+      const errMsg = err?.toString() || "Failed to download .deb package";
+      setErrorMessage(errMsg);
+      
+      notifications.show({
+        title: t("settings.update.notifications.debDownloadFailed.title", { defaultValue: "Download Failed" }),
+        message: errMsg,
+        color: "red",
+      });
+    }
+  };
+
   return (
     <Box className={settingCardStyles.card}>
       <Group gap={6} mb="md" wrap="nowrap">
@@ -135,14 +178,24 @@ export function AppVersionCard() {
               {changelog}
             </Text>
           )}
-          <Button
-            size="xs"
-            leftSection={<IconCloudDownload size={14} />}
-            onClick={handleInstallUpdate}
-            fullWidth
-          >
-            {t("settings.update.actions.downloadInstall", { defaultValue: "Download & Install Update" })}
-          </Button>
+          <Group grow gap="xs">
+            <Button
+              size="xs"
+              variant="filled"
+              leftSection={<IconCloudDownload size={14} />}
+              onClick={handleDownloadDeb}
+            >
+              {t("settings.update.actions.downloadDeb", { defaultValue: "Download .deb" })}
+            </Button>
+            <Button
+              size="xs"
+              variant="outline"
+              leftSection={<IconRefresh size={14} />}
+              onClick={handleInstallUpdate}
+            >
+              {t("settings.update.actions.downloadInstall", { defaultValue: "Auto Update (AppImage)" })}
+            </Button>
+          </Group>
         </Alert>
       )}
 
