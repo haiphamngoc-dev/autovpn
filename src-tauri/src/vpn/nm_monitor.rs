@@ -232,11 +232,16 @@ async fn run(app: AppHandle) -> Result<(), String> {
                         if state == 5 {
                             reset_reconnect_attempts();
                         } else if state == 6 || state == 7 {
-                            let app_clone = app_for_stream.clone();
-                            tauri::async_runtime::spawn(async move {
-                                sleep(Duration::from_secs(2)).await;
-                                try_auto_reconnect(&app_clone).await;
-                            });
+                            if reason == 2 {
+                                // Explicit user disconnection (NetworkManager, tray, or app)
+                                set_intended_active(false);
+                            } else {
+                                let app_clone = app_for_stream.clone();
+                                tauri::async_runtime::spawn(async move {
+                                    sleep(Duration::from_secs(2)).await;
+                                    try_auto_reconnect(&app_clone).await;
+                                });
+                            }
                         }
                         None
                     } else {
