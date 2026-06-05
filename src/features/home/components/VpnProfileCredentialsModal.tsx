@@ -3,6 +3,7 @@ import {
   fetchVpnProfileCredentials,
   removeVpnProfileCredentials,
   saveVpnProfileCredentials,
+  type PasswordPart,
 } from "@shared/settings/vpn";
 import {
   Button,
@@ -10,13 +11,24 @@ import {
   Modal,
   PasswordInput,
   Stack,
-  Switch,
   Text,
   TextInput,
+  Box,
+  Card,
+  ActionIcon,
+  Menu,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import {
+  IconPlus,
+  IconTrash,
+  IconArrowUp,
+  IconArrowDown,
+  IconAlignLeft,
+  IconDeviceMobile,
+} from "@tabler/icons-react";
 
 type VpnProfileCredentialsModalProps = Readonly<{
   profileName: string | null;
@@ -24,6 +36,8 @@ type VpnProfileCredentialsModalProps = Readonly<{
   onClose: () => void;
   onSaved: () => void;
 }>;
+
+const generateId = () => Math.random().toString(36).substring(2, 9);
 
 export function VpnProfileCredentialsModal({
   profileName,
@@ -33,11 +47,7 @@ export function VpnProfileCredentialsModal({
 }: VpnProfileCredentialsModalProps) {
   const { t } = useTranslation();
   const [username, setUsername] = useState("");
-  const [basePassword, setBasePassword] = useState("");
-  const [useTotp, setUseTotp] = useState(false);
-  const [totpSecret, setTotpSecret] = useState("");
-  const [hasBasePassword, setHasBasePassword] = useState(false);
-  const [hasTotpSecret, setHasTotpSecret] = useState(false);
+  const [parts, setParts] = useState<PasswordPart[]>([]);
   const [hasStoredCredentials, setHasStoredCredentials] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -63,12 +73,14 @@ export function VpnProfileCredentialsModal({
         }
 
         setUsername(view.username);
-        setUseTotp(view.useTotp);
-        setHasBasePassword(view.hasBasePassword);
-        setHasTotpSecret(view.hasTotpSecret);
-        setHasStoredCredentials(view.hasBasePassword || view.hasTotpSecret);
-        setBasePassword(view.basePassword);
-        setTotpSecret(view.totpSecret);
+        setHasStoredCredentials(view.hasStoredCredentials);
+
+        // Add random React keys/IDs to parts for reliable list rendering
+        const partsWithIds = view.parts.map((p) => ({
+          ...p,
+          id: p.id || generateId(),
+        }));
+        setParts(partsWithIds);
       } catch {
         if (!cancelled) {
           setError(t("home.vpnCredentials.loadFailed"));
@@ -87,11 +99,7 @@ export function VpnProfileCredentialsModal({
 
   function resetForm() {
     setUsername("");
-    setBasePassword("");
-    setUseTotp(false);
-    setTotpSecret("");
-    setHasBasePassword(false);
-    setHasTotpSecret(false);
+    setParts([]);
     setHasStoredCredentials(false);
     setError(null);
   }
@@ -101,20 +109,80 @@ export function VpnProfileCredentialsModal({
     onClose();
   }
 
+  const addPart = (type: "static" | "totp") => {
+    const newPart: PasswordPart =
+      type === "static"
+        ? { id: generateId(), type: "static", value: "" }
+        : { id: generateId(), type: "totp", secret: "" };
+    setParts([...parts, newPart]);
+    setError(null);
+  };
+
+  const removePart = (id: string) => {
+    setParts(parts.filter((p) => p.id !== id));
+    setError(null);
+  };
+
+  const moveUp = (index: number) => {
+    if (index === 0) return;
+    const newParts = [...parts];
+    const temp = newParts[index];
+    newParts[index] = newParts[index - 1];
+    newParts[index - 1] = temp;
+    setParts(newParts);
+  };
+
+  const moveDown = (index: number) => {
+    if (index === parts.length - 1) return;
+    const newParts = [...parts];
+    const temp = newParts[index];
+    newParts[index] = newParts[index + 1];
+    newParts[index + 1] = temp;
+    setParts(newParts);
+  };
+
+  const updatePart = (id: string, updates: Partial<PasswordPart>) => {
+    setParts(
+      parts.map((p) => {
+        if (p.id === id) {
+          return { ...p, ...updates } as PasswordPart;
+        }
+        return p;
+      })
+    );
+    setError(null);
+  };
+
   async function handleSave() {
     if (!profileName) {
       return;
     }
 
+    if (parts.length === 0) {
+      setError(t("home.vpnCredentials.emptyParts"));
+      return;
+    }
+
+    for (const part of parts) {
+      if (part.type === "static" && !part.value.trim()) {
+        setError(t("home.vpnCredentials.staticPlaceholder"));
+        return;
+      }
+      if (part.type === "totp" && !part.secret.trim()) {
+        setError(t("home.vpnCredentials.totpPlaceholder"));
+        return;
+      }
+    }
+
     setIsSaving(true);
     setError(null);
+
+    const payloadParts = parts.map(({ id, ...rest }) => rest);
 
     try {
       await saveVpnProfileCredentials({
         profileName,
-        useTotp,
-        basePassword: basePassword || undefined,
-        totpSecret: totpSecret || undefined,
+        parts: payloadParts,
       });
 
       notifications.show({
@@ -127,8 +195,8 @@ export function VpnProfileCredentialsModal({
 
       onSaved();
       handleClose();
-    } catch {
-      setError(t("home.vpnCredentials.saveFailed"));
+    } catch (err: any) {
+      setError(err?.toString() || t("home.vpnCredentials.saveFailed"));
     } finally {
       setIsSaving(false);
     }
@@ -162,13 +230,15 @@ export function VpnProfileCredentialsModal({
     }
   }
 
-  const basePasswordPlaceholder = hasBasePassword
-    ? t("home.vpnCredentials.basePasswordPlaceholderKeep")
-    : t("home.vpnCredentials.basePasswordPlaceholder");
-
-  const totpSecretPlaceholder = hasTotpSecret
-    ? t("home.vpnCredentials.totpSecretPlaceholderKeep")
-    : t("home.vpnCredentials.totpSecretPlaceholder");
+  const preview = parts
+    .map((p) => {
+      if (p.type === "static") {
+        return `{${t("home.vpnCredentials.partStatic")}}`;
+      } else {
+        return `{${t("home.vpnCredentials.partTotp")}}`;
+      }
+    })
+    .join("");
 
   return (
     <Modal
@@ -206,49 +276,154 @@ export function VpnProfileCredentialsModal({
         </SettingField>
 
         <SettingField
-          label={t("home.vpnCredentials.basePassword")}
-          description={t("home.vpnCredentials.basePasswordHelp")}
+          label={t("home.vpnCredentials.passwordStructure")}
+          description={t("home.vpnCredentials.passwordStructureHelp")}
         >
-          <PasswordInput
-            value={basePassword}
-            onChange={(event) => {
-              setBasePassword(event.currentTarget.value);
-              setError(null);
-            }}
-            placeholder={basePasswordPlaceholder}
-            disabled={isLoading || isSaving || isRemoving}
-          />
+          <Stack gap="sm" mt="xs">
+            {parts.length > 0 && (
+              <Box
+                style={{
+                  border: "1px solid var(--mantine-color-default-border)",
+                  borderRadius: "var(--mantine-radius-sm)",
+                  padding:
+                    "var(--mantine-spacing-xs) var(--mantine-spacing-sm)",
+                  backgroundColor: "var(--mantine-color-default-hover)",
+                }}
+              >
+                <Text
+                  size="xs"
+                  fw={700}
+                  c="green"
+                  ta="center"
+                  style={{ fontFamily: "monospace" }}
+                >
+                  {preview}
+                </Text>
+              </Box>
+            )}
+
+            {parts.length === 0 ? (
+              <Box
+                style={{
+                  border: "1px dashed var(--mantine-color-default-border)",
+                  borderRadius: "var(--mantine-radius-sm)",
+                  padding: "var(--mantine-spacing-md)",
+                  textAlign: "center",
+                }}
+              >
+                <Text size="sm" c="dimmed">
+                  {t("home.vpnCredentials.emptyParts")}
+                </Text>
+              </Box>
+            ) : (
+              parts.map((part, index) => (
+                <Card key={part.id} withBorder padding="xs" radius="sm">
+                  <Group justify="space-between" mb="xs">
+                    <Group gap="xs">
+                      {part.type === "static" ? (
+                        <IconAlignLeft
+                          size={16}
+                          color="var(--mantine-color-blue-filled)"
+                        />
+                      ) : (
+                        <IconDeviceMobile
+                          size={16}
+                          color="var(--mantine-color-teal-filled)"
+                        />
+                      )}
+                      <Text size="xs" fw={700}>
+                        {part.type === "static"
+                          ? t("home.vpnCredentials.partStatic")
+                          : t("home.vpnCredentials.partTotp")}
+                      </Text>
+                    </Group>
+                    <Group gap={4}>
+                      <ActionIcon
+                        size="sm"
+                        variant="subtle"
+                        color="gray"
+                        disabled={index === 0}
+                        onClick={() => moveUp(index)}
+                        aria-label="Move Up"
+                      >
+                        <IconArrowUp size={14} />
+                      </ActionIcon>
+                      <ActionIcon
+                        size="sm"
+                        variant="subtle"
+                        color="gray"
+                        disabled={index === parts.length - 1}
+                        onClick={() => moveDown(index)}
+                        aria-label="Move Down"
+                      >
+                        <IconArrowDown size={14} />
+                      </ActionIcon>
+                      <ActionIcon
+                        size="sm"
+                        variant="subtle"
+                        color="red"
+                        onClick={() => removePart(part.id)}
+                        aria-label="Remove"
+                      >
+                        <IconTrash size={14} />
+                      </ActionIcon>
+                    </Group>
+                  </Group>
+
+                  {part.type === "static" ? (
+                    <PasswordInput
+                      value={part.value}
+                      onChange={(e) =>
+                        updatePart(part.id, { value: e.currentTarget.value })
+                      }
+                      placeholder={t("home.vpnCredentials.staticPlaceholder")}
+                      size="sm"
+                    />
+                  ) : (
+                    <PasswordInput
+                      value={part.secret}
+                      onChange={(e) =>
+                        updatePart(part.id, { secret: e.currentTarget.value })
+                      }
+                      placeholder={t("home.vpnCredentials.totpPlaceholder")}
+                      size="sm"
+                    />
+                  )}
+                </Card>
+              ))
+            )}
+
+            <Group justify="flex-end" align="center" mt="xs">
+              <Menu position="bottom-end" shadow="md">
+                <Menu.Target>
+                  <Button
+                    variant="light"
+                    size="xs"
+                    leftSection={<IconPlus size={14} />}
+                  >
+                    {t("home.vpnCredentials.addPart")}
+                  </Button>
+                </Menu.Target>
+                <Menu.Dropdown>
+                  <Menu.Item
+                    leftSection={<IconAlignLeft size={14} />}
+                    onClick={() => addPart("static")}
+                  >
+                    {t("home.vpnCredentials.partStatic")}
+                  </Menu.Item>
+                  <Menu.Item
+                    leftSection={<IconDeviceMobile size={14} />}
+                    onClick={() => addPart("totp")}
+                  >
+                    {t("home.vpnCredentials.partTotp")}
+                  </Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+            </Group>
+          </Stack>
         </SettingField>
 
-        <Switch
-          label={t("home.vpnCredentials.useTotp")}
-          description={t("home.vpnCredentials.useTotpHelp")}
-          checked={useTotp}
-          onChange={(event) => {
-            setUseTotp(event.currentTarget.checked);
-            setError(null);
-          }}
-          disabled={isLoading || isSaving || isRemoving}
-        />
-
-        {useTotp ? (
-          <SettingField
-            label={t("home.vpnCredentials.totpSecret")}
-            description={t("home.vpnCredentials.totpSecretHelp")}
-          >
-            <PasswordInput
-              value={totpSecret}
-              onChange={(event) => {
-                setTotpSecret(event.currentTarget.value);
-                setError(null);
-              }}
-              placeholder={totpSecretPlaceholder}
-              disabled={isLoading || isSaving || isRemoving}
-            />
-          </SettingField>
-        ) : null}
-
-        <Group justify="space-between" gap="sm" wrap="wrap">
+        <Group justify="space-between" gap="sm" wrap="wrap" mt="md">
           <Button
             variant="light"
             color="red"

@@ -44,6 +44,7 @@ export function VpnStatusCard() {
   const { t } = useTranslation();
   const { status, connect, disconnect, reconnect, isBusy } = useVpnStatus();
   const [vpnSettings, setVpnSettings] = useState<VpnSettings | null>(null);
+  const [isCancelling, setIsCancelling] = useState(false);
 
   useEffect(() => {
     void loadVpnSettings().then(setVpnSettings);
@@ -76,6 +77,13 @@ export function VpnStatusCard() {
 
   function handleDisconnect() {
     disconnect().catch(() => undefined);
+  }
+
+  function handleCancel() {
+    setIsCancelling(true);
+    disconnect()
+      .catch(() => undefined)
+      .finally(() => setIsCancelling(false));
   }
 
   function handleReconnect() {
@@ -141,6 +149,28 @@ export function VpnStatusCard() {
             {t("home.vpnStatus.reconnect")}
           </Button>
         </Group>
+      );
+    }
+
+    if (status === "connecting") {
+      return (
+        <Button
+          size={isBottom ? "sm" : "compact-sm"}
+          fullWidth={isBottom}
+          color="red"
+          variant="filled"
+          loading={isCancelling}
+          leftSection={
+            <IconPlugConnectedX
+              size={ACTION_ICON_SIZE}
+              stroke={ICON_STROKE}
+              aria-hidden
+            />
+          }
+          onClick={handleCancel}
+        >
+          {t("home.vpnStatus.cancel")}
+        </Button>
       );
     }
 

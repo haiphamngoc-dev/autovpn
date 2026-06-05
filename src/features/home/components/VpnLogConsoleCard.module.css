@@ -28,7 +28,15 @@
   padding: var(--mantine-spacing-md);
   height: 200px;
   overflow-y: auto;
-  font-family: var(--mantine-font-family-monospace, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+  font-family: var(
+    --mantine-font-family-monospace,
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    monospace
+  );
   font-size: 12px;
   line-height: 1.6;
 }

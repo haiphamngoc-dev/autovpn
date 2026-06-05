@@ -22,20 +22,21 @@ export type SaveVpnSettingsResult = {
   persisted: boolean;
 };
 
+export type PasswordPartType = "static" | "totp";
+
+export type PasswordPart =
+  | { id: string; type: "static"; value: string }
+  | { id: string; type: "totp"; secret: string };
+
 export type VpnProfileCredentialsView = {
   username: string;
-  useTotp: boolean;
-  basePassword: string;
-  totpSecret: string;
-  hasBasePassword: boolean;
-  hasTotpSecret: boolean;
+  parts: PasswordPart[];
+  hasStoredCredentials: boolean;
 };
 
 export type SaveVpnProfileCredentialsPayload = {
   profileName: string;
-  useTotp: boolean;
-  basePassword?: string;
-  totpSecret?: string;
+  parts: Omit<PasswordPart, "id">[];
 };
 
 const DEFAULT_AUTO_RECONNECT: AutoReconnectSettings = {

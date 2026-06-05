@@ -1,6 +1,12 @@
 import { Box, Button, Group, Text, Badge, Alert } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { IconInfoCircle, IconRefresh, IconExternalLink, IconCircleCheck, IconAlertCircle } from "@tabler/icons-react";
+import {
+  IconInfoCircle,
+  IconRefresh,
+  IconExternalLink,
+  IconCircleCheck,
+  IconAlertCircle,
+} from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { settingCardStyles } from "@shared/layout";
@@ -38,18 +44,28 @@ export function AppVersionCard() {
         setNewVersion(update.version);
         setChangelog(update.body || "");
         setUpdateState("available");
-        
+
         notifications.show({
-          title: t("settings.update.notifications.available.title", { defaultValue: "New Version Available" }),
-          message: t("settings.update.notifications.available.message", { version: update.version, defaultValue: `Version ${update.version} is ready to download.` }),
+          title: t("settings.update.notifications.available.title", {
+            defaultValue: "New Version Available",
+          }),
+          message: t("settings.update.notifications.available.message", {
+            version: update.version,
+            defaultValue: `Version ${update.version} is ready to download.`,
+          }),
           color: "blue",
           autoClose: 8000,
         });
       } else {
         setUpdateState("upToDate");
         notifications.show({
-          title: t("settings.update.notifications.upToDate.title", { defaultValue: "Up to Date" }),
-          message: t("settings.update.notifications.upToDate.message", { defaultValue: "You are already using the latest version of AutoVPN." }),
+          title: t("settings.update.notifications.upToDate.title", {
+            defaultValue: "Up to Date",
+          }),
+          message: t("settings.update.notifications.upToDate.message", {
+            defaultValue:
+              "You are already using the latest version of AutoVPN.",
+          }),
           color: "green",
         });
       }
@@ -58,9 +74,11 @@ export function AppVersionCard() {
       setUpdateState("error");
       const errMsg = err?.toString() || "Unknown error occurred";
       setErrorMessage(errMsg);
-      
+
       notifications.show({
-        title: t("settings.update.notifications.error.title", { defaultValue: "Update Check Failed" }),
+        title: t("settings.update.notifications.error.title", {
+          defaultValue: "Update Check Failed",
+        }),
         message: errMsg,
         color: "red",
       });
@@ -70,10 +88,14 @@ export function AppVersionCard() {
   const handleOpenReleases = async () => {
     if (!newVersion) return;
     try {
-      await openUrl(`https://github.com/haiphamngoc-dev/autovpn/releases/tag/v${newVersion}`);
+      await openUrl(
+        `https://github.com/haiphamngoc-dev/autovpn/releases/tag/v${newVersion}`
+      );
     } catch (err: any) {
       notifications.show({
-        title: t("settings.update.notifications.openFailed.title", { defaultValue: "Could not open link" }),
+        title: t("settings.update.notifications.openFailed.title", {
+          defaultValue: "Could not open link",
+        }),
         message: err?.toString() || "Unknown error occurred",
         color: "red",
       });
@@ -83,7 +105,11 @@ export function AppVersionCard() {
   return (
     <Box className={settingCardStyles.card}>
       <Group gap={6} mb="md" wrap="nowrap">
-        <IconInfoCircle size={16} stroke={1.5} color="var(--mantine-color-dimmed)" />
+        <IconInfoCircle
+          size={16}
+          stroke={1.5}
+          color="var(--mantine-color-dimmed)"
+        />
         <Text className={settingCardStyles.sectionTitle} mb={0}>
           {t("settings.update.title", { defaultValue: "Version & Update" })}
         </Text>
@@ -95,27 +121,52 @@ export function AppVersionCard() {
             AutoVPN
           </Text>
           <Text size="xs" c="dimmed">
-            {t("settings.update.currentVersion", { defaultValue: "Current version" })}: v{currentVersion}
+            {t("settings.update.currentVersion", {
+              defaultValue: "Current version",
+            })}
+            : v{currentVersion}
           </Text>
         </Box>
 
         {updateState === "upToDate" && (
-          <Badge variant="light" color="green" leftSection={<IconCircleCheck size={12} />}>
-            {t("settings.update.badges.upToDate", { defaultValue: "Up to Date" })}
+          <Badge
+            variant="light"
+            color="green"
+            leftSection={<IconCircleCheck size={12} />}
+          >
+            {t("settings.update.badges.upToDate", {
+              defaultValue: "Up to Date",
+            })}
           </Badge>
         )}
 
         {updateState === "available" && (
           <Badge variant="dot" color="blue">
-            {t("settings.update.badges.available", { defaultValue: "Update Available" })}
+            {t("settings.update.badges.available", {
+              defaultValue: "Update Available",
+            })}
           </Badge>
         )}
       </Group>
 
       {updateState === "available" && (
-        <Alert variant="light" color="blue" title={`Version v${newVersion} is available`} icon={<IconInfoCircle />} mb="md">
+        <Alert
+          variant="light"
+          color="blue"
+          title={`Version v${newVersion} is available`}
+          icon={<IconInfoCircle />}
+          mb="md"
+        >
           {changelog && (
-            <Text size="xs" style={{ whiteSpace: "pre-line", maxHeight: "100px", overflowY: "auto" }} mb="sm">
+            <Text
+              size="xs"
+              style={{
+                whiteSpace: "pre-line",
+                maxHeight: "100px",
+                overflowY: "auto",
+              }}
+              mb="sm"
+            >
               {changelog}
             </Text>
           )}
@@ -126,13 +177,21 @@ export function AppVersionCard() {
             onClick={handleOpenReleases}
             fullWidth
           >
-            {t("settings.update.actions.goToReleases", { defaultValue: "Download from GitHub Releases" })}
+            {t("settings.update.actions.goToReleases", {
+              defaultValue: "Download from GitHub Releases",
+            })}
           </Button>
         </Alert>
       )}
 
       {updateState === "error" && (
-        <Alert variant="light" color="red" title="Update failed" icon={<IconAlertCircle />} mb="md">
+        <Alert
+          variant="light"
+          color="red"
+          title="Update failed"
+          icon={<IconAlertCircle />}
+          mb="md"
+        >
           <Text size="xs">{errorMessage}</Text>
         </Alert>
       )}
@@ -146,8 +205,12 @@ export function AppVersionCard() {
         fullWidth
       >
         {checking
-          ? t("settings.update.actions.checking", { defaultValue: "Checking..." })
-          : t("settings.update.actions.check", { defaultValue: "Check for Updates" })}
+          ? t("settings.update.actions.checking", {
+              defaultValue: "Checking...",
+            })
+          : t("settings.update.actions.check", {
+              defaultValue: "Check for Updates",
+            })}
       </Button>
     </Box>
   );

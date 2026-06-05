@@ -104,7 +104,7 @@ export function VpnStatusProvider({
   }, [isBusy, refreshStatus, status]);
 
   const disconnect = useCallback(async () => {
-    if (status === "disconnected" || isBusy) {
+    if (status === "disconnected" || (isBusy && status !== "connecting")) {
       return;
     }
 

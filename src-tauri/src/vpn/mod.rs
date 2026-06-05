@@ -14,7 +14,7 @@ pub(crate) mod unsupported;
 #[cfg(target_os = "windows")]
 pub(crate) mod windows;
 
-pub use types::{VpnConnectionStatus, VpnProfile, VpnLogEntry};
+pub use types::{VpnConnectionStatus, VpnLogEntry, VpnProfile};
 
 #[cfg(target_os = "linux")]
 pub(crate) use linux as platform;
@@ -75,18 +75,33 @@ pub async fn connect_vpn(app: tauri::AppHandle) -> Result<(), String> {
     #[cfg(target_os = "linux")]
     {
         nm_monitor::set_intended_active(true);
-        nm_monitor::emit_vpn_log(&app, "info", "AutoVPN", "Initiating VPN connection process...");
+        nm_monitor::emit_vpn_log(
+            &app,
+            "info",
+            "AutoVPN",
+            "Initiating VPN connection process...",
+        );
     }
-    
+
     match run_vpn_task(connect_system_vpn).await {
         Ok(_) => {
             #[cfg(target_os = "linux")]
-            nm_monitor::emit_vpn_log(&app, "success", "AutoVPN", "VPN connection request completed successfully.");
+            nm_monitor::emit_vpn_log(
+                &app,
+                "success",
+                "AutoVPN",
+                "VPN connection request completed successfully.",
+            );
             Ok(())
         }
         Err(err) => {
             #[cfg(target_os = "linux")]
-            nm_monitor::emit_vpn_log(&app, "error", "AutoVPN", &format!("VPN connection failed: {}", err));
+            nm_monitor::emit_vpn_log(
+                &app,
+                "error",
+                "AutoVPN",
+                &format!("VPN connection failed: {}", err),
+            );
             Err(err)
         }
     }
@@ -97,18 +112,33 @@ pub async fn disconnect_vpn(app: tauri::AppHandle) -> Result<(), String> {
     #[cfg(target_os = "linux")]
     {
         nm_monitor::set_intended_active(false);
-        nm_monitor::emit_vpn_log(&app, "info", "AutoVPN", "Initiating VPN disconnection process...");
+        nm_monitor::emit_vpn_log(
+            &app,
+            "info",
+            "AutoVPN",
+            "Initiating VPN disconnection process...",
+        );
     }
-    
+
     match run_vpn_task(disconnect_system_vpn).await {
         Ok(_) => {
             #[cfg(target_os = "linux")]
-            nm_monitor::emit_vpn_log(&app, "success", "AutoVPN", "VPN disconnection request completed successfully.");
+            nm_monitor::emit_vpn_log(
+                &app,
+                "success",
+                "AutoVPN",
+                "VPN disconnection request completed successfully.",
+            );
             Ok(())
         }
         Err(err) => {
             #[cfg(target_os = "linux")]
-            nm_monitor::emit_vpn_log(&app, "error", "AutoVPN", &format!("VPN disconnection failed: {}", err));
+            nm_monitor::emit_vpn_log(
+                &app,
+                "error",
+                "AutoVPN",
+                &format!("VPN disconnection failed: {}", err),
+            );
             Err(err)
         }
     }
@@ -119,18 +149,33 @@ pub async fn reconnect_vpn(app: tauri::AppHandle) -> Result<(), String> {
     #[cfg(target_os = "linux")]
     {
         nm_monitor::set_intended_active(true);
-        nm_monitor::emit_vpn_log(&app, "info", "AutoVPN", "Initiating VPN reconnection process...");
+        nm_monitor::emit_vpn_log(
+            &app,
+            "info",
+            "AutoVPN",
+            "Initiating VPN reconnection process...",
+        );
     }
-    
+
     match run_vpn_task(reconnect_system_vpn).await {
         Ok(_) => {
             #[cfg(target_os = "linux")]
-            nm_monitor::emit_vpn_log(&app, "success", "AutoVPN", "VPN reconnection process finished.");
+            nm_monitor::emit_vpn_log(
+                &app,
+                "success",
+                "AutoVPN",
+                "VPN reconnection process finished.",
+            );
             Ok(())
         }
         Err(err) => {
             #[cfg(target_os = "linux")]
-            nm_monitor::emit_vpn_log(&app, "error", "AutoVPN", &format!("VPN reconnection failed: {}", err));
+            nm_monitor::emit_vpn_log(
+                &app,
+                "error",
+                "AutoVPN",
+                &format!("VPN reconnection failed: {}", err),
+            );
             Err(err)
         }
     }
@@ -153,24 +198,21 @@ pub async fn get_vpn_logs() -> Result<Vec<VpnLogEntry>, String> {
     }
 }
 
+use crate::keyring_store::vpn_credentials::{PasswordPart, StoredVpnCredentials};
+
 #[derive(serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct VpnProfileCredentialsView {
     pub username: String,
-    pub use_totp: bool,
-    pub base_password: String,
-    pub totp_secret: String,
-    pub has_base_password: bool,
-    pub has_totp_secret: bool,
+    pub parts: Vec<PasswordPart>,
+    pub has_stored_credentials: bool,
 }
 
 #[derive(serde::Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SaveVpnProfileCredentialsPayload {
     pub profile_name: String,
-    pub use_totp: bool,
-    pub base_password: Option<String>,
-    pub totp_secret: Option<String>,
+    pub parts: Vec<PasswordPart>,
 }
 
 fn get_profile_credentials_view(profile_name: &str) -> Result<VpnProfileCredentialsView, String> {
@@ -180,19 +222,32 @@ fn get_profile_credentials_view(profile_name: &str) -> Result<VpnProfileCredenti
         .profile_config(profile_name)
         .cloned()
         .unwrap_or_default();
-    let stored = crate::keyring_store::vpn_credentials::load_vpn_profile_credentials(profile_name)?
-        .unwrap_or_default();
+    let mut stored =
+        crate::keyring_store::vpn_credentials::load_vpn_profile_credentials(profile_name)?
+            .unwrap_or_default();
 
-    let totp_secret = stored.totp_secret.clone().unwrap_or_default();
+    if stored.parts.is_empty() {
+        if config.use_totp {
+            if let Some(secret) = stored.totp_secret.clone().filter(|s| !s.is_empty()) {
+                stored.parts.push(PasswordPart::Totp { secret });
+            }
+            if let Some(base) = stored.base_password.clone().filter(|b| !b.is_empty()) {
+                stored.parts.push(PasswordPart::Static { value: base });
+            }
+        } else if let Some(base) = stored.base_password.clone().filter(|b| !b.is_empty()) {
+            stored.parts.push(PasswordPart::Static { value: base });
+        }
+    }
+
     let username = platform::get_system_vpn_profile_username(profile_name).unwrap_or_default();
+    let has_stored_credentials = !stored.parts.is_empty()
+        || stored.base_password.as_ref().is_some_and(|p| !p.is_empty())
+        || stored.totp_secret.as_ref().is_some_and(|s| !s.is_empty());
 
     Ok(VpnProfileCredentialsView {
         username,
-        use_totp: config.use_totp,
-        base_password: stored.base_password.clone(),
-        totp_secret: totp_secret.clone(),
-        has_base_password: !stored.base_password.is_empty(),
-        has_totp_secret: !totp_secret.is_empty(),
+        parts: stored.parts,
+        has_stored_credentials,
     })
 }
 
@@ -203,48 +258,43 @@ fn save_profile_credentials(payload: SaveVpnProfileCredentialsPayload) -> Result
         return Err("vpn_profile_name_required".to_string());
     }
 
-    let mut stored =
-        crate::keyring_store::vpn_credentials::load_vpn_profile_credentials(&profile_name)?
-            .unwrap_or_default();
-
-    if let Some(base_password) = payload.base_password {
-        stored.base_password = base_password;
+    if payload.parts.is_empty() {
+        return Err("vpn_password_required".to_string());
     }
 
-    if payload.use_totp {
-        if let Some(secret) = payload
-            .totp_secret
-            .map(|value| value.trim().to_string())
-            .filter(|value| !value.is_empty())
-        {
-            totp::generate_totp_code(&secret)?;
-            stored.totp_secret = Some(secret);
-        } else if stored
-            .totp_secret
-            .as_ref()
-            .is_none_or(|value| value.is_empty())
-        {
-            return Err("totp_secret_required".to_string());
-        }
-    } else {
-        stored.totp_secret = None;
-
-        if stored.base_password.is_empty() {
-            return Err("vpn_password_required".to_string());
+    for part in &payload.parts {
+        match part {
+            PasswordPart::Static { value } => {
+                if value.is_empty() {
+                    return Err("vpn_password_required".to_string());
+                }
+            }
+            PasswordPart::Totp { secret } => {
+                let secret_trimmed = secret.trim();
+                if secret_trimmed.is_empty() {
+                    return Err("totp_secret_required".to_string());
+                }
+                totp::generate_totp_code(secret_trimmed)?;
+            }
         }
     }
 
-    let preview_config = crate::settings::VpnProfileConfig {
-        use_totp: payload.use_totp,
-        has_credentials: true,
+    let use_totp = payload
+        .parts
+        .iter()
+        .any(|part| matches!(part, PasswordPart::Totp { .. }));
+
+    let stored = StoredVpnCredentials {
+        parts: payload.parts,
+        base_password: None,
+        totp_secret: None,
     };
-    credentials::build_connect_password(&preview_config, &stored)?;
 
     crate::keyring_store::vpn_credentials::store_vpn_profile_credentials(&profile_name, &stored)?;
 
     let mut settings = crate::settings::load_settings().unwrap_or_default();
     let config = settings.vpn.profile_config_mut(&profile_name);
-    config.use_totp = payload.use_totp;
+    config.use_totp = use_totp;
     config.has_credentials = true;
 
     crate::settings::save_settings(&settings)
@@ -296,7 +346,9 @@ pub async fn remove_vpn_profile_credentials(profile_name: String) -> Result<(), 
 
 #[tauri::command]
 pub async fn get_system_vpn_profile_username(profile_name: String) -> Result<String, String> {
-    tauri::async_runtime::spawn_blocking(move || platform::get_system_vpn_profile_username(&profile_name))
-        .await
-        .map_err(|error| format!("vpn_task_failed:{error}"))?
+    tauri::async_runtime::spawn_blocking(move || {
+        platform::get_system_vpn_profile_username(&profile_name)
+    })
+    .await
+    .map_err(|error| format!("vpn_task_failed:{error}"))?
 }

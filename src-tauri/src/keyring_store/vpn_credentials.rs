@@ -5,11 +5,20 @@ use super::SERVICE;
 
 const USER_PREFIX: &str = "vpn-profile:";
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(tag = "type", rename_all = "camelCase")]
+pub enum PasswordPart {
+    Static { value: String },
+    Totp { secret: String },
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
 pub struct StoredVpnCredentials {
     #[serde(default)]
-    pub base_password: String,
+    pub parts: Vec<PasswordPart>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub base_password: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub totp_secret: Option<String>,
 }

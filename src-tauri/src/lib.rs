@@ -19,9 +19,9 @@ use settings::{
 use tauri::WindowEvent;
 use tray::TrayLabels;
 use vpn::{
-    connect_system_vpn, connect_vpn, disconnect_vpn, reconnect_vpn, get_vpn_profile_credentials, get_vpn_profiles,
-    get_vpn_status, get_vpn_logs, remove_vpn_profile_credentials, save_vpn_profile_credentials,
-    start_vpn_status_monitor, get_system_vpn_profile_username,
+    connect_system_vpn, connect_vpn, disconnect_vpn, get_system_vpn_profile_username, get_vpn_logs,
+    get_vpn_profile_credentials, get_vpn_profiles, get_vpn_status, reconnect_vpn,
+    remove_vpn_profile_credentials, save_vpn_profile_credentials, start_vpn_status_monitor,
 };
 
 #[tauri::command]
@@ -52,7 +52,6 @@ fn sync_tray_icon(
     )
 }
 
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     if let Err(error) = keyring_store::init() {
@@ -80,12 +79,12 @@ pub fn run() {
             window_behavior::apply(app.handle(), &settings.window_behavior)?;
             system_integration::apply(app.handle(), &settings.system_integration)?;
             system_integration::apply_launch_minimized(app.handle(), &settings.system_integration);
-            
+
             #[cfg(target_os = "linux")]
             if settings.vpn.auto_connect {
                 vpn::nm_monitor::set_intended_active(true);
             }
-            
+
             start_vpn_status_monitor(app.handle().clone());
 
             if settings.vpn.auto_connect {

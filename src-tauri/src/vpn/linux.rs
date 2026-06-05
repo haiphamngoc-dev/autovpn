@@ -86,7 +86,14 @@ fn sanitize_profile_file_key(profile_name: &str) -> String {
 }
 
 pub fn get_system_vpn_profile_username(profile_name: &str) -> Result<String, String> {
-    if let Ok(output) = run_nmcli(&["-s", "-g", "vpn.user-name", "connection", "show", profile_name]) {
+    if let Ok(output) = run_nmcli(&[
+        "-s",
+        "-g",
+        "vpn.user-name",
+        "connection",
+        "show",
+        profile_name,
+    ]) {
         let trimmed = output.trim();
         if !trimmed.is_empty() && trimmed != "--" {
             return Ok(trimmed.to_string());

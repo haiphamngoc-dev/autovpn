@@ -1,5 +1,9 @@
 import { ActionIcon, Box, Group, Text, Badge, Button } from "@mantine/core";
-import { IconBrandGithub, IconUserCircle, IconMessageReport } from "@tabler/icons-react";
+import {
+  IconBrandGithub,
+  IconUserCircle,
+  IconMessageReport,
+} from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { settingCardStyles } from "@shared/layout";
 import { openUrl } from "@tauri-apps/plugin-opener";
@@ -61,7 +65,13 @@ export function AboutAuthorCard() {
         </Group>
       </Group>
 
-      <Group justify="space-between" align="center" mt="md" pt="sm" style={{ borderTop: "1px solid var(--mantine-color-default-border)" }}>
+      <Group
+        justify="space-between"
+        align="center"
+        mt="md"
+        pt="sm"
+        style={{ borderTop: "1px solid var(--mantine-color-default-border)" }}
+      >
         <Box>
           <Text size="xs" c="dimmed">
             {t("settings.aboutAuthor.license")}

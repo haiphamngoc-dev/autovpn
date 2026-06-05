@@ -63,20 +63,23 @@ fn build_tray_menu<R: Runtime>(app: &AppHandle<R>, labels: &TrayLabels) -> Resul
     let reconn_item; // Keep it in scope
     if let Some(ref default_profile) = settings.vpn.default_profile {
         if !default_profile.is_empty() {
-            let status = crate::vpn::get_system_vpn_status().unwrap_or(crate::vpn::VpnConnectionStatus::Disconnected);
+            let status = crate::vpn::get_system_vpn_status()
+                .unwrap_or(crate::vpn::VpnConnectionStatus::Disconnected);
             let label = if status == crate::vpn::VpnConnectionStatus::Disconnected {
                 format!("{}: {}", labels.connect, default_profile)
             } else {
                 format!("{}: {}", labels.disconnect, default_profile)
             };
-            conn_item = MenuItem::with_id(app, "tray_connect_disconnect", &label, true, None::<&str>)
-                .map_err(|error| error.to_string())?;
+            conn_item =
+                MenuItem::with_id(app, "tray_connect_disconnect", &label, true, None::<&str>)
+                    .map_err(|error| error.to_string())?;
             menu_items.push(&conn_item);
 
             if status != crate::vpn::VpnConnectionStatus::Disconnected {
                 let reconn_label = labels.reconnect.clone();
-                reconn_item = MenuItem::with_id(app, "tray_reconnect", &reconn_label, true, None::<&str>)
-                    .map_err(|error| error.to_string())?;
+                reconn_item =
+                    MenuItem::with_id(app, "tray_reconnect", &reconn_label, true, None::<&str>)
+                        .map_err(|error| error.to_string())?;
                 menu_items.push(&reconn_item);
             }
         }
@@ -140,19 +143,24 @@ pub fn sync_tray<R: Runtime>(
                 }
             }
             "tray_connect_disconnect" => {
-                let status = crate::vpn::get_system_vpn_status().unwrap_or(crate::vpn::VpnConnectionStatus::Disconnected);
+                let status = crate::vpn::get_system_vpn_status()
+                    .unwrap_or(crate::vpn::VpnConnectionStatus::Disconnected);
                 let app_clone = app.clone();
                 tauri::async_runtime::spawn(async move {
                     if status == crate::vpn::VpnConnectionStatus::Disconnected {
                         #[cfg(target_os = "linux")]
                         crate::vpn::nm_monitor::set_intended_active(true);
-                        
-                        let _ = tauri::async_runtime::spawn_blocking(crate::vpn::connect_system_vpn).await;
+
+                        let _ =
+                            tauri::async_runtime::spawn_blocking(crate::vpn::connect_system_vpn)
+                                .await;
                     } else {
                         #[cfg(target_os = "linux")]
                         crate::vpn::nm_monitor::set_intended_active(false);
-                        
-                        let _ = tauri::async_runtime::spawn_blocking(crate::vpn::disconnect_system_vpn).await;
+
+                        let _ =
+                            tauri::async_runtime::spawn_blocking(crate::vpn::disconnect_system_vpn)
+                                .await;
                     }
                     let _ = refresh_tray_menu(&app_clone);
                 });
@@ -162,8 +170,9 @@ pub fn sync_tray<R: Runtime>(
                 tauri::async_runtime::spawn(async move {
                     #[cfg(target_os = "linux")]
                     crate::vpn::nm_monitor::set_intended_active(true);
-                    
-                    let _ = tauri::async_runtime::spawn_blocking(crate::vpn::reconnect_system_vpn).await;
+
+                    let _ = tauri::async_runtime::spawn_blocking(crate::vpn::reconnect_system_vpn)
+                        .await;
                     let _ = refresh_tray_menu(&app_clone);
                 });
             }

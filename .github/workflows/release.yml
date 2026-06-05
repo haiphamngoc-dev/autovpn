@@ -3,7 +3,7 @@ name: "Publish Release"
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -79,15 +79,15 @@ jobs:
         run: |
           VERSION=${{ github.ref_name }}
           VERSION_NUM=${VERSION#v}
-          
+
           TAR_PATH=$(find src-tauri/target/release/bundle -name "*.AppImage" | head -n 1)
           SIG_PATH=$(find src-tauri/target/release/bundle -name "*.AppImage.sig" | head -n 1)
-          
+
           if [ -z "$TAR_PATH" ] || [ -z "$SIG_PATH" ]; then
             TAR_PATH=$(find src-tauri/target/release/bundle -name "*.tar.gz" ! -name "control.tar.gz" ! -name "data.tar.gz" | head -n 1)
             SIG_PATH=$(find src-tauri/target/release/bundle -name "*.sig" ! -name "*control*" ! -name "*data*" | head -n 1)
           fi
-          
+
           if [ -n "$SIG_PATH" ] && [ -n "$TAR_PATH" ]; then
             SIGNATURE=$(cat "$SIG_PATH")
             TAR_NAME=$(basename "$TAR_PATH")

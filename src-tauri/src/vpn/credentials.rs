@@ -1,4 +1,4 @@
-use crate::keyring_store::vpn_credentials::{self, StoredVpnCredentials};
+use crate::keyring_store::vpn_credentials::{self, PasswordPart, StoredVpnCredentials};
 use crate::settings::VpnProfileConfig;
 
 use super::totp;
@@ -12,6 +12,26 @@ pub fn build_connect_password(
     config: &VpnProfileConfig,
     secrets: &StoredVpnCredentials,
 ) -> Result<String, String> {
+    if !secrets.parts.is_empty() {
+        let mut final_password = String::new();
+        for part in &secrets.parts {
+            match part {
+                PasswordPart::Static { value } => {
+                    final_password.push_str(value);
+                }
+                PasswordPart::Totp { secret } => {
+                    let secret_trimmed = secret.trim();
+                    if secret_trimmed.is_empty() {
+                        return Err("totp_secret_missing".to_string());
+                    }
+                    let otp = totp::generate_totp_code(secret_trimmed)?;
+                    final_password.push_str(&otp);
+                }
+            }
+        }
+        return Ok(final_password);
+    }
+
     if config.use_totp {
         let secret = secrets
             .totp_secret
@@ -20,10 +40,13 @@ pub fn build_connect_password(
             .ok_or("totp_secret_missing".to_string())?;
         let otp = totp::generate_totp_code(secret)?;
 
-        return Ok(format!("{otp}{}", secrets.base_password));
+        return Ok(format!(
+            "{otp}{}",
+            secrets.base_password.as_deref().unwrap_or("")
+        ));
     }
 
-    Ok(secrets.base_password.clone())
+    Ok(secrets.base_password.clone().unwrap_or_default())
 }
 
 pub fn resolve_connect_auth(profile_name: &str) -> Result<Option<VpnConnectAuth>, String> {

@@ -1,4 +1,12 @@
-import { Box, Checkbox, Text, Tooltip, ActionIcon, Group, Collapse } from "@mantine/core";
+import {
+  Box,
+  Checkbox,
+  Text,
+  Tooltip,
+  ActionIcon,
+  Group,
+  Collapse,
+} from "@mantine/core";
 import { settingCardStyles } from "@shared/layout";
 import { fetchVpnLogs } from "@shared/vpn";
 import {
@@ -66,7 +74,10 @@ export function VpnLogConsoleCard() {
   function handleCopy() {
     if (logs.length === 0) return;
     const text = logs
-      .map((log) => `[${log.timestamp}] [${log.level.toUpperCase()}] [${log.source}] ${log.message}`)
+      .map(
+        (log) =>
+          `[${log.timestamp}] [${log.level.toUpperCase()}] [${log.source}] ${log.message}`
+      )
       .join("\n");
     void navigator.clipboard.writeText(text);
     setCopied(true);
@@ -90,18 +101,34 @@ export function VpnLogConsoleCard() {
       >
         <Group gap="xs" className={styles.titleGroup}>
           {opened ? (
-            <IconChevronUp size={16} stroke={1.5} color="var(--mantine-color-dimmed)" />
+            <IconChevronUp
+              size={16}
+              stroke={1.5}
+              color="var(--mantine-color-dimmed)"
+            />
           ) : (
-            <IconChevronDown size={16} stroke={1.5} color="var(--mantine-color-dimmed)" />
+            <IconChevronDown
+              size={16}
+              stroke={1.5}
+              color="var(--mantine-color-dimmed)"
+            />
           )}
-          <IconTerminal size={16} stroke={1.5} color="var(--mantine-color-dimmed)" />
+          <IconTerminal
+            size={16}
+            stroke={1.5}
+            color="var(--mantine-color-dimmed)"
+          />
           <Text className={settingCardStyles.sectionTitle} mb={0}>
             {t("home.vpnLogs.title")}
           </Text>
         </Group>
 
         {opened && (
-          <Group gap="xs" className={styles.actionsGroup} onClick={(e) => e.stopPropagation()}>
+          <Group
+            gap="xs"
+            className={styles.actionsGroup}
+            onClick={(e) => e.stopPropagation()}
+          >
             <Checkbox
               size="xs"
               label={t("home.vpnLogs.autoscroll")}
@@ -109,7 +136,9 @@ export function VpnLogConsoleCard() {
               onChange={(event) => setAutoscroll(event.currentTarget.checked)}
             />
 
-            <Tooltip label={copied ? t("home.vpnLogs.copied") : t("home.vpnLogs.copy")}>
+            <Tooltip
+              label={copied ? t("home.vpnLogs.copied") : t("home.vpnLogs.copy")}
+            >
               <ActionIcon
                 variant="subtle"
                 color={copied ? "green" : "gray"}
@@ -137,14 +166,20 @@ export function VpnLogConsoleCard() {
       </div>
 
       <Collapse expanded={opened}>
-        <div ref={consoleRef} className={styles.consoleContainer} style={{ marginTop: "12px" }}>
+        <div
+          ref={consoleRef}
+          className={styles.consoleContainer}
+          style={{ marginTop: "12px" }}
+        >
           {logs.length === 0 ? (
             <div className={styles.emptyState}>{t("home.vpnLogs.empty")}</div>
           ) : (
             logs.map((log, index) => (
               <div key={index} className={styles.logLine}>
                 <span className={styles.logTimestamp}>[{log.timestamp}]</span>
-                <span className={`${styles.logLevel} ${styles[`level_${log.level}`]}`}>
+                <span
+                  className={`${styles.logLevel} ${styles[`level_${log.level}`]}`}
+                >
                   [{log.level.toUpperCase()}]
                 </span>
                 <span className={styles.logSource}>[{log.source}]</span>
