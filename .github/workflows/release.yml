@@ -69,9 +69,9 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: "AutoVPN ${{ github.ref_name }}"
           releaseBody: |
-            Release version ${{ github.ref_name }} with manual .deb package download.
-            - Removed the AppImage auto update option from the UI to prioritize Debian system packages.
-            - Users can download the new `.deb` file directly using a native Save Dialog.
+            Release version ${{ github.ref_name }} with GitHub Releases redirection for updates.
+            - Redirects users directly to the GitHub Releases page when a new version is available instead of downloading files in-app.
+            - Allows users to choose and download their preferred package format (.deb, .AppImage, etc.) for manual installation.
           releaseDraft: false
           prerelease: false
 

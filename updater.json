@@ -1,6 +1,6 @@
 {
-  "version": "0.5.8",
-  "notes": "Release AutoVPN v0.5.8 with auto-update support.",
+  "version": "0.5.9",
+  "notes": "Release AutoVPN v0.5.9 with auto-update support.",
   "pub_date": "2026-05-27T02:11:03Z",
   "platforms": {
     "linux-x86_64": {
