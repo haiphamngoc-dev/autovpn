@@ -318,13 +318,9 @@
         "available": "Update Available"
       },
       "actions": {
-        "downloadDeb": "Download .deb",
-        "downloadInstall": "Auto Update (AppImage)",
+        "goToReleases": "Download from GitHub Releases",
         "checking": "Checking...",
         "check": "Check for Updates"
-      },
-      "states": {
-        "downloading": "Downloading and applying update..."
       },
       "notifications": {
         "available": {
@@ -335,19 +331,8 @@
           "title": "Up to Date",
           "message": "You are already using the latest version of AutoVPN."
         },
-        "success": {
-          "title": "Update Completed",
-          "message": "AutoVPN has been upgraded successfully! Please restart the application to apply the changes."
-        },
-        "installFailed": {
-          "title": "Installation Failed"
-        },
-        "debDownloaded": {
-          "title": "Download Successful",
-          "message": "Successfully downloaded package to: {{path}}. Please run 'sudo dpkg -i {{path}}' to install it."
-        },
-        "debDownloadFailed": {
-          "title": "Download Failed"
+        "openFailed": {
+          "title": "Could not open link"
         },
         "error": {
           "title": "Update Check Failed"

@@ -318,13 +318,9 @@
         "available": "Có bản cập nhật"
       },
       "actions": {
-        "downloadDeb": "Tải gói .deb",
-        "downloadInstall": "Cập nhật tự động (AppImage)",
+        "goToReleases": "Tải về trên GitHub Releases",
         "checking": "Đang kiểm tra...",
         "check": "Kiểm tra cập nhật"
-      },
-      "states": {
-        "downloading": "Đang tải và cập nhật ứng dụng..."
       },
       "notifications": {
         "available": {
@@ -335,19 +331,8 @@
           "title": "Đã là mới nhất",
           "message": "Bạn đang sử dụng phiên bản mới nhất của AutoVPN."
         },
-        "success": {
-          "title": "Cập nhật thành công",
-          "message": "AutoVPN đã được nâng cấp thành công! Vui lòng khởi động lại ứng dụng để áp dụng các thay đổi."
-        },
-        "installFailed": {
-          "title": "Cài đặt thất bại"
-        },
-        "debDownloaded": {
-          "title": "Tải gói .deb thành công",
-          "message": "Đã tải gói cài đặt về: {{path}}. Hãy chạy lệnh 'sudo dpkg -i {{path}}' để cài đặt."
-        },
-        "debDownloadFailed": {
-          "title": "Tải gói .deb thất bại"
+        "openFailed": {
+          "title": "Không thể mở liên kết"
         },
         "error": {
           "title": "Kiểm tra cập nhật thất bại"

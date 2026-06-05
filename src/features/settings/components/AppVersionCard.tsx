@@ -1,13 +1,14 @@
-import { Box, Button, Group, Text, Badge, Progress, Alert } from "@mantine/core";
+import { Box, Button, Group, Text, Badge, Alert } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
-import { IconInfoCircle, IconRefresh, IconCloudDownload, IconCircleCheck, IconAlertCircle } from "@tabler/icons-react";
+import { IconInfoCircle, IconRefresh, IconExternalLink, IconCircleCheck, IconAlertCircle } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { settingCardStyles } from "@shared/layout";
 import { getVersion } from "@tauri-apps/api/app";
 import { check } from "@tauri-apps/plugin-updater";
+import { openUrl } from "@tauri-apps/plugin-opener";
 
-type UpdateState = "idle" | "checking" | "available" | "downloading" | "upToDate" | "error";
+type UpdateState = "idle" | "checking" | "available" | "upToDate" | "error";
 
 export function AppVersionCard() {
   const { t } = useTranslation();
@@ -66,44 +67,14 @@ export function AppVersionCard() {
     }
   };
 
-  const handleDownloadDeb = async () => {
+  const handleOpenReleases = async () => {
     if (!newVersion) return;
-
-    setUpdateState("downloading");
     try {
-      const { invoke } = await import("@tauri-apps/api/core");
-      const debFilename = `AutoVPN_${newVersion}_amd64.deb`;
-      const debUrl = `https://github.com/haiphamngoc-dev/autovpn/releases/download/v${newVersion}/${debFilename}`;
-      
-      const result = await invoke<string>("download_deb_package", {
-        url: debUrl,
-        filename: debFilename,
-      });
-
-      if (result === "cancelled") {
-        setUpdateState("available");
-        return;
-      }
-
-      setUpdateState("upToDate");
-      
-      notifications.show({
-        title: t("settings.update.notifications.debDownloaded.title", { defaultValue: "Download Successful" }),
-        message: t("settings.update.notifications.debDownloaded.message", { 
-          path: result, 
-          defaultValue: `Successfully downloaded package to: ${result}. Please run 'sudo dpkg -i ${result}' to install it.` 
-        }),
-        color: "green",
-        autoClose: false,
-      });
+      await openUrl(`https://github.com/haiphamngoc-dev/autovpn/releases/tag/v${newVersion}`);
     } catch (err: any) {
-      setUpdateState("error");
-      const errMsg = err?.toString() || "Failed to download .deb package";
-      setErrorMessage(errMsg);
-      
       notifications.show({
-        title: t("settings.update.notifications.debDownloadFailed.title", { defaultValue: "Download Failed" }),
-        message: errMsg,
+        title: t("settings.update.notifications.openFailed.title", { defaultValue: "Could not open link" }),
+        message: err?.toString() || "Unknown error occurred",
         color: "red",
       });
     }
@@ -151,22 +122,13 @@ export function AppVersionCard() {
           <Button
             size="xs"
             variant="filled"
-            leftSection={<IconCloudDownload size={14} />}
-            onClick={handleDownloadDeb}
+            leftSection={<IconExternalLink size={14} />}
+            onClick={handleOpenReleases}
             fullWidth
           >
-            {t("settings.update.actions.downloadDeb", { defaultValue: "Download .deb" })}
+            {t("settings.update.actions.goToReleases", { defaultValue: "Download from GitHub Releases" })}
           </Button>
         </Alert>
-      )}
-
-      {updateState === "downloading" && (
-        <Box mb="md">
-          <Text size="xs" c="dimmed" mb={5}>
-            {t("settings.update.states.downloading", { defaultValue: "Downloading and applying update..." })}
-          </Text>
-          <Progress value={100} animated color="blue" size="sm" />
-        </Box>
       )}
 
       {updateState === "error" && (
@@ -180,7 +142,6 @@ export function AppVersionCard() {
         size="xs"
         loading={checking}
         onClick={handleCheckForUpdates}
-        disabled={updateState === "downloading"}
         leftSection={!checking && <IconRefresh size={14} />}
         fullWidth
       >
