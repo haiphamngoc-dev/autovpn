@@ -8,7 +8,7 @@
 [![App Version](https://img.shields.io/badge/Version-0.5.9-success?style=flat-square)](https://github.com/haiphamngoc-dev/autovpn/releases)
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
-AutoVPN là một ứng dụng desktop chuyên nghiệp chạy ngầm trên khay hệ thống (System Tray), được thiết kế để tự động kết nối, khôi phục kết nối thông minh và quản lý credentials cũng như mã xác thực OTP/TOTP động cho các kết nối VPN hệ thống.
+AutoVPN là một ứng dụng desktop chuyên nghiệp chạy ngầm trên khay hệ thống (System Tray), được thiết kế dành riêng cho **Debian/Ubuntu** (và các bản phân phối Linux dựa trên Debian sử dụng NetworkManager). Ứng dụng giúp tự động kết nối, khôi phục kết nối thông minh và quản lý credentials cũng như mã xác thực OTP/TOTP động cho các kết nối VPN hệ thống.
 
 Dự án được xây dựng trên mô hình tối ưu hóa tài nguyên **Tauri v2 + Rust + React + Mantine UI**, mang lại hiệu năng cao, chiếm dụng RAM cực kỳ nhỏ nhẹ và bảo mật tuyệt đối cho thông tin của bạn.
 
@@ -21,7 +21,7 @@ Dự án được xây dựng trên mô hình tối ưu hóa tài nguyên **Taur
 - **Đồng bộ OTP/TOTP động**: Hỗ trợ đắc lực cho các kết nối VPN yêu cầu mật khẩu bảo mật MFA dạng ghép chuỗi: `{Mã OTP 6 số}{Mật khẩu cố định}`. Hệ thống tự sinh mã theo chu kỳ 30 giây giúp lược bỏ thao tác thủ công.
 - **Bảo mật phần cứng & Keyring**:
   - Mã hóa an toàn chuẩn quân sự **AES-GCM** cho dữ liệu nhạy cảm.
-  - Tích hợp trực tiếp vào **Hệ thống Keyring của Hệ điều hành** (Secret Service API trên Linux thông qua DBus, Keychain trên macOS, Credential Manager trên Windows).
+  - Tích hợp trực tiếp vào **Hệ thống Keyring của Hệ điều hành** (Secret Service API trên Linux thông qua DBus, chẳng hạn như Gnome Keyring hoặc KWallet).
 - **Đồng bộ hóa tài khoản**: Tự động phát hiện và trích xuất tên đăng nhập (`username`) từ cấu hình VPN hệ thống để hiển thị dạng chỉ đọc, giảm thiểu sai sót cấu hình.
 - **Khóa ứng dụng bảo mật (App Lock)**: Thiết lập mã PIN để mã hóa và khóa màn hình giao diện, ngăn chặn truy cập trái phép.
 - **Giao diện Responsive**: Hỗ trợ chế độ Sáng/Tối (Light/Dark mode) cùng thanh tiêu đề tùy chỉnh (Custom Titlebar) mượt mà.
@@ -69,9 +69,9 @@ Dự án được xây dựng trên mô hình tối ưu hóa tài nguyên **Taur
 
 ## Hướng dẫn cài đặt & Phát triển
 
-### Yêu cầu hệ thống (Linux)
+### Yêu cầu hệ thống (Debian/Ubuntu)
 
-Ứng dụng cần các thư viện quản lý kết nối và giao diện khay hệ thống. Hãy cài đặt chúng qua trình quản lý gói của bạn:
+Ứng dụng hiện chỉ hỗ trợ chính thức hệ điều hành **Debian/Ubuntu** (hoặc các bản phân phối Linux dựa trên Debian sử dụng NetworkManager). Hãy cài đặt các thư viện quản lý kết nối và giao diện khay hệ thống qua trình quản lý gói `apt`:
 
 ```bash
 sudo apt update
@@ -122,5 +122,3 @@ pnpm tauri build -- --bundles deb
 ## Giấy phép (License)
 
 Dự án được phân phối dưới giấy phép **MIT License**. Xem chi tiết tại tệp [LICENSE](LICENSE).
-
-Bản quyền thuộc về © 2026 **Hai Pham Ngoc** <ngochai285nd@gmail.com>.
