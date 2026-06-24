@@ -14,6 +14,14 @@ Dự án được xây dựng trên mô hình tối ưu hóa tài nguyên **Taur
 
 ---
 
+## Ảnh chụp màn hình
+
+| Giao diện chính | Cấu hình cài đặt |
+| :---: | :---: |
+| ![Giao diện chính](screenshots/main_dashboard.png) | ![Cấu hình cài đặt](screenshots/settings.png) |
+
+---
+
 ## Các tính năng chính
 
 - **Tự động kết nối (Auto-Connect)**: Tự động khởi chạy và thiết lập kết nối trực tiếp đến profile VPN mặc định ngay sau khi bạn khởi động hệ thống.
