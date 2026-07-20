@@ -1,0 +1,103 @@
+.windowButtons {
+  display: flex;
+  height: 100%;
+}
+
+.button {
+  background: transparent;
+  border: none;
+  height: 100%;
+  width: 46px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--mantine-color-text);
+  cursor: default;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.button:hover {
+  background-color: var(--mantine-color-default-hover);
+}
+
+.closeButton:hover {
+  background-color: #c42b1c !important;
+  color: #fff !important;
+}
+
+/* macOS Simulated Traffic Light Controls */
+.macOSControls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-right: 12px;
+  margin-left: 12px;
+  height: 100%;
+}
+
+.macOSButton {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+.macOSClose {
+  background-color: #ff5f56;
+}
+.macOSClose:hover {
+  background-color: #e0443e;
+}
+
+.macOSMinimize {
+  background-color: #ffbd2e;
+}
+.macOSMinimize:hover {
+  background-color: #dfa224;
+}
+
+.macOSMaximize {
+  background-color: #27c93f;
+}
+.macOSMaximize:hover {
+  background-color: #1aab2f;
+}
+
+.macOSButton::after {
+  content: "";
+  font-size: 8px;
+  font-weight: bold;
+  color: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  position: absolute;
+}
+
+.macOSControls:hover .macOSButton::after {
+  opacity: 1;
+}
+
+.macOSClose::after {
+  content: "×";
+  top: -1.5px;
+}
+
+.macOSMinimize::after {
+  content: "−";
+  top: -3px;
+}
+
+.macOSMaximize::after {
+  content: "+";
+  font-size: 7px;
+  top: 0.5px;
+}

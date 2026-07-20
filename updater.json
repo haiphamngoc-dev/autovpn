@@ -1,11 +1,11 @@
 {
-  "version": "0.6.0",
-  "notes": "Release AutoVPN v0.6.0 with auto-update support.",
+  "version": "0.7.0",
+  "notes": "Release AutoVPN v0.7.0 with auto-update support.",
   "pub_date": "2026-06-05T08:51:08Z",
   "platforms": {
     "linux-x86_64": {
       "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYzZ5NkNzdVNwajlMWDNEMzdrVmk1bXE4QVRkMlVTdHAveWRNTWhGdjJNWmF4S2R1d29RKzBTYVJFQk5xZWxpZDBnR3ZvUERkZjJxQzFBSkRUZXVxNG9EeEhhSnp0emd3PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgwNjQ5NDYwCWZpbGU6QXV0b1ZQTl8wLjYuMF9hbWQ2NC5BcHBJbWFnZQphcWRQTFQ2Z095a2IyM1hMMGdmNWlCaTJSRkNEU08yTFphOW5OakRNTWtycCtYcktDUWpHOTdNdWVPNEU2V2pUVHZrYWNqck5DMFhLclpocjQ4OGJDZz09Cg==",
-      "url": "https://github.com/haiphamngoc-dev/autovpn/releases/download/v0.6.0/AutoVPN_0.6.0_amd64.AppImage"
+      "url": "https://github.com/haiphamngoc-dev/autovpn/releases/download/v0.7.0/AutoVPN_0.7.0_amd64.AppImage"
     }
   }
 }

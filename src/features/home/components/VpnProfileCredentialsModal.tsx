@@ -177,7 +177,11 @@ export function VpnProfileCredentialsModal({
     setIsSaving(true);
     setError(null);
 
-    const payloadParts = parts.map(({ id, ...rest }) => rest);
+    const payloadParts = parts.map((part) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id, ...rest } = part;
+      return rest;
+    });
 
     try {
       await saveVpnProfileCredentials({
@@ -195,8 +199,8 @@ export function VpnProfileCredentialsModal({
 
       onSaved();
       handleClose();
-    } catch (err: any) {
-      setError(err?.toString() || t("home.vpnCredentials.saveFailed"));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsSaving(false);
     }

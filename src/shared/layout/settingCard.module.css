@@ -2,10 +2,24 @@
   container-type: inline-size;
   container-name: setting-card;
   width: 100%;
-  border: 1px solid var(--mantine-color-default-border);
-  border-radius: var(--mantine-radius-md);
+  border: 1px solid
+    light-dark(var(--app-glass-border-light), var(--app-glass-border-dark));
+  border-radius: 12px;
   padding: var(--mantine-spacing-md);
-  background-color: var(--mantine-color-body);
+  background-color: light-dark(
+    var(--app-glass-bg-light),
+    var(--app-glass-bg-dark)
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--app-card-shadow);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--app-card-shadow-hover);
+  border-color: light-dark(rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.35));
 }
 
 .sectionTitle {

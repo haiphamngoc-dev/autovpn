@@ -197,7 +197,11 @@ export function VpnStatusCard() {
   }
 
   return (
-    <Box className={settingCardStyles.card}>
+    <Box
+      className={`${settingCardStyles.card} ${
+        isConnected ? styles.cardConnected : ""
+      }`}
+    >
       <div className={styles.layout}>
         <HeaderIcon
           size={HEADER_ICON_SIZE}

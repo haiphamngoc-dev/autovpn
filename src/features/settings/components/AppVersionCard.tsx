@@ -69,10 +69,10 @@ export function AppVersionCard() {
           color: "green",
         });
       }
-    } catch (err: any) {
+    } catch (err) {
       setChecking(false);
       setUpdateState("error");
-      const errMsg = err?.toString() || "Unknown error occurred";
+      const errMsg = err instanceof Error ? err.message : String(err);
       setErrorMessage(errMsg);
 
       notifications.show({
@@ -91,12 +91,12 @@ export function AppVersionCard() {
       await openUrl(
         `https://github.com/haiphamngoc-dev/autovpn/releases/tag/v${newVersion}`
       );
-    } catch (err: any) {
+    } catch (err) {
       notifications.show({
         title: t("settings.update.notifications.openFailed.title", {
           defaultValue: "Could not open link",
         }),
-        message: err?.toString() || "Unknown error occurred",
+        message: err instanceof Error ? err.message : String(err),
         color: "red",
       });
     }

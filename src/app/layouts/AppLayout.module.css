@@ -1,18 +1,16 @@
 .root {
-  --layout-titlebar-height: 32px;
-
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
   overflow: hidden;
+  background-color: var(--mantine-color-body);
+  box-sizing: border-box;
 }
 
-.titlebar {
-  position: relative;
-  z-index: 201;
-  flex-shrink: 0;
-  height: var(--layout-titlebar-height);
+.root.bordered {
+  border-radius: 12px;
+  border: 1px solid light-dark(rgba(0, 0, 0, 0.12), rgba(255, 255, 255, 0.12));
 }
 
 .main {

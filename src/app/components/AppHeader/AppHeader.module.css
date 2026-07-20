@@ -89,3 +89,18 @@
   opacity: 0.45;
   cursor: not-allowed;
 }
+
+.customHeader {
+  padding-inline: 0;
+  border-top: none;
+}
+
+.customHeader .brand,
+.customHeader .leading {
+  padding-left: var(--mantine-spacing-md);
+}
+
+.customHeader .actions {
+  padding-right: 0;
+  height: 100%;
+}

@@ -22,23 +22,18 @@
 }
 
 .consoleContainer {
-  background-color: var(--mantine-color-default-hover);
-  border-radius: var(--mantine-radius-md);
-  border: 1px solid var(--mantine-color-default-border);
+  background-color: #121316;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   padding: var(--mantine-spacing-md);
-  height: 200px;
+  height: 220px;
   overflow-y: auto;
-  font-family: var(
-    --mantine-font-family-monospace,
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    monospace
-  );
-  font-size: 12px;
+  font-family:
+    "JetBrains Mono", "Fira Code", var(--mantine-font-family-monospace),
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11.5px;
   line-height: 1.6;
+  box-shadow: inset 0 4px 12px 0 rgba(0, 0, 0, 0.35);
 }
 
 /* Scrollbar styles for a custom terminal look */
@@ -52,12 +47,12 @@
 }
 
 .consoleContainer::-webkit-scrollbar-thumb {
-  background: var(--mantine-color-default-border);
+  background: rgba(255, 255, 255, 0.12);
   border-radius: 3px;
 }
 
 .consoleContainer::-webkit-scrollbar-thumb:hover {
-  background: var(--mantine-color-dimmed);
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .logLine {
@@ -68,13 +63,13 @@
 }
 
 .logTimestamp {
-  color: var(--mantine-color-dimmed);
+  color: rgba(255, 255, 255, 0.4);
   flex-shrink: 0;
   user-select: none;
 }
 
 .logSource {
-  color: var(--mantine-color-indigo-filled);
+  color: #818cf8;
   font-weight: 600;
   flex-shrink: 0;
   user-select: none;
@@ -88,19 +83,23 @@
 }
 
 .level_info {
-  color: var(--mantine-color-cyan-filled);
+  color: #06b6d4;
 }
 
 .level_success {
-  color: var(--mantine-color-teal-filled);
+  color: #10b981;
+}
+
+.level_warn {
+  color: #f59e0b;
 }
 
 .level_error {
-  color: var(--mantine-color-red-filled);
+  color: #ef4444;
 }
 
 .logMessage {
-  color: var(--mantine-color-text);
+  color: rgba(255, 255, 255, 0.85);
   word-break: break-all;
 }
 
@@ -109,7 +108,7 @@
   align-items: center;
   justify-content: center;
   height: 100%;
-  color: var(--mantine-color-dimmed);
+  color: rgba(255, 255, 255, 0.35);
   font-style: italic;
   font-size: 12px;
 }

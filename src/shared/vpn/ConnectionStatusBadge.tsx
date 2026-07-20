@@ -23,6 +23,11 @@ export function ConnectionStatusBadge({
       className={`${styles.badge} ${STATUS_CLASS[status]}`}
       aria-label={label}
     >
+      {(status === "connected" || status === "connecting") && (
+        <span
+          className={`${styles.dot} ${status === "connected" ? "pulsing-glow" : styles.dotConnecting}`}
+        />
+      )}
       {label}
     </span>
   );
