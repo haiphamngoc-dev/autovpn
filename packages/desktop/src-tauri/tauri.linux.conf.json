@@ -1,0 +1,27 @@
+{
+  "app": {
+    "windows": [
+      {
+        "title": "AutoVPN",
+        "width": 800,
+        "height": 600,
+        "decorations": false,
+        "devtools": true,
+        "transparent": true,
+        "shadow": true
+      }
+    ]
+  },
+  "bundle": {
+    "icon": ["icons/128x128.png", "icons/128x128@2x.png", "icons/icon.png"],
+    "linux": {
+      "deb": {
+        "depends": ["openvpn"],
+        "files": {
+          "/usr/local/bin/autovpn-helper": "../../../target/release/helper-daemon",
+          "/usr/share/autovpn/autovpn-helper.service": "../../../scripts/deb/autovpn-helper.service"
+        }
+      }
+    }
+  }
+}

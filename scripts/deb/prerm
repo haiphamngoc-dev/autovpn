@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+
+# AutoVPN .deb prerm: Stop the helper daemon before removal.
+
+if systemctl is-active --quiet autovpn-helper; then
+  systemctl stop autovpn-helper
+fi

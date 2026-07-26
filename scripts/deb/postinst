@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+
+# AutoVPN .deb postinst: Install and start the helper daemon service.
+
+chmod 755 /usr/local/bin/autovpn-helper
+
+# Copy systemd service file to the standard location
+cp /usr/share/autovpn/autovpn-helper.service /lib/systemd/system/autovpn-helper.service
+
+systemctl daemon-reload
+systemctl enable autovpn-helper
+systemctl start autovpn-helper || true

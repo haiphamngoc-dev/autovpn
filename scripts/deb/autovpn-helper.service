@@ -1,0 +1,12 @@
+[Unit]
+Description=AutoVPN Privileged Helper Daemon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/autovpn-helper
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

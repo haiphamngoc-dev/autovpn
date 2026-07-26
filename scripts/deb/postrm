@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+# AutoVPN .deb postrm: Clean up daemon artifacts after removal.
+
+if [ "$1" = "purge" ] || [ "$1" = "remove" ]; then
+  systemctl disable autovpn-helper 2>/dev/null || true
+  rm -f /lib/systemd/system/autovpn-helper.service
+  rm -f /var/run/autovpn.sock
+  systemctl daemon-reload
+fi
