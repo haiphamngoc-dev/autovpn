@@ -1,0 +1,25 @@
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub enum VpnConnectionStatus {
+    Disconnected,
+    Connecting,
+    Connected,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct VpnProfile {
+    pub name: String,
+    pub status: VpnConnectionStatus,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct VpnLogEntry {
+    pub timestamp: String,
+    pub level: String, // "info" | "success" | "error"
+    pub source: String,
+    pub message: String,
+}

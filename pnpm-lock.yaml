@@ -7,6 +7,33 @@ settings:
 importers:
 
   .:
+    devDependencies:
+      '@eslint/js':
+        specifier: ^10.0.1
+        version: 10.0.1(eslint@10.4.0)
+      '@tauri-apps/cli':
+        specifier: ^2
+        version: 2.11.2
+      eslint:
+        specifier: ^10.4.0
+        version: 10.4.0
+      eslint-plugin-react-hooks:
+        specifier: ^7.1.1
+        version: 7.1.1(eslint@10.4.0)
+      eslint-plugin-react-refresh:
+        specifier: ^0.5.2
+        version: 0.5.2(eslint@10.4.0)
+      globals:
+        specifier: ^17.6.0
+        version: 17.6.0
+      prettier:
+        specifier: ^3.8.3
+        version: 3.8.3
+      typescript-eslint:
+        specifier: ^8.59.3
+        version: 8.59.3(eslint@10.4.0)(typescript@5.8.3)
+
+  packages/desktop:
     dependencies:
       '@mantine/core':
         specifier: ^9.2.1

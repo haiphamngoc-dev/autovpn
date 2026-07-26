@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "packages/desktop/src-tauri",
+    "packages/helper-daemon"
+]
+resolver = "2"

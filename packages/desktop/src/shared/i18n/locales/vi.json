@@ -1,0 +1,407 @@
+{
+  "app": {
+    "name": "AutoVPN"
+  },
+  "header": {
+    "status": {
+      "disconnected": "Chưa kết nối",
+      "connecting": "Đang kết nối",
+      "connected": "Đã kết nối"
+    }
+  },
+  "common": {
+    "back": "Quay lại",
+    "lock": "Khóa ngay",
+    "settings": "Cài đặt"
+  },
+  "footer": {
+    "disconnected": "Chưa kết nối",
+    "version": "v{{version}}"
+  },
+  "home": {
+    "vpnStatus": {
+      "title": "Trạng thái VPN",
+      "descriptionConnected": "Đường hầm VPN đang hoạt động ({{profile}}).",
+      "descriptionDisconnected": "VPN chưa được kết nối. Profile mặc định: {{profile}}.",
+      "descriptionConnecting": "Đang thiết lập đường hầm VPN ({{profile}})…",
+      "connect": "Kết nối",
+      "disconnect": "Ngắt kết nối",
+      "reconnect": "Kết nối lại",
+      "cancel": "Hủy",
+      "noDefaultProfile": "Hãy chọn profile VPN mặc định bên dưới trước khi kết nối.",
+      "noCredentials": "Hãy cấu hình {{profile}} trong danh sách VPN trước khi kết nối.",
+      "usesTotp": "Mật khẩu OTP động sẽ được tạo khi kết nối."
+    },
+    "vpnProfiles": {
+      "title": "Danh sách VPN",
+      "description": "Chọn profile mặc định dùng cho thao tác kết nối/ngắt kết nối hệ thống.",
+      "disabledWhileActive": "Không thể thay đổi profile mặc định hoặc cấu hình khi VPN đang hoạt động.",
+      "empty": "Không tìm thấy profile VPN nào trên hệ thống. Hãy bấm 'Nhập cấu hình' để thêm.",
+      "refresh": "Làm mới",
+      "configure": "Cấu hình",
+      "import": "Nhập cấu hình",
+      "statusNotConfigured": "Chưa cấu hình",
+      "statusSaved": "Đã cấu hình",
+      "statusTotp": "OTP động",
+      "loadFailed": "Không thể tải danh sách VPN từ hệ thống.",
+      "importModal": {
+        "title": "Nhập cấu hình VPN mới",
+        "profileName": "Tên profile",
+        "vpnType": "Loại giao thức",
+        "fileLabel": "Chọn file cấu hình (.ovpn, .conf)",
+        "fileHelp": "Nhấp hoặc kéo tệp vào đây (hỗ trợ .ovpn cho OpenVPN, .conf cho WireGuard)",
+        "username": "Tên đăng nhập (Username)",
+        "credentialsHint": "Sau khi nhập, bấm 'Cấu hình' để thiết lập mật khẩu động (dynamic password).",
+        "submit": "Nhập cấu hình",
+        "cancel": "Hủy"
+      },
+      "deleteConfirm": {
+        "title": "Xóa cấu hình VPN",
+        "message": "Bạn có chắc chắn muốn xóa cấu hình {{profile}}? Hành động này sẽ xóa file cấu hình vật lý vĩnh viễn trên thiết bị.",
+        "confirm": "Xóa cấu hình",
+        "cancel": "Hủy"
+      },
+      "notifications": {
+        "saved": {
+          "title": "Đã lưu profile mặc định",
+          "message": "{{profile}} là profile VPN mặc định."
+        },
+        "saveFailed": {
+          "title": "Không thể lưu profile mặc định",
+          "message": "Đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        },
+        "imported": {
+          "title": "Đã nhập cấu hình",
+          "message": "Đã nhập cấu hình {{profile}} thành công."
+        },
+        "importFailed": {
+          "title": "Không thể nhập cấu hình",
+          "message": "Lỗi: {{error}}"
+        },
+        "deleted": {
+          "title": "Đã xóa cấu hình",
+          "message": "Đã xóa profile {{profile}} khỏi danh sách."
+        },
+        "deleteFailed": {
+          "title": "Không thể xóa cấu hình",
+          "message": "Lỗi: {{error}}"
+        }
+      }
+    },
+    "vpnLogs": {
+      "title": "Log hoạt động thời gian thực",
+      "autoscroll": "Tự động cuộn",
+      "copy": "Sao chép log",
+      "copied": "Đã sao chép!",
+      "clear": "Xóa log",
+      "empty": "Chưa có bản ghi log nào từ hệ thống..."
+    },
+    "vpnCredentials": {
+      "title": "Cấu hình: {{profile}}",
+      "titleFallback": "Cấu hình VPN",
+      "description": "Lưu trong keyring hệ thống. Dùng khi AutoVPN kết nối profile này.",
+      "username": "Tên đăng nhập",
+      "usernameHelp": "Tên đăng nhập dùng để xác thực với máy chủ VPN.",
+      "noUsernameDetected": "Nhập tên đăng nhập (ví dụ: user123)",
+      "passwordStructure": "Cấu trúc mật khẩu",
+      "passwordStructureHelp": "Thiết lập các thành phần mật khẩu theo đúng thứ tự của hệ thống VPN của bạn.",
+      "addPart": "Thêm thành phần",
+      "partStatic": "Base password",
+      "partTotp": "Mã OTP động (TOTP)",
+      "staticPlaceholder": "Nhập base password",
+      "totpPlaceholder": "Nhập TOTP secret key (Base32)",
+      "livePreview": "Xem trước định dạng:",
+      "emptyParts": "Chưa cấu hình thành phần mật khẩu nào. Hãy nhấn 'Thêm thành phần'.",
+      "save": "Lưu",
+      "cancel": "Hủy",
+      "remove": "Xóa cấu hình",
+      "loadFailed": "Không thể tải cấu hình đã lưu.",
+      "saveFailed": "Không thể lưu cấu hình.",
+      "removeFailed": "Không thể xóa cấu hình.",
+      "notifications": {
+        "saved": {
+          "title": "Đã lưu cấu hình",
+          "message": "Cấu hình {{profile}} đã được lưu an toàn."
+        },
+        "removed": {
+          "title": "Đã xóa cấu hình",
+          "message": "Đã xóa cấu hình của {{profile}}."
+        }
+      }
+    }
+  },
+  "settings": {
+    "appearance": {
+      "title": "Giao diện",
+      "theme": {
+        "label": "Chủ đề",
+        "description": "Giao diện sáng hoặc tối (lưu trên thiết bị này)."
+      },
+      "language": {
+        "label": "Ngôn ngữ",
+        "description": "Ngôn ngữ giao diện (lưu trên thiết bị này)."
+      },
+      "notifications": {
+        "themeSaved": {
+          "title": "Đã lưu chủ đề",
+          "message": "Chủ đề {{theme}} đã được lưu."
+        },
+        "themeSaveFailed": {
+          "title": "Không thể lưu chủ đề",
+          "message": "Chủ đề đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        },
+        "languageSaved": {
+          "title": "Đã lưu ngôn ngữ",
+          "message": "{{language}} đã được lưu."
+        },
+        "languageSaveFailed": {
+          "title": "Không thể lưu ngôn ngữ",
+          "message": "Ngôn ngữ đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        }
+      }
+    },
+    "theme": {
+      "light": "Sáng",
+      "dark": "Tối"
+    },
+    "languages": {
+      "en": "English",
+      "vi": "Tiếng Việt"
+    },
+    "idleTimeout": {
+      "1min": "1 phút",
+      "5min": "5 phút",
+      "15min": "15 phút",
+      "30min": "30 phút",
+      "1hour": "1 giờ"
+    },
+    "systemIntegration": {
+      "title": "Tích hợp hệ thống",
+      "description": "Điều khiển cách autovpn khởi động cùng hệ điều hành.",
+      "launchAtStartup": "Khởi chạy khi hệ thống bật",
+      "launchAtStartupDescription": "Tự động mở autovpn khi bạn đăng nhập máy tính.",
+      "launchMinimized": "Khởi chạy thu nhỏ",
+      "launchMinimizedDescription": "Mở ứng dụng với cửa sổ ẩn. Có hiệu lực từ lần khởi động tiếp theo.",
+      "notifications": {
+        "saved": {
+          "title": "Đã lưu cài đặt tích hợp hệ thống",
+          "message": "Tùy chọn khởi động đã được lưu."
+        },
+        "saveFailed": {
+          "title": "Không thể lưu cài đặt tích hợp hệ thống",
+          "message": "Cài đặt đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        }
+      }
+    },
+    "windowBehavior": {
+      "title": "Cửa sổ",
+      "description": "Điều khiển cách cửa sổ ứng dụng hoạt động trên máy tính.",
+      "useSystemWindowFrame": "Dùng khung cửa sổ hệ thống",
+      "useSystemWindowFrameDescription": "Dùng thanh tiêu đề và viền cửa sổ gốc thay cho thanh tiêu đề Linux tùy chỉnh.",
+      "closeToTray": "Đóng xuống khay hệ thống",
+      "closeToTrayDescription": "Ẩn cửa sổ xuống khay hệ thống khi đóng thay vì thoát ứng dụng.",
+      "tray": {
+        "show": "Hiện AutoVPN",
+        "quit": "Thoát",
+        "connect": "Kết nối",
+        "disconnect": "Ngắt kết nối",
+        "reconnect": "Kết nối lại"
+      },
+      "notifications": {
+        "saved": {
+          "title": "Đã lưu cài đặt cửa sổ",
+          "message": "Tùy chọn cửa sổ đã được lưu."
+        },
+        "saveFailed": {
+          "title": "Không thể lưu cài đặt cửa sổ",
+          "message": "Cài đặt đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        }
+      }
+    },
+    "appLock": {
+      "title": "Khóa ứng dụng",
+      "description": "Bảo vệ ứng dụng bằng mã PIN. PIN được lưu an toàn trong keyring hệ thống.",
+      "enabled": "Bật khóa ứng dụng",
+      "enabledDescription": "Cần đặt mã PIN. Hiện nút khóa trên header và khóa khi không hoạt động.",
+      "enableModal": {
+        "title": "Thiết lập khóa ứng dụng",
+        "description": "Tạo mã PIN để bật khóa ứng dụng.",
+        "pin": "PIN",
+        "confirmPin": "Xác nhận PIN",
+        "pinPlaceholder": "Nhập PIN",
+        "confirmPinPlaceholder": "Xác nhận PIN",
+        "confirm": "Bật khóa ứng dụng",
+        "cancel": "Hủy"
+      },
+      "disableModal": {
+        "title": "Tắt khóa ứng dụng?",
+        "description": "Nhập PIN để xác nhận. Tắt khóa ứng dụng sẽ xóa vĩnh viễn PIN khỏi keyring hệ thống.",
+        "pinPlaceholder": "Nhập PIN",
+        "confirm": "Tắt khóa ứng dụng",
+        "cancel": "Hủy",
+        "invalidPin": "PIN không đúng. Thử lại."
+      },
+      "changePinModal": {
+        "title": "Đổi PIN",
+        "description": "Nhập PIN hiện tại và chọn PIN mới.",
+        "currentPin": "PIN hiện tại",
+        "newPin": "PIN mới",
+        "confirmPin": "Xác nhận PIN mới",
+        "currentPinPlaceholder": "Nhập PIN hiện tại",
+        "newPinPlaceholder": "Nhập PIN mới",
+        "confirmPinPlaceholder": "Xác nhận PIN mới",
+        "confirm": "Lưu PIN",
+        "cancel": "Hủy",
+        "invalidCurrentPin": "PIN không đúng. Thử lại."
+      },
+      "lockWhenIdle": "Khóa khi không hoạt động",
+      "idleTimeout": "Thời gian chờ",
+      "changePin": "Đổi PIN",
+      "strength": {
+        "weak": "Yếu",
+        "fair": "Trung bình",
+        "good": "Khá",
+        "strong": "Mạnh"
+      },
+      "errors": {
+        "invalidLength": "Mật khẩu phải có từ {{min}} đến {{max}} ký tự.",
+        "notPersisted": "Không thể lưu PIN vào keyring hệ thống. Hãy mở khóa keyring (ví dụ đăng nhập keyring) rồi thử lại."
+      },
+      "notifications": {
+        "locked": {
+          "title": "Đã khóa ứng dụng",
+          "messageWithPin": "Nhập PIN trên màn hình khóa để tiếp tục.",
+          "messageWithoutPin": "Nhấn Mở khóa trên màn hình khóa để tiếp tục."
+        },
+        "pinRemoved": {
+          "title": "Đã xóa PIN",
+          "message": "PIN đã được xóa khỏi keyring hệ thống."
+        },
+        "pinRemoveFailed": {
+          "title": "Không thể xóa PIN",
+          "message": "Không thể xóa PIN khỏi keyring hệ thống."
+        },
+        "pinSaved": {
+          "title": "Đã lưu PIN",
+          "message": "PIN đã được lưu vào keyring hệ thống."
+        },
+        "pinSaveFailed": {
+          "title": "Không thể lưu PIN",
+          "message": "Không thể lưu PIN vào keyring hệ thống."
+        },
+        "pinMismatch": {
+          "title": "PIN không khớp",
+          "message": "Hãy nhập cùng một PIN ở cả hai ô."
+        },
+        "settingsSaved": {
+          "title": "Đã lưu cài đặt khóa ứng dụng",
+          "message": "Tùy chọn khóa ứng dụng đã được lưu."
+        },
+        "settingsSaveFailed": {
+          "title": "Không thể lưu cài đặt khóa ứng dụng",
+          "message": "Cài đặt đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        },
+        "disabled": {
+          "title": "Đã tắt khóa ứng dụng",
+          "messageWithPin": "Khóa ứng dụng đã tắt và PIN đã được xóa khỏi keyring hệ thống."
+        }
+      }
+    },
+    "autoReconnect": {
+      "title": "Tự động kết nối lại",
+      "enabled": "Kết nối lại khi mất kết nối",
+      "enabledDescription": "Không áp dụng khi bạn nhấn Ngắt kết nối. Chờ 15 giây giữa các lần thử.",
+      "maxAttempts": "Số lần thử tối đa",
+      "notifications": {
+        "saved": {
+          "title": "Đã lưu cài đặt tự động kết nối lại",
+          "message": "Tùy chọn tự động kết nối lại đã được lưu."
+        },
+        "saveFailed": {
+          "title": "Không thể lưu cài đặt tự động kết nối lại",
+          "message": "Cài đặt đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        }
+      }
+    },
+    "autoConnect": {
+      "title": "Tự động kết nối",
+      "enabled": "Kết nối VPN mặc định khi khởi động",
+      "enabledDescription": "Tự động kết nối đến profile VPN mặc định khi ứng dụng khởi động.",
+      "notifications": {
+        "saved": {
+          "title": "Đã lưu cài đặt tự động kết nối",
+          "message": "Tùy chọn tự động kết nối đã được lưu."
+        },
+        "saveFailed": {
+          "title": "Không thể lưu cài đặt tự động kết nối",
+          "message": "Cài đặt đã đổi trong app nhưng chưa ghi vào file cấu hình."
+        }
+      }
+    },
+    "aboutAuthor": {
+      "title": "Về tác giả",
+      "role": "Kỹ sư phần mềm & Sáng lập",
+      "license": "Giấy phép",
+      "feedback": "Góp ý & Báo lỗi"
+    },
+    "update": {
+      "title": "Phiên bản & Cập nhật",
+      "currentVersion": "Phiên bản hiện tại",
+      "badges": {
+        "upToDate": "Mới nhất",
+        "available": "Có bản cập nhật"
+      },
+      "actions": {
+        "goToReleases": "Tải về trên GitHub Releases",
+        "checking": "Đang kiểm tra...",
+        "check": "Kiểm tra cập nhật"
+      },
+      "notifications": {
+        "available": {
+          "title": "Có phiên bản mới",
+          "message": "Phiên bản {{version}} đã sẵn sàng tải về."
+        },
+        "upToDate": {
+          "title": "Đã là mới nhất",
+          "message": "Bạn đang sử dụng phiên bản mới nhất của AutoVPN."
+        },
+        "openFailed": {
+          "title": "Không thể mở liên kết"
+        },
+        "error": {
+          "title": "Kiểm tra cập nhật thất bại"
+        }
+      }
+    }
+  },
+  "appLock": {
+    "tampered": {
+      "title": "Không thể xác minh cài đặt",
+      "message": "Cài đặt được bảo vệ đã bị thay đổi bên ngoài ứng dụng. Tùy chọn khóa ứng dụng đã được đặt lại về mặc định an toàn."
+    },
+    "overlay": {
+      "title": "Ứng dụng đã khóa",
+      "descriptionWithPin": "Nhập PIN để mở khóa autovpn.",
+      "descriptionWithoutPin": "Nhấn Mở khóa để tiếp tục dùng autovpn.",
+      "pinPlaceholder": "Nhập PIN",
+      "unlock": "Mở khóa",
+      "invalidPin": "PIN không đúng. Hãy thử lại."
+    }
+  },
+  "window": {
+    "minimize": "Thu nhỏ",
+    "maximize": "Phóng to",
+    "restore": "Khôi phục",
+    "close": "Đóng",
+    "resize": {
+      "north": "Thay đổi kích thước cửa sổ từ cạnh trên",
+      "south": "Thay đổi kích thước cửa sổ từ cạnh dưới",
+      "east": "Thay đổi kích thước cửa sổ từ cạnh phải",
+      "west": "Thay đổi kích thước cửa sổ từ cạnh trái",
+      "northEast": "Thay đổi kích thước cửa sổ từ góc trên bên phải",
+      "northWest": "Thay đổi kích thước cửa sổ từ góc trên bên trái",
+      "southEast": "Thay đổi kích thước cửa sổ từ góc dưới bên phải",
+      "southWest": "Thay đổi kích thước cửa sổ từ góc dưới bên trái"
+    }
+  }
+}
