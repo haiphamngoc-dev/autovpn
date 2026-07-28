@@ -404,12 +404,12 @@ where
 
 async fn start_wireguard_connection(
     _state: &DaemonState,
-    config_content: &str,
+    _config_content: &str,
 ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
     #[cfg(unix)]
     {
         let config_path = "/var/run/autovpn-wg.conf";
-        tokio::fs::write(config_path, config_content).await?;
+        tokio::fs::write(config_path, _config_content).await?;
 
         // Ensure secure file permissions
         let mut perms = tokio::fs::metadata(config_path).await?.permissions();
