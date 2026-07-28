@@ -19,8 +19,21 @@
         "depends": ["openvpn"],
         "files": {
           "/usr/local/bin/autovpn-helper": "../../../target/release/helper-daemon",
-          "/usr/share/autovpn/autovpn-helper.service": "../../../scripts/deb/autovpn-helper.service"
-        }
+          "/lib/systemd/system/autovpn-helper.service": "../../../scripts/deb/autovpn-helper.service"
+        },
+        "postInstallScript": "../../../scripts/deb/postinst",
+        "preRemoveScript": "../../../scripts/deb/prerm",
+        "postRemoveScript": "../../../scripts/deb/postrm"
+      },
+      "rpm": {
+        "depends": ["openvpn"],
+        "files": {
+          "/usr/local/bin/autovpn-helper": "../../../target/release/helper-daemon",
+          "/lib/systemd/system/autovpn-helper.service": "../../../scripts/deb/autovpn-helper.service"
+        },
+        "postInstallScript": "../../../scripts/deb/postinst",
+        "preRemoveScript": "../../../scripts/deb/prerm",
+        "postRemoveScript": "../../../scripts/deb/postrm"
       }
     }
   }
