@@ -1,5 +1,4 @@
 {
-
   "bundle": {
     "resources": [
       "../../../target/release/helper-daemon",
