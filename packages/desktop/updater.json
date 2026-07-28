@@ -1,11 +1,11 @@
 {
-  "version": "0.8.1",
-  "notes": "Release AutoVPN v0.8.1 with auto-update support.",
-  "pub_date": "2026-07-28T09:38:00Z",
+  "version": "0.8.2",
+  "notes": "Release AutoVPN v0.8.2 with auto-update support.",
+  "pub_date": "2026-07-28T09:55:00Z",
   "platforms": {
     "linux-x86_64": {
       "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSYzZ5NkNzdVNwanlGc1FxUER6RG5rM0hxYlV5N3B0RitQeDBxeGUzMGVINkxCSFp4NjRCckVPWUhjL0JyQ3hpMHBjVmRuT282T2VXa00xZTc5d0V5c0dCd21YQURMbGc4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0NTM3NjQyCWZpbGU6QXV0b1ZQTl8wLjcuMF9hbWQ2NC5BcHBJbWFnZQp1WVRsTE9manMzUm5NZVBWdkVuSDRIcm4xNVhlakhPZ211aC92Q2k5NUxselMwRjdPdzl1NEtWQkc5cFpXTEVwUGIwRXZ2NHlCcWhZbmlSd0R5RERCdz09Cg==",
-      "url": "https://github.com/haiphamngoc-dev/autovpn/releases/download/v0.8.1/AutoVPN_0.8.1_amd64.AppImage"
+      "url": "https://github.com/haiphamngoc-dev/autovpn/releases/download/v0.8.2/AutoVPN_0.8.2_amd64.AppImage"
     }
   }
 }
