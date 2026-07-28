@@ -71,7 +71,13 @@ jobs:
           Invoke-WebRequest -Uri "https://swupdate.openvpn.org/community/releases/OpenVPN-2.6.12-I001-amd64.msi" -OutFile "openvpn-installer.msi"
           Start-Process msiexec.exe -ArgumentList "/a openvpn-installer.msi /qb TARGETDIR=C:\openvpn-extracted" -Wait
           New-Item -ItemType Directory -Force -Path target/release/openvpn-windows
-          Copy-Item -Path C:\openvpn-extracted\Files\OpenVPN\bin\* -Destination target/release/openvpn-windows/ -Force
+          $openvpnExe = Get-ChildItem -Path C:\openvpn-extracted -Filter "openvpn.exe" -Recurse | Select-Object -First 1
+          if ($openvpnExe) {
+            $binDir = $openvpnExe.Directory.FullName
+            Copy-Item -Path "$binDir\*" -Destination target/release/openvpn-windows/ -Force
+          } else {
+            throw "Could not find openvpn.exe inside extracted files!"
+          }
 
       - name: Download and extract OpenVPN (macOS)
         if: matrix.platform == 'macos-latest'
