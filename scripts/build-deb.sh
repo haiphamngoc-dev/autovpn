@@ -15,7 +15,7 @@ cargo build --release --package helper-daemon
 echo ""
 echo "==> Step 2: Running Tauri build (frontend + desktop app)..."
 # The signing key error is bypassed using --no-signing for local builds
-pnpm --filter autovpn-desktop tauri build --no-signing 2>&1
+pnpm --filter autovpn-desktop tauri build --no-sign 2>&1
 
 echo ""
 echo "==> Step 3: Locating generated .deb..."
