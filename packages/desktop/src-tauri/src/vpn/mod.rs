@@ -429,7 +429,7 @@ pub async fn import_vpn_profile(
 }
 
 #[tauri::command]
-pub async fn delete_vpn_profile(profile_name: String) -> Result<(), String> {
+pub async fn delete_vpn_profile(app: tauri::AppHandle, profile_name: String) -> Result<(), String> {
     let mut settings = crate::settings::load_settings().unwrap_or_default();
     let vpn_type = if let Some(config) = settings.vpn.profile_config(&profile_name) {
         config.vpn_type.clone()
@@ -457,6 +457,8 @@ pub async fn delete_vpn_profile(profile_name: String) -> Result<(), String> {
         settings.vpn.default_profile = None;
     }
     crate::settings::save_settings(&settings)?;
+
+    let _ = crate::tray::refresh_tray_menu(&app);
 
     Ok(())
 }
