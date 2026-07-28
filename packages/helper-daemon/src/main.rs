@@ -132,60 +132,151 @@ impl DaemonState {
     }
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let state = Arc::new(DaemonState::new());
-    println!("AutoVPN Helper Daemon started.");
+#[cfg(windows)]
+windows_service::define_windows_service!(ffi_service_main, my_service_main);
 
-    #[cfg(unix)]
-    {
-        if std::path::Path::new(SOCKET_PATH).exists() {
-            std::fs::remove_file(SOCKET_PATH)?;
+#[cfg(windows)]
+fn run_as_service() -> Result<(), Box<dyn std::error::Error>> {
+    use windows_service::service_dispatcher;
+    service_dispatcher::start("autovpn-helper", ffi_service_main)?;
+    Ok(())
+}
+
+#[cfg(windows)]
+fn my_service_main(_arguments: Vec<std::ffi::OsString>) {
+    use windows_service::service::{
+        ServiceAcceptedCmdOptions, ServiceState, ServiceStatus, ServiceType,
+    };
+    use windows_service::service_control_handler::{self, ServiceControlHandlerResult};
+    use windows_service::service::ServiceControl;
+
+    let event_handler = move |control_event| -> ServiceControlHandlerResult {
+        match control_event {
+            ServiceControl::Stop => {
+                std::process::exit(0);
+            }
+            ServiceControl::Interrogate => ServiceControlHandlerResult::NoError,
+            _ => ServiceControlHandlerResult::NotImplemented,
         }
-        let listener = tokio::net::UnixListener::bind(SOCKET_PATH)?;
+    };
 
-        use std::os::unix::fs::PermissionsExt;
-        let mut perms = std::fs::metadata(SOCKET_PATH)?.permissions();
-        perms.set_mode(0o666);
-        std::fs::set_permissions(SOCKET_PATH, perms)?;
+    let status_handle = match service_control_handler::register("autovpn-helper", event_handler) {
+        Ok(h) => h,
+        Err(_) => return,
+    };
 
-        println!("Listening on Unix Domain Socket: {}", SOCKET_PATH);
-        loop {
-            let (stream, _) = listener.accept().await?;
-            let state_clone = state.clone();
-            tokio::spawn(async move {
-                if let Err(e) = handle_connection(stream, state_clone).await {
-                    eprintln!("Error handling IPC connection: {:?}", e);
-                }
-            });
-        }
+    let running_status = ServiceStatus {
+        service_type: ServiceType::OWN_PROCESS,
+        current_state: ServiceState::Running,
+        controls_accepted: ServiceAcceptedCmdOptions::SUPPORT_STOP,
+        exit_code: 0,
+        checkpoint: 0,
+        wait_hint: std::time::Duration::default(),
+        process_id: None,
+    };
+
+    if status_handle.set_service_status(running_status).is_err() {
+        return;
     }
 
+    if let Ok(rt) = tokio::runtime::Runtime::new() {
+        let _ = rt.block_on(async {
+            let state = Arc::new(DaemonState::new());
+            use tokio::net::windows::named_pipe::ServerOptions;
+            let mut server = match ServerOptions::new()
+                .first_pipe_instance(true)
+                .create(PIPE_NAME) {
+                    Ok(s) => s,
+                    Err(_) => return,
+                };
+
+            loop {
+                if server.connect().await.is_ok() {
+                    let stream = server;
+                    server = match ServerOptions::new()
+                        .first_pipe_instance(false)
+                        .create(PIPE_NAME) {
+                            Ok(s) => s,
+                            Err(_) => break,
+                        };
+                    let state_clone = state.clone();
+                    tokio::spawn(async move {
+                        let _ = handle_connection(stream, state_clone).await;
+                    });
+                } else {
+                    tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
+                }
+            }
+        });
+    }
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     #[cfg(windows)]
     {
-        use tokio::net::windows::named_pipe::ServerOptions;
-        println!("Listening on Windows Named Pipe: {}", PIPE_NAME);
-
-        let mut server = ServerOptions::new()
-            .first_pipe_instance(true)
-            .create(PIPE_NAME)?;
-
-        loop {
-            server.connect().await?;
-            let stream = server;
-
-            server = ServerOptions::new()
-                .first_pipe_instance(false)
-                .create(PIPE_NAME)?;
-
-            let state_clone = state.clone();
-            tokio::spawn(async move {
-                if let Err(e) = handle_connection(stream, state_clone).await {
-                    eprintln!("Error handling Named Pipe connection: {:?}", e);
-                }
-            });
+        let args: Vec<String> = std::env::args().collect();
+        let is_service = args.iter().any(|arg| arg == "--service");
+        if is_service {
+            run_as_service()?;
+            return Ok(());
         }
     }
+
+    let rt = tokio::runtime::Runtime::new()?;
+    rt.block_on(async {
+        let state = Arc::new(DaemonState::new());
+        println!("AutoVPN Helper Daemon started.");
+
+        #[cfg(unix)]
+        {
+            if std::path::Path::new(SOCKET_PATH).exists() {
+                std::fs::remove_file(SOCKET_PATH)?;
+            }
+            let listener = tokio::net::UnixListener::bind(SOCKET_PATH)?;
+
+            use std::os::unix::fs::PermissionsExt;
+            let mut perms = std::fs::metadata(SOCKET_PATH)?.permissions();
+            perms.set_mode(0o666);
+            std::fs::set_permissions(SOCKET_PATH, perms)?;
+
+            println!("Listening on Unix Domain Socket: {}", SOCKET_PATH);
+            loop {
+                let (stream, _) = listener.accept().await?;
+                let state_clone = state.clone();
+                tokio::spawn(async move {
+                    if let Err(e) = handle_connection(stream, state_clone).await {
+                        eprintln!("Error handling IPC connection: {:?}", e);
+                    }
+                });
+            }
+        }
+
+        #[cfg(windows)]
+        {
+            use tokio::net::windows::named_pipe::ServerOptions;
+            println!("Listening on Windows Named Pipe: {}", PIPE_NAME);
+
+            let mut server = ServerOptions::new()
+                .first_pipe_instance(true)
+                .create(PIPE_NAME)?;
+
+            loop {
+                server.connect().await?;
+                let stream = server;
+
+                server = ServerOptions::new()
+                    .first_pipe_instance(false)
+                    .create(PIPE_NAME)?;
+
+                let state_clone = state.clone();
+                tokio::spawn(async move {
+                    if let Err(e) = handle_connection(stream, state_clone).await {
+                        eprintln!("Error handling Named Pipe connection: {:?}", e);
+                    }
+                });
+            }
+        }
+    })
 }
 
 async fn handle_connection<S>(

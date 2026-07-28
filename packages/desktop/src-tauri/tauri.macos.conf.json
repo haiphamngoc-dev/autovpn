@@ -1,0 +1,13 @@
+{
+  "build": {
+    "beforeBundleCommand": "cargo build --release --package helper-daemon --target x86_64-apple-darwin && cargo build --release --package helper-daemon --target aarch64-apple-darwin && mkdir -p ../../../target/release && lipo -create ../../../target/x86_64-apple-darwin/release/helper-daemon ../../../target/aarch64-apple-darwin/release/helper-daemon -output ../../../target/release/helper-daemon"
+  },
+  "bundle": {
+    "resources": [
+      "../../../target/release/helper-daemon",
+      "../../../scripts/macos/autovpn-helper.plist",
+      "../../../scripts/macos/install-daemon.sh",
+      "../../../scripts/macos/uninstall-daemon.sh"
+    ]
+  }
+}

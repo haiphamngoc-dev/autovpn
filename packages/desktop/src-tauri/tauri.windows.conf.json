@@ -1,0 +1,10 @@
+{
+  "bundle": {
+    "resources": ["../../../target/release/helper-daemon.exe"],
+    "windows": {
+      "nsis": {
+        "installerHooks": "./hooks.nsh"
+      }
+    }
+  }
+}
