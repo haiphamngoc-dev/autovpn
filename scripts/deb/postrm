@@ -5,7 +5,6 @@ set -e
 
 if [ "$1" = "purge" ] || [ "$1" = "remove" ]; then
   systemctl disable autovpn-helper 2>/dev/null || true
-  rm -f /lib/systemd/system/autovpn-helper.service
   rm -f /var/run/autovpn.sock
   systemctl daemon-reload
 fi
