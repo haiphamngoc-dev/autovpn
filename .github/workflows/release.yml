@@ -64,6 +64,33 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Download and extract OpenVPN (Windows)
+        if: matrix.platform == 'windows-latest'
+        shell: powershell
+        run: |
+          Invoke-WebRequest -Uri "https://swupdate.openvpn.org/community/releases/OpenVPN-2.6.12-I001-amd64.msi" -OutFile "openvpn-installer.msi"
+          Start-Process msiexec.exe -ArgumentList "/a openvpn-installer.msi /qb TARGETDIR=C:\openvpn-extracted" -Wait
+          New-Item -ItemType Directory -Force -Path target/release/openvpn-windows
+          Copy-Item -Path C:\openvpn-extracted\Files\OpenVPN\bin\* -Destination target/release/openvpn-windows/ -Force
+
+      - name: Download and extract OpenVPN (macOS)
+        if: matrix.platform == 'macos-latest'
+        run: |
+          mkdir -p target/release/openvpn-macos
+          RELEASE_URL=$(curl -s https://api.github.com/repos/Tunnelblick/Tunnelblick/releases/latest | jq -r '.assets[] | select(.name | endswith(".dmg")) | .browser_download_url' | head -n 1)
+          curl -L -o tunnelblick.dmg "$RELEASE_URL"
+          hdiutil attach tunnelblick.dmg -mountpoint /Volumes/Tunnelblick
+          OPENVPN_SRC=$(find /Volumes/Tunnelblick/Tunnelblick.app/Contents/Resources/ -name "openvpn" -type f | head -n 1)
+          if [ -n "$OPENVPN_SRC" ]; then
+            cp "$OPENVPN_SRC" target/release/openvpn-macos/openvpn
+            chmod 755 target/release/openvpn-macos/openvpn
+            echo "Successfully extracted OpenVPN macOS binary from Tunnelblick: $OPENVPN_SRC"
+          else
+            echo "Error: could not find openvpn binary in Tunnelblick.app"
+            exit 1
+          fi
+          hdiutil detach /Volumes/Tunnelblick
+
       - name: Build and Release Tauri App
         uses: tauri-apps/tauri-action@v0
         env:

@@ -1,6 +1,9 @@
 {
   "bundle": {
-    "resources": ["../../../target/release/helper-daemon.exe"],
+    "resources": [
+      "../../../target/release/helper-daemon.exe",
+      "../../../target/release/openvpn-windows"
+    ],
     "windows": {
       "nsis": {
         "installerHooks": "./hooks.nsh"

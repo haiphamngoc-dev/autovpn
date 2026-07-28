@@ -8,6 +8,7 @@
     "dev:desktop": "pnpm --filter autovpn-desktop tauri dev",
     "build": "pnpm --filter autovpn-desktop tauri build",
     "build:desktop": "pnpm --filter autovpn-desktop tauri build",
+    "build:local": "pnpm --filter autovpn-desktop tauri build --no-signing",
     "build:deb": "bash scripts/build-deb.sh",
     "build:frontend": "pnpm --filter autovpn-desktop build",
     "format": "prettier --write .",

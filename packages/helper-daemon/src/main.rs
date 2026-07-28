@@ -469,9 +469,32 @@ async fn start_openvpn_connection(
         tokio::fs::set_permissions(&config_path, perms).await?;
     }
 
+    let openvpn_bin = if cfg!(windows) {
+        if let Ok(mut exe_path) = std::env::current_exe() {
+            exe_path.pop();
+            let bundled_bin = exe_path.join("openvpn-windows").join("openvpn.exe");
+            if bundled_bin.exists() {
+                bundled_bin.to_string_lossy().to_string()
+            } else {
+                "openvpn".to_string()
+            }
+        } else {
+            "openvpn".to_string()
+        }
+    } else if cfg!(target_os = "macos") {
+        let bundled_path = std::path::Path::new("/usr/local/bin/openvpn-autovpn");
+        if bundled_path.exists() {
+            "/usr/local/bin/openvpn-autovpn".to_string()
+        } else {
+            "openvpn".to_string()
+        }
+    } else {
+        "openvpn".to_string()
+    };
+
     // Set up OpenVPN process with management interface
     let port = 13573;
-    let mut cmd = tokio::process::Command::new("openvpn");
+    let mut cmd = tokio::process::Command::new(&openvpn_bin);
     cmd.arg("--config")
         .arg(&config_path)
         .arg("--management")

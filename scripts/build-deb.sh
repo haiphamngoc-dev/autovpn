@@ -14,8 +14,8 @@ cargo build --release --package helper-daemon
 
 echo ""
 echo "==> Step 2: Running Tauri build (frontend + desktop app)..."
-# The signing key error is expected in dev; we still get the .deb
-pnpm --filter autovpn-desktop tauri build 2>&1 || true
+# The signing key error is bypassed using --no-signing for local builds
+pnpm --filter autovpn-desktop tauri build --no-signing 2>&1
 
 echo ""
 echo "==> Step 3: Locating generated .deb..."

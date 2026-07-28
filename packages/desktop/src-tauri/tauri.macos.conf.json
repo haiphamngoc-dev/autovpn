@@ -5,6 +5,7 @@
   "bundle": {
     "resources": [
       "../../../target/release/helper-daemon",
+      "../../../target/release/openvpn-macos/openvpn",
       "../../../scripts/macos/autovpn-helper.plist",
       "../../../scripts/macos/install-daemon.sh",
       "../../../scripts/macos/uninstall-daemon.sh"

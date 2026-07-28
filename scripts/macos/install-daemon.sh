@@ -22,6 +22,14 @@ mkdir -p /usr/local/bin
 cp "$DAEMON_BIN" "$INSTALL_PATH"
 chmod 755 "$INSTALL_PATH"
 
+echo "Installing bundled openvpn binary to /usr/local/bin/openvpn-autovpn..."
+if [ -f "$SCRIPT_DIR/openvpn" ]; then
+  cp "$SCRIPT_DIR/openvpn" "/usr/local/bin/openvpn-autovpn"
+  chmod 755 "/usr/local/bin/openvpn-autovpn"
+else
+  echo "Warning: Bundled openvpn binary not found in resources."
+fi
+
 echo "Installing launchd plist to $PLIST_PATH..."
 cp "$SCRIPT_DIR/autovpn-helper.plist" "$PLIST_PATH"
 chmod 644 "$PLIST_PATH"

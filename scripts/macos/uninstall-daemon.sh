@@ -18,6 +18,7 @@ launchctl unload "$PLIST_PATH" 2>/dev/null || true
 echo "Removing binary and plist files..."
 rm -f "$INSTALL_PATH"
 rm -f "$PLIST_PATH"
+rm -f "/usr/local/bin/openvpn-autovpn"
 rm -f "/var/run/autovpn.sock"
 
 echo "macOS helper daemon service uninstalled successfully."
