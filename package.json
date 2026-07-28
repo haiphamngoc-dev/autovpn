@@ -1,7 +1,7 @@
 {
   "name": "autovpn-monorepo",
   "private": true,
-  "version": "0.8.0",
+  "version": "0.8.1",
   "type": "module",
   "scripts": {
     "dev": "pnpm --filter autovpn-desktop tauri dev",
