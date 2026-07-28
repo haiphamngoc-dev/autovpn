@@ -1,7 +1,5 @@
 {
-  "build": {
-    "beforeBuildCommand": "pnpm build && cargo build --release --package helper-daemon --target x86_64-apple-darwin --target-dir ../../../target && cargo build --release --package helper-daemon --target aarch64-apple-darwin --target-dir ../../../target && mkdir -p ../../../target/release && lipo -create ../../../target/x86_64-apple-darwin/release/helper-daemon ../../../target/aarch64-apple-darwin/release/helper-daemon -output ../../../target/release/helper-daemon"
-  },
+
   "bundle": {
     "resources": [
       "../../../target/release/helper-daemon",

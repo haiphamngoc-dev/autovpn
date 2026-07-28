@@ -97,6 +97,18 @@ jobs:
           fi
           hdiutil detach /Volumes/Tunnelblick
 
+      - name: Build helper-daemon (Windows/Linux)
+        if: matrix.platform != 'macos-latest'
+        run: cargo build --release --package helper-daemon
+
+      - name: Build helper-daemon (macOS Universal)
+        if: matrix.platform == 'macos-latest'
+        run: |
+          cargo build --release --package helper-daemon --target x86_64-apple-darwin
+          cargo build --release --package helper-daemon --target aarch64-apple-darwin
+          mkdir -p target/release
+          lipo -create target/x86_64-apple-darwin/release/helper-daemon target/aarch64-apple-darwin/release/helper-daemon -output target/release/helper-daemon
+
       - name: Build and Release Tauri App
         uses: tauri-apps/tauri-action@v0
         env:
